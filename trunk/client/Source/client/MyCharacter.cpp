@@ -120,6 +120,8 @@ AMyCharacter::AMyCharacter()
 	mh_append = NULL;
 	sh_weapon = NULL;
 	sh_append = NULL;
+
+	weapon_state = 0;
 }
 
 // Called when the game starts or when spawned
@@ -254,6 +256,15 @@ void AMyCharacter::Equip(int32 slot,FName id)
 			ItemAdd(equips[slot],1);
 
 		equips[slot] = id;
+
+		if (slot == Fconfig_equip::MainHand && item->double_hand == 1)
+		{
+			if (!equips[Fconfig_equip::SecondHand].IsNone())
+			{
+				ItemAdd(equips[Fconfig_equip::SecondHand], 1);
+				equips[Fconfig_equip::SecondHand] = NAME_None;
+			}
+		}
 	}
 	else
 	{
@@ -347,17 +358,12 @@ void AMyCharacter::UpdateMesh()
 
 					if (staticMesh != NULL)
 					{
-						//FActorSpawnParameters params;
-						//params.Template = *templateSword;
 						AStaticMeshActor* actor_weapon = Cast<AStaticMeshActor>( GetWorld()->SpawnActor(*templateSword));
-						//actor_weapon->SetMobility(EComponentMobility::Movable);
 						actor_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
 						mh_weapon = actor_weapon;
 					}
 					else if (skeletalMesh != NULL)
 					{
-						//FActorSpawnParameters params;
-						//params.Template = templateBow;
 						ASkeletalMeshActor* actor_weapon = Cast<ASkeletalMeshActor>(GetWorld()->SpawnActor(templateBow->GetClass()));
 						actor_weapon->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
 						mh_weapon = actor_weapon;
@@ -383,6 +389,8 @@ void AMyCharacter::UpdateMesh()
 						sc->AttachActor(mh_append, GetMesh());
 					else
 						TRACE("sc == NULL  %s ", *weapon->slot1);
+
+					weapon_state = 1;
 				}
 			}
 				break;
@@ -473,6 +481,7 @@ void AMyCharacter::UpdateMesh()
 					mh_append->Destroy();
 					mh_append = NULL;
 				}
+				weapon_state = 0;
 			}
 				break;
 			case Fconfig_equip::SecondHand:
@@ -497,18 +506,116 @@ void AMyCharacter::UpdateMesh()
 }
 
 
+void AMyCharacter::OpenWeapon()
+{
+	if (weapon_state == 1)
+		return;
+	weapon_state = 1;
+	
+	{
+		Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(equips[Fconfig_equip::MainHand]);
+		Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
+		if (weapon != NULL)
+		{
+			if (mh_weapon != NULL)
+			{
+				mh_weapon->DetachRootComponentFromParent();
+				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot);
+				if (sc != NULL)
+					sc->AttachActor(mh_weapon, GetMesh());
+				else
+					TRACE("sc == NULL  %s ", *weapon->slot);
+
+			}
+		}
+	}
+	{
+		Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(equips[Fconfig_equip::SecondHand]);
+		Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::SecondHand], race);
+		if (weapon != NULL)
+		{
+			if (sh_weapon != NULL)
+			{
+				sh_weapon->DetachRootComponentFromParent();
+				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot);
+				if (sc != NULL)
+					sc->AttachActor(sh_weapon, GetMesh());
+				else
+					TRACE("sc == NULL  %s ", *weapon->slot);
+
+			}
+		}
+	}
+
+	UpdateAnimGroup();
+}
+
+void AMyCharacter::CloseWeapon()
+{
+	if (weapon_state == 0)
+		return;
+	weapon_state = 0;
+
+	{
+		Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(equips[Fconfig_equip::MainHand]);
+		Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
+		if (weapon != NULL)
+		{
+			if (mh_weapon != NULL)
+			{
+				mh_weapon->DetachRootComponentFromParent();
+				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot1);
+				if (sc != NULL)
+					sc->AttachActor(mh_weapon, GetMesh());
+				else
+					TRACE("sc == NULL  %s ", *weapon->slot1);
+
+			}
+		}
+	}
+	{
+		Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(equips[Fconfig_equip::SecondHand]);
+		Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::SecondHand], race);
+		if (weapon != NULL)
+		{
+			if (sh_weapon != NULL)
+			{
+				sh_weapon->DetachRootComponentFromParent();
+				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot1);
+				if (sc != NULL)
+					sc->AttachActor(sh_weapon, GetMesh());
+				else
+					TRACE("sc == NULL  %s ", *weapon->slot1);
+
+			}
+		}
+	}
+
+	UpdateAnimGroup();
+}
+
+
 void AMyCharacter::UpdateAnimGroup()
 {
-	if (!equips[Fconfig_equip::MainHand].IsNone())
-	{
-		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
-		anim_group = weaponMap->anim_group;
-	}
-	else
+	if (weapon_state == 0)
 	{
 		Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
 		anim_group = race_data->anim_group;
 	}
+	else
+	{
+		if (!equips[Fconfig_equip::MainHand].IsNone())
+		{
+			Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
+			anim_group = weaponMap->anim_group;
+		}
+		else
+		{
+			Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
+			anim_group = race_data->anim_group;
+		}
+	}
+	
 
 	Fconfig_anim_group* ag = UMyGameSingleton::Get().FindAnimGroup(anim_group);
 	if (ag != NULL)

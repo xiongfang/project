@@ -136,6 +136,11 @@ public:
 		TAssetPtr<UAnimSequence> jump_fall;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> jump_land;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> open_weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> close_weapon;
 };
 
 

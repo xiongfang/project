@@ -93,6 +93,16 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Equip(int32 slot, FName id);
 	
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void OpenWeapon();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void CloseWeapon();
+
+	//0 未装备，1装备
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		int32 weapon_state;  
+
+
 	//UFUNCTION(Category = Logic,BlueprintCallable)
 	void UpdateMesh();
 
