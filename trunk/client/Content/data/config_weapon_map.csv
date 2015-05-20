@@ -1,0 +1,5 @@
+Name,valid,anim_group,model,slot,append_1,slot1
+"item_25_race_1","1","ag_2","/Game/meshes/weapons/iron/longsword/longsword_0.longsword_0","WEAPON","/Game/meshes/weapons/iron/longsword/longsword_Scb.longsword_Scb","WeaponSword"
+"item_25_race_2","1","ag_2","/Game/meshes/weapons/iron/longsword/longsword_0.longsword_0","WEAPON","/Game/meshes/weapons/iron/longsword/longsword_Scb.longsword_Scb","WeaponSword"
+"item_31_race_1","1","ag_2","/Game/meshes/weapons/steel/SteelSword/steelsword_0.steelsword_0","WEAPON","/Game/meshes/weapons/steel/SteelSword/steelsword_Scb.steelsword_Scb","WeaponSword"
+"item_31_race_2","1","ag_2","/Game/meshes/weapons/steel/SteelSword/steelsword_0.steelsword_0","WEAPON","/Game/meshes/weapons/steel/SteelSword/steelsword_Scb.steelsword_Scb","WeaponSword"

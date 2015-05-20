@@ -1,0 +1,3 @@
+Name,valid,show_name,description,sex,anim_group,default_head,default_body,default_hand,default_feet
+"race_1","1","人族","女性人族","0","ag_1","/Game/meshes/actors/charactor/female_0/femalehead.femalehead","/Game/meshes/actors/charactor/female_0/femalebody_0.femalebody_0","/Game/meshes/actors/charactor/female_0/femalehands_0.femalehands_0","/Game/meshes/actors/charactor/female_0/femalefeet_0.femalefeet_0"
+"race_2","1","人族","男性人族","1","ag_1","/Game/meshes/actors/charactor/female_0/femalehead.femalehead","/Game/meshes/actors/charactor/female_0/femalebody_0.femalebody_0","/Game/meshes/actors/charactor/female_0/femalehands_0.femalehands_0","/Game/meshes/actors/charactor/female_0/femalefeet_0.femalefeet_0"

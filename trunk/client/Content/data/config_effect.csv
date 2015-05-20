@@ -1,0 +1,7 @@
+Name,valid,start_self_anim,start_weapon_anim,fly_body,hit_anim
+"skill_1_race_1","1","/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft","","",""
+"skill_1_race_2","1","/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft","","",""
+"skill_2_race_1","1","/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright","","",""
+"skill_2_race_2","1","/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright","","",""
+"skill_3_race_1","1","/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower","","",""
+"skill_3_race_2","1","/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower","","",""
