@@ -137,10 +137,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> jump_land;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> open_weapon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> close_weapon;
+
 };
 
 
@@ -182,7 +179,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString slot1;
 		
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> open_weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> close_weapon;
 };
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_skill : public FTableRowBase

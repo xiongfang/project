@@ -634,6 +634,10 @@ void AMyCharacter::UpdateAnimGroup()
 			ag->jump_land.ToStringReference().TryLoad();
 		if (ag->jump_start.Get() == NULL)
 			ag->jump_start.ToStringReference().TryLoad();
+		if (ag->open_weapon.Get() == NULL)
+			ag->open_weapon.ToStringReference().TryLoad();
+		if (ag->close_weapon.Get() == NULL)
+			ag->close_weapon.ToStringReference().TryLoad();
 	}
 	else
 	{
@@ -666,7 +670,10 @@ int32 AMyCharacter::ItemLose(FName id, int32 count)
 
 int32 AMyCharacter::ItemMax(FName id)
 {
-	return 999;
+	Fconfig_item* itemData = UMyGameSingleton::Get().FindItem(id);
+	if (itemData != NULL)
+		return itemData->max;
+	return 0;
 }
 
 bool AMyCharacter::ItemEnough(FName id, int32 count)

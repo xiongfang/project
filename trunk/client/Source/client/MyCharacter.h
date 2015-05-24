@@ -75,6 +75,9 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
 	FName anim_group;
 
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	FName main_weapon;
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Reset();
 
