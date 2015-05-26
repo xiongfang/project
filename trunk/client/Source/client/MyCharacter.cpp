@@ -286,9 +286,9 @@ void AMyCharacter::Equip(int32 slot,FName id)
 	UpdateAnimBP();
 }
 
-FName AMyCharacter::main_weapon()
+FName AMyCharacter::main_weapon_map()
 {
-	return equips[Fconfig_equip::MainHand];
+	return UMyGameSingleton::MakeKey(equips[Fconfig_equip::MainHand], race);
 }
 
 void AMyCharacter::UpdateMesh()
@@ -553,7 +553,7 @@ void AMyCharacter::OpenWeapon()
 		}
 	}
 
-	UpdateAnimBP();
+	//UpdateAnimBP();
 }
 
 void AMyCharacter::CloseWeapon()
@@ -597,7 +597,7 @@ void AMyCharacter::CloseWeapon()
 		}
 	}
 
-	UpdateAnimBP();
+	//UpdateAnimBP();
 }
 
 
@@ -621,7 +621,7 @@ void AMyCharacter::UpdateAnimBP()
 				weaponMap->anim_bp.ToStringReference().TryLoad();
 
 			if (weaponMap->anim_bp.Get() != NULL)
-				GetMesh()->SetAnimInstanceClass(weaponMap->anim_bp.Get()->GetClass());
+				GetMesh()->SetAnimInstanceClass(weaponMap->anim_bp.Get()->GetAnimBlueprintGeneratedClass());
 		}
 		else
 		{

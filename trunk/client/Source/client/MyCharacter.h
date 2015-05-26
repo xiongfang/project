@@ -98,7 +98,7 @@ public:
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	FName main_weapon();
+	FName main_weapon_map();
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Equip(int32 slot, FName id);
@@ -112,6 +112,7 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		int32 weapon_state;  
 
+	UFUNCTION(Category = Logic, BlueprintCallable)
 	void UpdateAnimBP();
 
 	//UFUNCTION(Category = Logic,BlueprintCallable)
