@@ -76,7 +76,7 @@ Fconfig_equip* UMyGameSingleton::FindEquip(FName itemId)
 	return NULL;
 }
 
-Fconfig_anim_group* UMyGameSingleton::FindAnimGroup(FName id)
-{
-	return config_anim_group->FindRow<Fconfig_anim_group>(id, ContextString);
-}
+//Fconfig_anim_group* UMyGameSingleton::FindAnimGroup(FName id)
+//{
+//	return config_anim_group->FindRow<Fconfig_anim_group>(id, ContextString);
+//}

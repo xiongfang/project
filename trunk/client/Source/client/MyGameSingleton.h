@@ -10,7 +10,7 @@ struct Fconfig_weapon_map;
 struct Fconfig_race;
 struct Fconfig_item;
 struct Fconfig_equip;
-struct Fconfig_anim_group;
+//struct Fconfig_anim_group;
 /**
  * 
  */
@@ -36,8 +36,8 @@ public:
 	UDataTable* config_item;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_equip;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* config_anim_group;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UDataTable* config_anim_group;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_armor_map;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -51,5 +51,5 @@ public:
 	Fconfig_race* FindRace(FName raceId);
 	Fconfig_item* FindItem(FName itemId);
 	Fconfig_equip* FindEquip(FName itemId);
-	Fconfig_anim_group* FindAnimGroup(FName id);
+	//Fconfig_anim_group* FindAnimGroup(FName id);
 };

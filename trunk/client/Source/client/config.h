@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#include "GameFramework/Character.h"
 #include "config.generated.h"
 /**
  * 
@@ -67,15 +68,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 sex;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName anim_group;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<USkeletalMesh> default_head;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<USkeletalMesh> default_body;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<USkeletalMesh> default_hand;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<USkeletalMesh> default_feet;
+		TSubclassOf<ACharacter> character;
 };
 
 USTRUCT(BlueprintType)
@@ -115,34 +108,6 @@ public:
 };
 
 
-
-USTRUCT(BlueprintType)
-struct CLIENT_API Fconfig_anim_group : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UBlendSpace> movement;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> block_hit;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> block_idle;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> block_bash;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> jump_start;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> jump_fall;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> jump_land;
-
-
-};
-
-
-
-
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_armor_map : public FTableRowBase
 {
@@ -156,7 +121,8 @@ public:
 		TAssetPtr<USkeletalMesh> append_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<USkeletalMesh> append_2;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 replace;
 };
 
 
@@ -168,21 +134,26 @@ struct CLIENT_API Fconfig_weapon_map : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 valid;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName anim_group;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	FName anim_group;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> model;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString slot;
+		FString slot_equip;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString slot_unequip;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> append_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString slot1;
-		
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> open_weapon;
+		TAssetPtr<UAnimBlueprint> anim_bp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> close_weapon;
+		TAssetPtr<UAnimMontage> anim_equip;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> anim_unequip;
 };
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_skill : public FTableRowBase

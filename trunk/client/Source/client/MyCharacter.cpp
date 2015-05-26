@@ -36,7 +36,6 @@ AMyCharacter::AMyCharacter()
 		Head->AttachParent = GetMesh();
 		Head->SetMasterPoseComponent(GetMesh());
 
-
 		//Components.Add(Body);
 	}
 
@@ -56,9 +55,6 @@ AMyCharacter::AMyCharacter()
 		// Mesh acts as the head, as well as the parent for both animation and attachment.
 		Body->AttachParent = GetMesh();
 		Body->SetMasterPoseComponent(GetMesh());
-
-		
-		//Components.Add(Body);
 	}
 
 	Hand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HandComponent"));
@@ -77,8 +73,6 @@ AMyCharacter::AMyCharacter()
 		// Mesh acts as the head, as well as the parent for both animation and attachment.
 		Hand->AttachParent = GetMesh();
 		Hand->SetMasterPoseComponent(GetMesh());
-
-		//Components.Add(Legs);
 	}
 
 	Feet = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FeetComponent"));
@@ -97,8 +91,6 @@ AMyCharacter::AMyCharacter()
 		// Mesh acts as the head, as well as the parent for both animation and attachment.
 		Feet->AttachParent = GetMesh();
 		Feet->SetMasterPoseComponent(GetMesh());
-
-		//Components.Add(Legs);
 	}
 
 
@@ -122,16 +114,29 @@ AMyCharacter::AMyCharacter()
 	sh_append = NULL;
 
 	weapon_state = 0;
+
+	DefaultAnimBP = NULL;
+	DefaultHead = NULL;
+	DefaultBody = NULL;
+	DefaultHand = NULL;
+	DefaultFeet = NULL;
 }
 
+void AMyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	DefaultAnimBP = GetMesh()->GetAnimInstance()->GetClass();
+	DefaultHead = GetMesh()->SkeletalMesh;
+	DefaultBody = Body->SkeletalMesh;
+	DefaultHand = Hand->SkeletalMesh;
+	DefaultFeet = Feet->SkeletalMesh;
+
+}
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
+	
 	Super::BeginPlay();
-
-	//最多6件装备
-	//equips.Init(0, 6);
-	//items.Init(0, UMyGameSingleton::Get().config_item->RowMap.Num());
 }
 
 // Called every frame
@@ -278,11 +283,13 @@ void AMyCharacter::Equip(int32 slot,FName id)
 	
 
 	UpdateMesh();
-
-	UpdateAnimGroup();
+	UpdateAnimBP();
 }
 
-
+FName AMyCharacter::main_weapon()
+{
+	return equips[Fconfig_equip::MainHand];
+}
 
 void AMyCharacter::UpdateMesh()
 {
@@ -369,11 +376,11 @@ void AMyCharacter::UpdateMesh()
 						mh_weapon = actor_weapon;
 					}
 
-					const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot);
+					const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot_equip);
 					if (sc != NULL)
 						sc->AttachActor(mh_weapon, GetMesh());
 					else
-						TRACE("sc == NULL  %s ", *weapon->slot);
+						TRACE("sc == NULL  %s ", *weapon->slot_equip);
 
 					//附件
 					staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
@@ -419,11 +426,11 @@ void AMyCharacter::UpdateMesh()
 						sh_weapon = actor_weapon;
 					}
 
-					const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot);
+					const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot_equip);
 					if (sc != NULL)
 						sc->AttachActor(sh_weapon, GetMesh());
 					else
-						TRACE("sc == NULL  %s ", *weapon->slot);
+						TRACE("sc == NULL  %s ", *weapon->slot_equip);
 
 					//附件
 					staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
@@ -453,20 +460,19 @@ void AMyCharacter::UpdateMesh()
 			{
 			case Fconfig_equip::Head:
 			{
-				UObject* data = race_data->default_head.ToStringReference().TryLoad();
-				GetMesh()->SetSkeletalMesh(Cast<USkeletalMesh>(data));
+				GetMesh()->SetSkeletalMesh(DefaultHead);
 				Head->SetSkeletalMesh(NULL);
 			}
 
 				break;
 			case Fconfig_equip::Body:
-				Body->SetSkeletalMesh(Cast<USkeletalMesh>(race_data->default_body.ToStringReference().TryLoad()));
+				Body->SetSkeletalMesh(DefaultBody);
 				break;
 			case Fconfig_equip::Hand:
-				Hand->SetSkeletalMesh(Cast<USkeletalMesh>(race_data->default_hand.ToStringReference().TryLoad()));
+				Hand->SetSkeletalMesh(DefaultHand);
 				break;
 			case Fconfig_equip::Feet:
-				Feet->SetSkeletalMesh(Cast<USkeletalMesh>(race_data->default_feet.ToStringReference().TryLoad()));
+				Feet->SetSkeletalMesh(DefaultFeet);
 				break;
 			case Fconfig_equip::MainHand:
 				//case EquipPos::RightHand:
@@ -520,11 +526,11 @@ void AMyCharacter::OpenWeapon()
 			if (mh_weapon != NULL)
 			{
 				mh_weapon->DetachRootComponentFromParent();
-				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot);
+				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot_equip);
 				if (sc != NULL)
 					sc->AttachActor(mh_weapon, GetMesh());
 				else
-					TRACE("sc == NULL  %s ", *weapon->slot);
+					TRACE("sc == NULL  %s ", *weapon->slot_equip);
 
 			}
 		}
@@ -537,17 +543,17 @@ void AMyCharacter::OpenWeapon()
 			if (sh_weapon != NULL)
 			{
 				sh_weapon->DetachRootComponentFromParent();
-				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot);
+				const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName(*weapon->slot_equip);
 				if (sc != NULL)
 					sc->AttachActor(sh_weapon, GetMesh());
 				else
-					TRACE("sc == NULL  %s ", *weapon->slot);
+					TRACE("sc == NULL  %s ", *weapon->slot_equip);
 
 			}
 		}
 	}
 
-	UpdateAnimGroup();
+	UpdateAnimBP();
 }
 
 void AMyCharacter::CloseWeapon()
@@ -591,59 +597,37 @@ void AMyCharacter::CloseWeapon()
 		}
 	}
 
-	UpdateAnimGroup();
+	UpdateAnimBP();
 }
 
 
-void AMyCharacter::UpdateAnimGroup()
+void AMyCharacter::UpdateAnimBP()
 {
 	if (weapon_state == 0)
 	{
-		Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
-		anim_group = race_data->anim_group;
+		GetMesh()->SetAnimInstanceClass(DefaultAnimBP);
 	}
 	else
 	{
 		if (!equips[Fconfig_equip::MainHand].IsNone())
 		{
 			Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
-			anim_group = weaponMap->anim_group;
+			
+			if (weaponMap->anim_equip.Get() == NULL)
+				weaponMap->anim_equip.ToStringReference().TryLoad();
+			if (weaponMap->anim_unequip.Get() == NULL)
+				weaponMap->anim_unequip.ToStringReference().TryLoad();
+			if (weaponMap->anim_bp.Get() == NULL)
+				weaponMap->anim_bp.ToStringReference().TryLoad();
+
+			if (weaponMap->anim_bp.Get() != NULL)
+				GetMesh()->SetAnimInstanceClass(weaponMap->anim_bp.Get()->GetClass());
 		}
 		else
 		{
-			Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
-			anim_group = race_data->anim_group;
+			GetMesh()->SetAnimInstanceClass(DefaultAnimBP);
 		}
 	}
-	
-
-	Fconfig_anim_group* ag = UMyGameSingleton::Get().FindAnimGroup(anim_group);
-	if (ag != NULL)
-	{
-		if (ag->movement.Get() == NULL)
-			ag->movement.ToStringReference().TryLoad();
-		if (ag->block_bash.Get() == NULL)
-			ag->block_bash.ToStringReference().TryLoad();
-		if (ag->block_hit.Get() == NULL)
-			ag->block_hit.ToStringReference().TryLoad();
-		if (ag->block_idle.Get() == NULL)
-			ag->block_idle.ToStringReference().TryLoad();
-		if (ag->jump_fall.Get() == NULL)
-			ag->jump_fall.ToStringReference().TryLoad();
-		if (ag->jump_land.Get() == NULL)
-			ag->jump_land.ToStringReference().TryLoad();
-		if (ag->jump_start.Get() == NULL)
-			ag->jump_start.ToStringReference().TryLoad();
-		if (ag->open_weapon.Get() == NULL)
-			ag->open_weapon.ToStringReference().TryLoad();
-		if (ag->close_weapon.Get() == NULL)
-			ag->close_weapon.ToStringReference().TryLoad();
-	}
-	else
-	{
-		TRACE("Invalid Anim Group %s", *anim_group.ToString());
-	}
-
 }
 
 

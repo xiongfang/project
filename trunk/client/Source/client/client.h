@@ -11,7 +11,7 @@
         : TEXT("[Standalone] "))
 
 #if _MSC_VER
-#define FUNC_NAME    TEXT(__FUNCTION__)
+#define FUNC_NAME    __FUNCTION__
 #else // FIXME - GCC?
 #define FUNC_NAME    TEXT(__func__)
 #endif

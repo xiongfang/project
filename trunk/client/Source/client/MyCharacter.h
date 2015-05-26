@@ -7,7 +7,6 @@
 #include "MyCharacter.generated.h"
 
 
-
 UCLASS()
 class CLIENT_API AMyCharacter : public ACharacter
 {
@@ -26,14 +25,27 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
+	virtual void PostInitializeComponents() override;
+
+	UPROPERTY()
+	USkeletalMesh* DefaultHead;
+	UPROPERTY()
+	USkeletalMesh* DefaultBody;
+	UPROPERTY()
+	USkeletalMesh* DefaultHand;
+	UPROPERTY()
+	USkeletalMesh* DefaultFeet;
+
+	UPROPERTY(Category = Anim, EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAnimInstance> DefaultAnimBP;
 	
+
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Head;
 
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Body;
 	
-
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Hand;
 
@@ -64,34 +76,29 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName race;
 
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void Reset();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		int32 maxhp();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		int32 patk();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		int32 matk();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		int32 pdef();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		int32 mdef();
+
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	TArray<FName> equips;
 
 	TMap<FName,int32> items;
 
-	//UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
-	//TArray<FName> sockets;
-
-	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
-	FName anim_group;
-
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	FName main_weapon;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void Reset();
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 maxhp();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 patk();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 matk();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 pdef();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 mdef();
-
+	FName main_weapon();
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Equip(int32 slot, FName id);
@@ -105,12 +112,11 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		int32 weapon_state;  
 
+	void UpdateAnimBP();
 
 	//UFUNCTION(Category = Logic,BlueprintCallable)
 	void UpdateMesh();
-
-	//UFUNCTION(Category = Logic, BlueprintCallable)
-	void UpdateAnimGroup();
+	//void LoadWeaponAnimations();
 
 
 	//µÀ¾ß
