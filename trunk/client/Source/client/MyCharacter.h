@@ -47,7 +47,7 @@ public:
 	AStaticMeshActor* mh_append;
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AStaticMeshActor* sh_weapon;
+	AActor* sh_weapon;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	AStaticMeshActor* sh_append;
 	
