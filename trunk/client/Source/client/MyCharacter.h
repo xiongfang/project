@@ -8,6 +8,7 @@
 
 
 
+
 UCLASS()
 class CLIENT_API AMyCharacter : public ACharacter
 {
@@ -72,11 +73,7 @@ public:
 	//UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
 	//TArray<FName> sockets;
 
-	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
-	FName anim_group;
-
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	FName main_weapon;
+	
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Reset();
@@ -96,10 +93,24 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Equip(int32 slot, FName id);
 	
+
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		FName anim_group;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimMontage> anim_openweapon;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimMontage> anim_closeweapon;
+
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void OpenWeapon();
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void CloseWeapon();
+
+		TAssetPtr<UAnimMontage> Anim_OpenWeapon();
+		TAssetPtr<UAnimMontage> Anim_CloseWeapon();
+
+		FName main_weapon();
 
 	//0 未装备，1装备
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)

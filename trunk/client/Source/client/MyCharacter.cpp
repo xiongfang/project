@@ -608,6 +608,11 @@ void AMyCharacter::UpdateAnimGroup()
 		{
 			Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
 			anim_group = weaponMap->anim_group;
+
+			if (weaponMap->open_weapon.Get() == NULL)
+				weaponMap->open_weapon.ToStringReference().TryLoad();
+			if (weaponMap->close_weapon.Get() == NULL)
+				weaponMap->close_weapon.ToStringReference().TryLoad();
 		}
 		else
 		{
@@ -616,6 +621,7 @@ void AMyCharacter::UpdateAnimGroup()
 		}
 	}
 	
+	//TRACE("ag %s ,weaponstate %d", *anim_group.ToString(), weapon_state);
 
 	Fconfig_anim_group* ag = UMyGameSingleton::Get().FindAnimGroup(anim_group);
 	if (ag != NULL)
@@ -634,18 +640,51 @@ void AMyCharacter::UpdateAnimGroup()
 			ag->jump_land.ToStringReference().TryLoad();
 		if (ag->jump_start.Get() == NULL)
 			ag->jump_start.ToStringReference().TryLoad();
-		if (ag->open_weapon.Get() == NULL)
-			ag->open_weapon.ToStringReference().TryLoad();
-		if (ag->close_weapon.Get() == NULL)
-			ag->close_weapon.ToStringReference().TryLoad();
+
 	}
 	else
 	{
 		TRACE("Invalid Anim Group %s", *anim_group.ToString());
 	}
 
+
+	anim_openweapon = Anim_OpenWeapon();
+	anim_closeweapon = Anim_CloseWeapon();
 }
 
+FName AMyCharacter::main_weapon()
+{
+	return equips[Fconfig_equip::MainHand];
+}
+
+TAssetPtr<UAnimMontage> AMyCharacter::Anim_OpenWeapon()
+{
+	FName mw = main_weapon();
+	if (!mw.IsNone())
+	{
+		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
+		//anim_group = weaponMap->anim_group;
+
+		if (weaponMap->open_weapon.Get() == NULL)
+			weaponMap->open_weapon.ToStringReference().TryLoad();
+		return weaponMap->open_weapon;
+	}
+	return NULL;
+}
+TAssetPtr<UAnimMontage> AMyCharacter::Anim_CloseWeapon()
+{
+	FName mw = main_weapon();
+	if (!mw.IsNone())
+	{
+		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(equips[Fconfig_equip::MainHand], race);
+		//anim_group = weaponMap->anim_group;
+
+		if (weaponMap->close_weapon.Get() == NULL)
+			weaponMap->close_weapon.ToStringReference().TryLoad();
+		return weaponMap->close_weapon;
+	}
+	return NULL;
+}
 
 
 int32 AMyCharacter::ItemAdd(FName id, int32 count)
