@@ -13,7 +13,7 @@
 #if _MSC_VER
 #define FUNC_NAME    TEXT(__FUNCTION__)
 #else // FIXME - GCC?
-#define FUNC_NAME    TEXT(__func__)
+#define FUNC_NAME    TEXT("")
 #endif
 
 #define TRACE(Format, ...) \
