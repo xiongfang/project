@@ -7,6 +7,8 @@
 #include "MyCharacter.generated.h"
 
 
+
+
 UCLASS()
 class CLIENT_API AMyCharacter : public ACharacter
 {
@@ -25,27 +27,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	virtual void PostInitializeComponents() override;
-
-	UPROPERTY()
-	USkeletalMesh* DefaultHead;
-	UPROPERTY()
-	USkeletalMesh* DefaultBody;
-	UPROPERTY()
-	USkeletalMesh* DefaultHand;
-	UPROPERTY()
-	USkeletalMesh* DefaultFeet;
-
-	UPROPERTY(Category = Anim, EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UAnimInstance> DefaultAnimBP;
 	
-
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Head;
 
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Body;
 	
+
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Hand;
 
@@ -58,7 +47,7 @@ public:
 	AStaticMeshActor* mh_append;
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AStaticMeshActor* sh_weapon;
+	AActor* sh_weapon;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	AStaticMeshActor* sh_append;
 	
@@ -76,48 +65,63 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName race;
 
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void Reset();
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		int32 maxhp();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		int32 patk();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		int32 matk();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		int32 pdef();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		int32 mdef();
-
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	TArray<FName> equips;
 
 	TMap<FName,int32> items;
 
+	//UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
+	//TArray<FName> sockets;
+
+	
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	FName main_weapon_map();
+	void Reset();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	int32 maxhp();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	int32 patk();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	int32 matk();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	int32 pdef();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	int32 mdef();
+
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Equip(int32 slot, FName id);
 	
+
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		FName anim_group;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimMontage> anim_openweapon;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimMontage> anim_closeweapon;
+
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void OpenWeapon();
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void CloseWeapon();
 
+		TAssetPtr<UAnimMontage> Anim_OpenWeapon();
+		TAssetPtr<UAnimMontage> Anim_CloseWeapon();
+
+		FName main_weapon();
+
 	//0 未装备，1装备
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		int32 weapon_state;  
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	void UpdateAnimBP();
 
 	//UFUNCTION(Category = Logic,BlueprintCallable)
 	void UpdateMesh();
-	//void LoadWeaponAnimations();
+
+	//UFUNCTION(Category = Logic, BlueprintCallable)
+	void UpdateAnimGroup();
 
 
 	//道具
