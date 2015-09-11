@@ -28,7 +28,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	FName DefaultAnimGroup;
+	//FName DefaultAnimGroup;
 
 	UPROPERTY()
 	TArray<USkeletalMesh*> DefaultBodyMeshes;
@@ -101,18 +101,19 @@ public:
 	void Equip(int32 slot, FName id);
 	
 
+	//当前的动画状态
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		FName anim_group;
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//	TAssetPtr<UAnimMontage> anim_openweapon;
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//	TAssetPtr<UAnimMontage> anim_closeweapon;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimMontage> anim_openweapon;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimMontage> anim_closeweapon;
 
 
-	//UFUNCTION(Category = Logic, BlueprintCallable)
-	//	void OpenWeapon();
-	//UFUNCTION(Category = Logic, BlueprintCallable)
-	//	void CloseWeapon();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool IsWeaponOpen();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void ChangeWeaponState();
 
 	//	TAssetPtr<UAnimMontage> Anim_OpenWeapon();
 	//	TAssetPtr<UAnimMontage> Anim_CloseWeapon();

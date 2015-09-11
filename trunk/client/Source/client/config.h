@@ -63,6 +63,8 @@ public:
 		int32 sex;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<ACharacter> character;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName anim_group;
 };
 
 USTRUCT(BlueprintType)

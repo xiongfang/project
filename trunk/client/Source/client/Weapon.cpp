@@ -127,11 +127,11 @@ void UWeaponSword::Close()
 		if (mh_weapon != NULL)
 		{
 			mh_weapon->DetachRootComponentFromParent();
-			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSwordSlotName);
+			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponAppendSlotName);
 			if (sc != NULL)
 				sc->AttachActor(mh_weapon, Owner->GetMesh());
 			else
-				TRACE("sc == NULL  %s ", WeaponSwordSlotName);
+				TRACE("sc == NULL  %s ", WeaponAppendSlotName);
 	
 		}
 	}
@@ -238,11 +238,11 @@ void UWeaponDoubleHand::Close()
 		if (mh_weapon != NULL)
 		{
 			mh_weapon->DetachRootComponentFromParent();
-			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(DH_SlotName);
+			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(DH_AppendSlotName);
 			if (sc != NULL)
 				sc->AttachActor(mh_weapon, Owner->GetMesh());
 			else
-				TRACE("sc == NULL  %s ", DH_SlotName);
+				TRACE("sc == NULL  %s ", DH_AppendSlotName);
 
 		}
 	}
