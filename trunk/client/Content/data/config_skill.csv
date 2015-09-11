@@ -1,5 +1,0 @@
-Name,valid,show_name,description,cd,patk_percent,patk_plus,matk_percent,matk_plus,target_maxhp_percent,mp_cost,sp_cost,interrupt,hit_recover
-"skill_1","1","左劈斩","","2","1.2","0","0","0","0","0","0","0","0"
-"skill_2","1","右劈斩","","2","1.2","0","0","0","0","0","0","0","0"
-"skill_3","1","重击","","4","2","0","0","0","0","0","50","0","0"
-"skill_4","0","","","0","0","0","0","0","0","0","0","0","0"

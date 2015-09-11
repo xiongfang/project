@@ -11,9 +11,6 @@ struct CLIENT_API Fconfig_item : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName show_name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -58,9 +55,6 @@ struct CLIENT_API Fconfig_race : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString show_name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -76,9 +70,6 @@ struct CLIENT_API Fconfig_equip : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 slot;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -95,6 +86,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 double_hand;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 weapon_type;
+
 	enum EquipPos
 	{
 		Head,
@@ -105,6 +99,14 @@ public:
 		SecondHand
 	};
 
+	enum WeaponType
+	{
+		Sword,
+		LongSword,
+		Bow,
+		Shield,
+		Count
+	};
 };
 
 
@@ -113,8 +115,6 @@ struct CLIENT_API Fconfig_armor_map : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<USkeletalMesh> model;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -132,36 +132,28 @@ struct CLIENT_API Fconfig_weapon_map : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	FName anim_group;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> model;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString slot_equip;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString slot_unequip;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> append_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString slot1;
+		TAssetPtr<UStaticMesh> append_2;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimBlueprint> anim_bp;
+		FName anim_group;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> anim_equip;
+		TAssetPtr<UAnimMontage> open_weapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> anim_unequip;
+		TAssetPtr<UAnimMontage> close_weapon;
 };
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_skill : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName show_name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -206,3 +198,69 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimMontage> hit_anim;
 };
+USTRUCT(BlueprintType)
+struct CLIENT_API Fconfig_anim_group : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UBlendSpace> movement;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> block_hit;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> block_idle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimMontage> block_bash;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> jump_start;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> jump_fall;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> jump_land;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> staggerbacksmall;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> staggerbacklarge;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	TAssetPtr<UAnimSequence> staggerbacklargest;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> staggerforwardsmall;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> staggerforwardlarge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> staggerforwardlargest;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> attack_left;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> attack_right;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> attack_power;
+};
+//
+//USTRUCT(BlueprintType)
+//struct CLIENT_API Fconfig_anim_group : public FTableRowBase
+//{
+//	GENERATED_USTRUCT_BODY()
+//
+//public:
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//		TAssetPtr<UAnimSequence>	movement;
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//		TAssetPtr<UAnimMontage>	jump_start;
+//		jump_fall;
+//	jump_land;
+//	block_hit;
+//	block_idle;
+//	block_bash;
+//	staggerbacksmall;
+//	staggerbacklarge;
+//	staggerforwardlargest;
+//	staggerforwardsmall;
+//	staggerforwardlarge;
+//	staggerforwardlargest;
+//	attack_left;
+//	attack_right;
+//	attack_power;
+//
+//};

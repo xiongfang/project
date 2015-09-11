@@ -8,6 +8,7 @@
 
 
 
+class UWeaponBase;
 
 UCLASS()
 class CLIENT_API AMyCharacter : public ACharacter
@@ -27,29 +28,35 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	
+	FName DefaultAnimGroup;
+
+	UPROPERTY()
+	TArray<USkeletalMesh*> DefaultBodyMeshes;
+
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* Head;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+		USkeletalMeshComponent* Body;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+		USkeletalMeshComponent* Hand;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+		USkeletalMeshComponent* Feet;
+
+	UPROPERTY()
+	TArray<USkeletalMeshComponent*> Bodys;
 
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	USkeletalMeshComponent* Body;
-	
+	TArray<UWeaponBase*> Weapons;
 
-	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	USkeletalMeshComponent* Hand;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//AActor* mh_weapon;  //静态网格模型或者骨骼网格模型
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//AStaticMeshActor* mh_append;
 
-	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	USkeletalMeshComponent* Feet;
-
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AActor* mh_weapon;  //静态网格模型或者骨骼网格模型
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AStaticMeshActor* mh_append;
-
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AActor* sh_weapon;
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AStaticMeshActor* sh_append;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//AActor* sh_weapon;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//AStaticMeshActor* sh_append;
 	
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AStaticMeshActor> templateSword;
@@ -96,31 +103,31 @@ public:
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		FName anim_group;
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		TAssetPtr<UAnimMontage> anim_openweapon;
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		TAssetPtr<UAnimMontage> anim_closeweapon;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//	TAssetPtr<UAnimMontage> anim_openweapon;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//	TAssetPtr<UAnimMontage> anim_closeweapon;
 
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void OpenWeapon();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void CloseWeapon();
-
-		TAssetPtr<UAnimMontage> Anim_OpenWeapon();
-		TAssetPtr<UAnimMontage> Anim_CloseWeapon();
-
-		FName main_weapon();
-
-	//0 未装备，1装备
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		int32 weapon_state;  
-
-
-	//UFUNCTION(Category = Logic,BlueprintCallable)
-	void UpdateMesh();
 
 	//UFUNCTION(Category = Logic, BlueprintCallable)
+	//	void OpenWeapon();
+	//UFUNCTION(Category = Logic, BlueprintCallable)
+	//	void CloseWeapon();
+
+	//	TAssetPtr<UAnimMontage> Anim_OpenWeapon();
+	//	TAssetPtr<UAnimMontage> Anim_CloseWeapon();
+
+	//	FName main_weapon();
+
+	////0 未装备，1装备
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	//	int32 weapon_state;  
+
+
+	////UFUNCTION(Category = Logic,BlueprintCallable)
+	void UpdateMesh();
+
+	////UFUNCTION(Category = Logic, BlueprintCallable)
 	void UpdateAnimGroup();
 
 

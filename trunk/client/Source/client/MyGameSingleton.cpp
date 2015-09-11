@@ -22,15 +22,7 @@ UMyGameSingleton::~UMyGameSingleton()
 UMyGameSingleton& UMyGameSingleton::Get()
 {
 	UMyGameSingleton *Singleton = Cast<UMyGameSingleton>(GEngine->GameSingleton);
-
-	if (Singleton)
-	{
-		return *Singleton;
-	}
-	else
-	{
-		return *ConstructObject<UMyGameSingleton>(UMyGameSingleton::StaticClass()); // never calls this
-	}
+	return *Singleton;
 }
 
 // OVERRIDE from FTICKER TICK (Preventing Error 2259)
@@ -48,14 +40,14 @@ FName UMyGameSingleton::MakeKey(FName key1, FName key2)
 Fconfig_armor_map* UMyGameSingleton::FindArmorMap(FName equipId, FName race)
 {
 
-	return config_armor_map->FindRow<Fconfig_armor_map>(MakeKey(equipId, race),ContextString);
+	return config_armor_map->FindRow<Fconfig_armor_map>(MakeKey(race,equipId), ContextString);
 	
 }
 
 
 Fconfig_weapon_map*  UMyGameSingleton::FindWeaponMap(FName equipId, FName race)
 {
-	return config_weapon_map->FindRow<Fconfig_weapon_map>(MakeKey(equipId, race), ContextString);
+	return config_weapon_map->FindRow<Fconfig_weapon_map>(MakeKey(race,equipId), ContextString);
 }
 
 Fconfig_race* UMyGameSingleton::FindRace(FName raceId)
@@ -76,7 +68,7 @@ Fconfig_equip* UMyGameSingleton::FindEquip(FName itemId)
 	return NULL;
 }
 
-//Fconfig_anim_group* UMyGameSingleton::FindAnimGroup(FName id)
-//{
-//	return config_anim_group->FindRow<Fconfig_anim_group>(id, ContextString);
-//}
+Fconfig_anim_group* UMyGameSingleton::FindAnimGroup(FName id)
+{
+	return config_anim_group->FindRow<Fconfig_anim_group>(id, ContextString);
+}
