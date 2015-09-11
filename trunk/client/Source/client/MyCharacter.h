@@ -145,7 +145,8 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		bool ItemEnough(FName id, int32 count);
 
-
+	UFUNCTION()
+	void OnActorOverlap(AActor* OtherActor);
 };
 
 

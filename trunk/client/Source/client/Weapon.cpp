@@ -44,13 +44,13 @@ void UWeaponSword::OnEquip(FName id)
 	{
 						
 		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->model.ToStringReference().TryLoad());
-		if (staticMesh != NULL)
+		if (mh_weapon == NULL)
 		{
-			AStaticMeshActor* actor_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*Owner->templateSword));
-			actor_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
-			mh_weapon = actor_weapon;
+			mh_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*Owner->templateSword));
+			mh_weapon->SetMobility(EComponentMobility::Movable);
 		}
-		
+		mh_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
+
 		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSwordSlotName);
 		if (sc != NULL)
 			sc->AttachActor(mh_weapon, Owner->GetMesh());
@@ -112,6 +112,9 @@ void UWeaponSword::Open()
 			else
 				TRACE("sc == NULL  %s ", WeaponSwordSlotName);
 	
+			//TScriptDelegate<FWeakObjectPtr> BindObject;
+			//BindObject.BindUFunction(Owner, TEXT("OnActorOverlap"));
+			//mh_weapon->OnActorBeginOverlap.Add(BindObject);
 		}
 	}
 
@@ -155,12 +158,12 @@ void UWeaponDoubleHand::OnEquip(FName id)
 	{
 
 		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->model.ToStringReference().TryLoad());
-		if (staticMesh != NULL)
+		if (mh_weapon == NULL)
 		{
-			AStaticMeshActor* actor_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*Owner->templateSword));
-			actor_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
-			mh_weapon = actor_weapon;
+			mh_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*Owner->templateSword));
+			mh_weapon->SetMobility(EComponentMobility::Movable);
 		}
+		mh_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
 
 		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(DH_SlotName);
 		if (sc != NULL)

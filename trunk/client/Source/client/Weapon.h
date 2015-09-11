@@ -35,7 +35,7 @@ class CLIENT_API UWeaponSword : public UWeaponBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AActor* mh_weapon;  //网格模型
+	AStaticMeshActor* mh_weapon;  //网格模型
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	AStaticMeshActor* mh_append; //剑鞘
 
@@ -53,7 +53,7 @@ class CLIENT_API UWeaponDoubleHand : public UWeaponBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		AActor* mh_weapon;  //网格模型
+		AStaticMeshActor* mh_weapon;  //网格模型
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		AStaticMeshActor* mh_append; //剑鞘
 
