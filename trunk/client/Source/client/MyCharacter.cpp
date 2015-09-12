@@ -126,9 +126,9 @@ void AMyCharacter::BeginPlay()
 	//UE_LOG(client, Log, TEXT("Begin Play"));
 
 	Super::BeginPlay();
-	//最多6件装备
-	//equips.Init(0, 6);
-	//items.Init(0, UMyGameSingleton::Get().config_item->RowMap.Num());
+
+	OnActorBeginOverlap.AddDynamic(this, &AMyCharacter::OnActorOverlap);
+
 }
 
 // Called every frame
@@ -720,4 +720,20 @@ bool AMyCharacter::ItemEnough(FName id, int32 count)
 	if (!items.Contains(id))
 		items.Add(id);
 	return items[id] >= count;
+}
+
+
+void AMyCharacter::OnActorOverlap(AActor* OtherActor)
+{
+	
+	if (OtherActor->GetAttachParentActor() != this)
+		TRACE("OnActorOverlap %s", *OtherActor->GetName());
+}
+
+
+void AMyCharacter::Attack()
+{
+	//for (int32 i = 0; i < Weapons.Num(); i++)
+	//	if (Weapons[i] != NULL && Weapons[i]->IsOpen())
+	//		Weapons[i]->Attack();
 }

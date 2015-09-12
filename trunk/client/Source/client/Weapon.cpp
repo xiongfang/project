@@ -19,7 +19,7 @@ UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, int32 type)
 		break;
 	case Fconfig_equip::WeaponType::LongSword:
 	{
-		UWeaponBase* Base = NewObject<UWeaponDoubleHand>(Parent, TEXT("DoubleWeaponSword"));
+		UWeaponBase* Base = NewObject<UWeaponLongSword>(Parent, TEXT("WeaponLongSword"));
 		Base->Owner = Parent;
 		Base->RegisterComponent();
 		return Base;
@@ -32,9 +32,11 @@ UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, int32 type)
 }
 
 
-#define WeaponSwordSlotName TEXT("WEAPON")
-#define WeaponAppendSlotName  TEXT("WeaponSword")
-
+UWeaponSword::UWeaponSword()
+{
+	WeaponSlotName = TEXT("WEAPON");
+	AppendSlotName = TEXT("WeaponSword");
+}
 void UWeaponSword::OnEquip(FName id)
 {
 	Super::OnEquip(id);
@@ -51,11 +53,11 @@ void UWeaponSword::OnEquip(FName id)
 		}
 		mh_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
 
-		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSwordSlotName);
+		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
 		if (sc != NULL)
 			sc->AttachActor(mh_weapon, Owner->GetMesh());
 		else
-			TRACE("sc == NULL  %s ", WeaponSwordSlotName);
+			TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
 	
 		//附件
 		staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
@@ -66,13 +68,18 @@ void UWeaponSword::OnEquip(FName id)
 		}
 		mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
 	
-		sc = Owner->GetMesh()->GetSocketByName(WeaponAppendSlotName);
+		sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
 		if (sc != NULL)
 			sc->AttachActor(mh_append, Owner->GetMesh());
 		else
-			TRACE("sc == NULL  %s ", WeaponAppendSlotName);
+			TRACE("sc == NULL  %s ", *AppendSlotName.ToString());
 
 		_isOpened = true;
+
+		//禁用碰撞
+		UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
+		if (Box != NULL)
+			Box->bGenerateOverlapEvents = false;
 	}
 
 }
@@ -106,15 +113,9 @@ void UWeaponSword::Open()
 		if (mh_weapon != NULL)
 		{
 			mh_weapon->DetachRootComponentFromParent();
-			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSwordSlotName);
+			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
 			if (sc != NULL)
 				sc->AttachActor(mh_weapon, Owner->GetMesh());
-			else
-				TRACE("sc == NULL  %s ", WeaponSwordSlotName);
-	
-			//TScriptDelegate<FWeakObjectPtr> BindObject;
-			//BindObject.BindUFunction(Owner, TEXT("OnActorOverlap"));
-			//mh_weapon->OnActorBeginOverlap.Add(BindObject);
 		}
 	}
 
@@ -130,125 +131,18 @@ void UWeaponSword::Close()
 		if (mh_weapon != NULL)
 		{
 			mh_weapon->DetachRootComponentFromParent();
-			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponAppendSlotName);
+			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
 			if (sc != NULL)
 				sc->AttachActor(mh_weapon, Owner->GetMesh());
-			else
-				TRACE("sc == NULL  %s ", WeaponAppendSlotName);
-	
 		}
 	}
 
 	Super::Close();
 }
 
-#undef WeaponSwordSlotName
-#undef WeaponAppendSlotName
 
-
-#define DH_SlotName TEXT("WEAPON")
-#define DH_AppendSlotName  TEXT("WeaponBack")
-
-void UWeaponDoubleHand::OnEquip(FName id)
+UWeaponLongSword::UWeaponLongSword()
 {
-	Super::OnEquip(id);
-
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race);
-	if (weapon != NULL)
-	{
-
-		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->model.ToStringReference().TryLoad());
-		if (mh_weapon == NULL)
-		{
-			mh_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*Owner->templateSword));
-			mh_weapon->SetMobility(EComponentMobility::Movable);
-		}
-		mh_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
-
-		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(DH_SlotName);
-		if (sc != NULL)
-			sc->AttachActor(mh_weapon, Owner->GetMesh());
-		else
-			TRACE("sc == NULL  %s ", DH_SlotName);
-
-		//附件
-		staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
-		if (mh_append == NULL)
-		{
-			mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-			mh_append->SetMobility(EComponentMobility::Movable);
-		}
-		mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
-
-		sc = Owner->GetMesh()->GetSocketByName(DH_AppendSlotName);
-		if (sc != NULL)
-			sc->AttachActor(mh_append, Owner->GetMesh());
-		else
-			TRACE("sc == NULL  %s ", DH_AppendSlotName);
-
-		_isOpened = true;
-	}
-
-}
-void UWeaponDoubleHand::OnUnEquip()
-{
-	if (mh_weapon != NULL)
-	{
-		mh_weapon->Destroy();
-		mh_weapon = NULL;
-	}
-	if (mh_append != NULL)
-	{
-		mh_append->Destroy();
-		mh_append = NULL;
-	}
-	Super::OnUnEquip();
-
-	this->UnregisterComponent();
-}
-
-
-//拿出
-void UWeaponDoubleHand::Open()
-{
-	Super::Open();
-
-	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
-	if (weapon != NULL)
-	{
-		if (mh_weapon != NULL)
-		{
-			mh_weapon->DetachRootComponentFromParent();
-			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(DH_SlotName);
-			if (sc != NULL)
-				sc->AttachActor(mh_weapon, Owner->GetMesh());
-			else
-				TRACE("sc == NULL  %s ", DH_SlotName);
-
-		}
-	}
-
-
-}
-//收起
-void UWeaponDoubleHand::Close()
-{
-	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
-	if (weapon != NULL)
-	{
-		if (mh_weapon != NULL)
-		{
-			mh_weapon->DetachRootComponentFromParent();
-			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(DH_AppendSlotName);
-			if (sc != NULL)
-				sc->AttachActor(mh_weapon, Owner->GetMesh());
-			else
-				TRACE("sc == NULL  %s ", DH_AppendSlotName);
-
-		}
-	}
-
-	Super::Close();
+	WeaponSlotName = TEXT("WEAPON");
+	AppendSlotName = TEXT("WeaponBack");
 }

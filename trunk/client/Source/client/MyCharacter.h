@@ -115,20 +115,10 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void ChangeWeaponState();
 
-	//	TAssetPtr<UAnimMontage> Anim_OpenWeapon();
-	//	TAssetPtr<UAnimMontage> Anim_CloseWeapon();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	void Attack();
 
-	//	FName main_weapon();
-
-	////0 未装备，1装备
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//	int32 weapon_state;  
-
-
-	////UFUNCTION(Category = Logic,BlueprintCallable)
 	void UpdateMesh();
-
-	////UFUNCTION(Category = Logic, BlueprintCallable)
 	void UpdateAnimGroup();
 
 

@@ -33,7 +33,13 @@ UCLASS()
 class CLIENT_API UWeaponSword : public UWeaponBase
 {
 	GENERATED_BODY()
+
+protected:
+	FName WeaponSlotName;
+	FName AppendSlotName;
 public:
+	UWeaponSword();
+
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	AStaticMeshActor* mh_weapon;  //网格模型
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
@@ -48,19 +54,9 @@ public:
 };
 
 UCLASS()
-class CLIENT_API UWeaponDoubleHand : public UWeaponBase
+class CLIENT_API UWeaponLongSword : public UWeaponSword
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		AStaticMeshActor* mh_weapon;  //网格模型
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		AStaticMeshActor* mh_append; //剑鞘
-
-	virtual void OnEquip(FName id);
-	virtual void OnUnEquip();
-	//拿出
-	virtual void Open();
-	//收起
-	virtual void Close();
+	UWeaponLongSword();
 };

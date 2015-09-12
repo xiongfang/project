@@ -239,30 +239,3 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> attack_power;
 };
-//
-//USTRUCT(BlueprintType)
-//struct CLIENT_API Fconfig_anim_group : public FTableRowBase
-//{
-//	GENERATED_USTRUCT_BODY()
-//
-//public:
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//		TAssetPtr<UAnimSequence>	movement;
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//		TAssetPtr<UAnimMontage>	jump_start;
-//		jump_fall;
-//	jump_land;
-//	block_hit;
-//	block_idle;
-//	block_bash;
-//	staggerbacksmall;
-//	staggerbacklarge;
-//	staggerforwardlargest;
-//	staggerforwardsmall;
-//	staggerforwardlarge;
-//	staggerforwardlargest;
-//	attack_left;
-//	attack_right;
-//	attack_power;
-//
-//};
