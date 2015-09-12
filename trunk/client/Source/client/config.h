@@ -68,10 +68,22 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct CLIENT_API Fconfig_class : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString description;
+};
+
+
+USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_equip : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString class_type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 slot;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -157,6 +169,8 @@ struct CLIENT_API Fconfig_skill : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString class_type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName show_name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
@@ -189,8 +203,6 @@ struct CLIENT_API Fconfig_effect : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 valid;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimMontage> start_self_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
