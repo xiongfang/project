@@ -529,11 +529,8 @@ void AMyCharacter::ChangeWeaponState()
 
 bool AMyCharacter::IsWeaponOpen()
 {
-	for (int32 i = 0; i < Weapons.Num(); i++)
-	{
-		if(Weapons[i]!=NULL && Weapons[i]->IsOpen())
-			return true;
-	}
+	if(Weapons[0]!=NULL && Weapons[0]->IsOpen())
+		return true;
 	return false;
 }
 
@@ -545,31 +542,24 @@ void AMyCharacter::UpdateAnimGroup()
 	anim_openweapon = NULL;
 	anim_closeweapon = NULL;
 
-	for (int i = 0; i < Weapons.Num(); i++)
+	if (Weapons[0] != NULL)
 	{
-		if (Weapons[i] != NULL)
+		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race);
+
+		if (weaponMap->open_weapon.Get() == NULL)
+			weaponMap->open_weapon.ToStringReference().TryLoad();
+		if (weaponMap->close_weapon.Get() == NULL)
+			weaponMap->close_weapon.ToStringReference().TryLoad();
+
+		anim_openweapon = weaponMap->open_weapon;
+		anim_closeweapon = weaponMap->close_weapon;
+			
+		if (Weapons[0]->IsOpen())
 		{
-			Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[i]->GetID(), race);
-
-			if (anim_openweapon == NULL)
-			{
-				if (weaponMap->open_weapon.Get() == NULL)
-					weaponMap->open_weapon.ToStringReference().TryLoad();
-				if (weaponMap->close_weapon.Get() == NULL)
-					weaponMap->close_weapon.ToStringReference().TryLoad();
-
-				anim_openweapon = weaponMap->open_weapon;
-				anim_closeweapon = weaponMap->close_weapon;
-			}
-			if (Weapons[i]->IsOpen())
-			{
-				anim_group = weaponMap->anim_group;
-				break;
-			}
+			anim_group = weaponMap->anim_group;
 		}
 	}
-	
-	
+
 
 	Fconfig_anim_group* ag = UMyGameSingleton::Get().FindAnimGroup(anim_group);
 	if (ag != NULL)
