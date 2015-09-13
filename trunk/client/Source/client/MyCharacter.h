@@ -72,10 +72,12 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
 	TArray<FName> skills;
 
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	void LearnSkill(FName skillId);
 	
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void Reset();
+	void Recover();
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	int32 maxhp();

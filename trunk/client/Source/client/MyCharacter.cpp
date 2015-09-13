@@ -145,7 +145,18 @@ void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompone
 
 }
 
-void AMyCharacter::Reset()
+void AMyCharacter::LearnSkill(FName skillId)
+{
+	if (UMyGameSingleton::Get().FindSkill(skillId) == NULL)
+	{
+		TRACE("无效的技能ID %s", *skillId.ToString());
+		return;
+	}
+	skills.AddUnique(skillId);
+}
+
+
+void AMyCharacter::Recover()
 {
 	hp = maxhp();
 }

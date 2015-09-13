@@ -40,35 +40,40 @@ FName UMyGameSingleton::MakeKey(FName key1, FName key2)
 Fconfig_armor_map* UMyGameSingleton::FindArmorMap(FName equipId, FName race)
 {
 
-	return config_armor_map->FindRow<Fconfig_armor_map>(MakeKey(race,equipId), ContextString);
+	return config_armor_map->FindRow<Fconfig_armor_map>(MakeKey(race,equipId), ContextString,false);
 	
 }
 
 
 Fconfig_weapon_map*  UMyGameSingleton::FindWeaponMap(FName equipId, FName race)
 {
-	return config_weapon_map->FindRow<Fconfig_weapon_map>(MakeKey(race,equipId), ContextString);
+	return config_weapon_map->FindRow<Fconfig_weapon_map>(MakeKey(race, equipId), ContextString, false);
 }
 
 Fconfig_race* UMyGameSingleton::FindRace(FName raceId)
 {
-	return config_race->FindRow<Fconfig_race>(raceId, ContextString);
+	return config_race->FindRow<Fconfig_race>(raceId, ContextString, false);
 }
 Fconfig_item* UMyGameSingleton::FindItem(FName itemId)
 {
-	return config_item->FindRow<Fconfig_item>(itemId, ContextString);
+	return config_item->FindRow<Fconfig_item>(itemId, ContextString, false);
 }
 Fconfig_equip* UMyGameSingleton::FindEquip(FName itemId)
 {
 	Fconfig_item* item = FindItem(itemId);
 	if (item != NULL && item->type == Fconfig_item::Equip)
 	{
-		return config_equip->FindRow<Fconfig_equip>(item->child_key, ContextString);
+		return config_equip->FindRow<Fconfig_equip>(item->child_key, ContextString, false);
 	}
 	return NULL;
 }
 
 Fconfig_anim_group* UMyGameSingleton::FindAnimGroup(FName id)
 {
-	return config_anim_group->FindRow<Fconfig_anim_group>(id, ContextString);
+	return config_anim_group->FindRow<Fconfig_anim_group>(id, ContextString, false);
+}
+
+Fconfig_skill* UMyGameSingleton::FindSkill(FName skillId)
+{
+	return config_skill->FindRow<Fconfig_skill>(skillId, ContextString, false);
 }
