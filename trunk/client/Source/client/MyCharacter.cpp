@@ -116,19 +116,20 @@ AMyCharacter::AMyCharacter()
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
+	//记录默认的身体模型
 	for (int i = 0; i < Bodys.Num(); i++)
 	{
 		DefaultBodyMeshes.Add(Bodys[i]->SkeletalMesh);
 	}
-	
-	//DefaultAnimGroup = GetMesh()->GetAnimInstance()->GetClass()->GetFName();
 
-	//UE_LOG(client, Log, TEXT("Begin Play"));
-
+	//调用蓝图初始化功能
 	Super::BeginPlay();
 
+	//绑定碰撞事件
 	OnActorBeginOverlap.AddDynamic(this, &AMyCharacter::OnActorOverlap);
 
+	//完全回复
+	Recover();
 }
 
 // Called every frame
