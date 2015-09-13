@@ -47,16 +47,6 @@ public:
 
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	TArray<UWeaponBase*> Weapons;
-
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//AActor* mh_weapon;  //静态网格模型或者骨骼网格模型
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//AStaticMeshActor* mh_append;
-
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//AActor* sh_weapon;
-	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	//AStaticMeshActor* sh_append;
 	
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AStaticMeshActor> templateSword;
@@ -71,14 +61,16 @@ public:
 	int32 exp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName race;
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	FName class_type;
 
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	TArray<FName> equips;
 
 	TMap<FName,int32> items;
 
-	//UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
-	//TArray<FName> sockets;
+	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
+	TArray<FName> skills;
 
 	
 
@@ -98,8 +90,11 @@ public:
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void Equip(int32 slot, FName id);
-	
+	void Equip(FName id);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	void UnEquip(int32 slot);
+
+
 
 	//当前的动画状态
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
