@@ -1,4 +1,4 @@
-#include "client.h"
+ï»¿#include "client.h"
 #include "Weapon.h"
 #include "config.h"
 
@@ -59,7 +59,7 @@ void UWeaponSword::OnEquip(FName id)
 		else
 			TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
 	
-		//¸½¼þ
+		//é™„ä»¶
 		staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
 		if (mh_append == NULL)
 		{
@@ -76,7 +76,7 @@ void UWeaponSword::OnEquip(FName id)
 
 		_isOpened = true;
 
-		//½ûÓÃÅö×²
+		//ç¦ç”¨ç¢°æ’ž
 		UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
 		if (Box != NULL)
 			Box->bGenerateOverlapEvents = false;
@@ -101,7 +101,7 @@ void UWeaponSword::OnUnEquip()
 }
 
 
-//ÄÃ³ö
+//æ‹¿å‡º
 void UWeaponSword::Open()
 {
 	Super::Open();
@@ -121,7 +121,7 @@ void UWeaponSword::Open()
 
 
 }
-//ÊÕÆð
+//æ”¶èµ·
 void UWeaponSword::Close()
 {
 	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);

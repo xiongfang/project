@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "client.h"
 #include "MyCharacter.h"
@@ -116,19 +116,19 @@ AMyCharacter::AMyCharacter()
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
-	//¼ÇÂ¼Ä¬ÈÏµÄÉíÌåÄ£ĞÍ
+	//è®°å½•é»˜è®¤çš„èº«ä½“æ¨¡å‹
 	for (int i = 0; i < Bodys.Num(); i++)
 	{
 		DefaultBodyMeshes.Add(Bodys[i]->SkeletalMesh);
 	}
 
-	//µ÷ÓÃÀ¶Í¼³õÊ¼»¯¹¦ÄÜ
+	//è°ƒç”¨è“å›¾åˆå§‹åŒ–åŠŸèƒ½
 	Super::BeginPlay();
 
-	//°ó¶¨Åö×²ÊÂ¼ş
+	//ç»‘å®šç¢°æ’äº‹ä»¶
 	OnActorBeginOverlap.AddDynamic(this, &AMyCharacter::OnActorOverlap);
 
-	//ÍêÈ«»Ø¸´
+	//å®Œå…¨å›å¤
 	Recover();
 }
 
@@ -150,7 +150,7 @@ void AMyCharacter::LearnSkill(FName skillId)
 {
 	if (UMyGameSingleton::Get().FindSkill(skillId) == NULL)
 	{
-		TRACE("ÎŞĞ§µÄ¼¼ÄÜID %s", *skillId.ToString());
+		TRACE("æ— æ•ˆçš„æŠ€èƒ½ID %s", *skillId.ToString());
 		return;
 	}
 	skills.AddUnique(skillId);
@@ -249,7 +249,7 @@ void AMyCharacter::Equip(FName id)
 	Fconfig_equip* item = UMyGameSingleton::Get().FindEquip(id);
 	if (item==NULL)
 	{
-		TRACE("ÎŞĞ§µÄ×°±¸ %s",*id.ToString());
+		TRACE("æ— æ•ˆçš„è£…å¤‡ %s",*id.ToString());
 		return;
 	}
 
