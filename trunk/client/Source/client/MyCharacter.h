@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -98,7 +98,7 @@ public:
 
 
 
-	//µ±Ç°µÄ¶¯»­×´Ì¬
+	//å½“å‰çš„åŠ¨ç”»çŠ¶æ€
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		FName anim_group;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
@@ -119,7 +119,7 @@ public:
 	void UpdateAnimGroup();
 
 
-	//µÀ¾ß
+	//é“å…·
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		int32 ItemAdd(FName id, int32 count);
 
