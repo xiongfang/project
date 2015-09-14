@@ -77,3 +77,8 @@ Fconfig_skill* UMyGameSingleton::FindSkill(FName skillId)
 {
 	return config_skill->FindRow<Fconfig_skill>(skillId, ContextString, false);
 }
+
+Fconfig_class* UMyGameSingleton::FindClass(FName id)
+{
+	return config_class->FindRow<Fconfig_class>(id, ContextString, false);
+}

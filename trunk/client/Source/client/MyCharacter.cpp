@@ -111,6 +111,9 @@ AMyCharacter::AMyCharacter()
 
 	equips.Init(NAME_None, 10);
 	Weapons.AddDefaulted(2);
+
+	State = ActionState::Idle;
+	Target = NULL;
 }
 
 // Called when the game starts or when spawned
@@ -325,10 +328,14 @@ void AMyCharacter::UpdateMesh()
 			case Fconfig_equip::SecondHand:
 			{
 				int weapon_index = equip->slot - Fconfig_equip::MainHand;
-				if (Weapons[weapon_index]!=NULL && Weapons[weapon_index]->GetID() != equips[i])
+				if (Weapons[weapon_index]!=NULL)
 				{
+					if (Weapons[weapon_index]->GetID() == equips[i])
+						break;
+
 					Weapons[weapon_index]->OnUnEquip();
 					Weapons[weapon_index] = NULL;
+
 				}
 				if (!equips[i].IsNone())
 				{
@@ -500,9 +507,75 @@ void AMyCharacter::OnActorOverlap(AActor* OtherActor)
 }
 
 
-void AMyCharacter::Attack()
+bool AMyCharacter::CanMove()
 {
-	//for (int32 i = 0; i < Weapons.Num(); i++)
-	//	if (Weapons[i] != NULL && Weapons[i]->IsOpen())
-	//		Weapons[i]->Attack();
+	return State == ActionState::Idle || State == ActionState::Move;
+}
+bool AMyCharacter::CanUseSkill()
+{
+	if (!IsWeaponOpen())
+		return false;
+
+	return State == ActionState::Idle || State == ActionState::Move;
+}
+bool AMyCharacter::CanUseSkillTarget(FName skillId)
+{
+	if (!CanUseSkill())
+		return false;
+	Fconfig_skill* skill = UMyGameSingleton::Get().FindSkill(skillId);
+	if (skill != NULL)
+	{
+		return skill->range >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
+	}
+	return false;
+}
+void AMyCharacter::Attack(FName skillId)
+{
+	if (Target == NULL)
+		return;
+	if (!CanUseSkillTarget(skillId))
+		return;
+
+	if (skillId == skills[0])
+	{
+		attack_count = attack_count % 3;
+		Fconfig_class* classType = UMyGameSingleton::Get().FindClass(class_type);
+		check(classType);
+		if (attack_count == 0)
+		{
+			GetMesh()->GetAnimInstance()->Montage_Play(classType->attack_left);
+		}
+		else if (attack_count == 1)
+		{
+			GetMesh()->GetAnimInstance()->Montage_Play(classType->attack_right);
+		}
+		else
+		{ 
+			GetMesh()->GetAnimInstance()->Montage_Play(classType->attack_power);
+		}
+		attack_count++;
+	}
+	else
+	{
+		attack_count = 0;
+	}
+}
+
+void AMyCharacter::AnimNofity_SkillEffect()
+{
+	if (Target != NULL)
+	{
+		Target->SkillEffect(this,current_skill);
+	}
+}
+
+void AMyCharacter::SkillEffect(AMyCharacter* User, FName skillId)
+{
+	hp -= User->patk();
+	hp = FMath::Clamp(hp, 0, maxhp());
+}
+
+void AMyCharacter::SelectTarget(AMyCharacter* User)
+{
+	Target = User;
 }

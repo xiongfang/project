@@ -74,6 +74,13 @@ struct CLIENT_API Fconfig_class : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* attack_left;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* attack_right;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* attack_power;
 };
 
 
@@ -177,6 +184,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float cd;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float range;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float patk_percent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 patk_plus;
@@ -244,10 +253,4 @@ public:
 		TAssetPtr<UAnimSequence> staggerforwardlarge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> staggerforwardlargest;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> attack_left;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> attack_right;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimSequence> attack_power;
 };

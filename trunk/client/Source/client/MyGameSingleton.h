@@ -12,6 +12,7 @@ struct Fconfig_item;
 struct Fconfig_equip;
 struct Fconfig_anim_group;
 struct Fconfig_skill;
+struct Fconfig_class;
 
 /**
  * 
@@ -47,6 +48,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_skill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* config_class;
 
 	static FName MakeKey(FName key1, FName key2);
 
@@ -58,4 +61,5 @@ public:
 	Fconfig_equip* FindEquip(FName itemId);
 	Fconfig_anim_group* FindAnimGroup(FName id);
 	Fconfig_skill* FindSkill(FName skillId);
+	Fconfig_class* FindClass(FName id);
 };

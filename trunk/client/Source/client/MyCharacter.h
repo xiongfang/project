@@ -10,6 +10,18 @@
 
 class UWeaponBase;
 
+
+UENUM()
+enum class ActionState :uint8
+{
+	Idle,	//
+	Move,	//移动
+	Jump,	//跳跃
+	Block,	//防御
+	Attack,	//攻击
+	EquipWeapon	//装备武器
+};
+
 UCLASS()
 class CLIENT_API AMyCharacter : public ACharacter
 {
@@ -72,6 +84,20 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
 	TArray<FName> skills;
 
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	AMyCharacter* Target;  //当前选择的目标
+
+
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	float skill_common_cd; //公共CD
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+	FName current_skill;//当前正在使用的技能
+	//普攻攻击次数
+	int32 attack_count;
+
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
+	ActionState State;
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void LearnSkill(FName skillId);
 	
@@ -113,7 +139,21 @@ public:
 		void ChangeWeaponState();
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void Attack();
+		bool CanMove();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool CanUseSkill();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool CanUseSkillTarget(FName skill);
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void Attack(FName skillId);
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void SkillEffect(AMyCharacter* User,FName skillId);
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void AnimNofity_SkillEffect();
 
 	void UpdateMesh();
 	void UpdateAnimGroup();
@@ -134,20 +174,8 @@ public:
 
 	UFUNCTION()
 	void OnActorOverlap(AActor* OtherActor);
-};
 
 
-enum SocketType
-{
-	WeaponDagger,
-	WeaponAxe,
-	WeaponSword,
-	WeaponMace,
-	WEAPON,
-	AnimObjectR,
-	SHIELD,
-	AnimObjectL,
-	WeaponBack,
-	WeaponBow,
-	QUIVER
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	void SelectTarget(AMyCharacter* t);
 };

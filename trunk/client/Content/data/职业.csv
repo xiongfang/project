@@ -1,7 +1,7 @@
-﻿Name,description
-战士,防御型战士
-骑士,输出型战士
-刺客,"输出型,擅长偷袭"
-法师,远程魔法输出型
-牧师,辅助
-弓箭手,远程物理输出型
+﻿Name,description,attack_left,attack_right,attack_power
+战士,防御型战士,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower
+骑士,输出型战士,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower
+刺客,"输出型,擅长偷袭",/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower
+法师,远程魔法输出型,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower
+牧师,辅助,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower
+弓箭手,远程物理输出型,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower

@@ -1,4 +1,4 @@
-﻿Name,show_name,description,class_type,cd,patk_percent,patk_plus,matk_percent,matk_plus,target_maxhp_percent,mp_cost,sp_cost,interrupt,hit_recover
-左劈斩,左劈斩,,战士|骑士,2,1.2,0,0,0,0,0,0,,
-右劈斩,右劈斩,,战士|骑士,2,1.2,0,0,0,0,0,0,,
-重击,重击,,战士|骑士,4,2,0,0,0,0,0,50,,
+﻿Name,show_name,description,class_type,cd,range,patk_percent,patk_plus,matk_percent,matk_plus,target_maxhp_percent,mp_cost,sp_cost,interrupt,hit_recover
+左劈斩,左劈斩,,战士|骑士,2,100,1.2,0,0,0,0,0,0,,
+右劈斩,右劈斩,,战士|骑士,2,200,1.2,0,0,0,0,0,0,,
+重击,重击,,战士|骑士,4,200,2,0,0,0,0,0,50,,
