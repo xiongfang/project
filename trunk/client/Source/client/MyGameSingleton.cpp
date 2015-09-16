@@ -49,6 +49,10 @@ Fconfig_weapon_map*  UMyGameSingleton::FindWeaponMap(FName equipId, FName race)
 {
 	return config_weapon_map->FindRow<Fconfig_weapon_map>(MakeKey(race, equipId), ContextString, false);
 }
+Fconfig_effect* UMyGameSingleton::FindEffect(FName skillId, FName race)
+{
+	return config_effect->FindRow<Fconfig_effect>(MakeKey(race, skillId), ContextString, false);
+}
 
 Fconfig_race* UMyGameSingleton::FindRace(FName raceId)
 {

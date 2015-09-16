@@ -213,13 +213,13 @@ struct CLIENT_API Fconfig_effect : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> start_self_anim;
+		UAnimMontage* start_self_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> start_weapon_anim;
+		UAnimMontage* start_weapon_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> fly_body;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UAnimMontage> hit_anim;
+		UAnimMontage* hit_anim;
 };
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_anim_group : public FTableRowBase

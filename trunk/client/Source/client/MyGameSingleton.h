@@ -13,6 +13,7 @@ struct Fconfig_equip;
 struct Fconfig_anim_group;
 struct Fconfig_skill;
 struct Fconfig_class;
+struct Fconfig_effect;
 
 /**
  * 
@@ -50,11 +51,14 @@ public:
 	UDataTable* config_skill;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_class;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* config_effect;
 
 	static FName MakeKey(FName key1, FName key2);
 
 	Fconfig_armor_map* FindArmorMap(FName equipId, FName race);
 	Fconfig_weapon_map* FindWeaponMap(FName equipId, FName race);
+	Fconfig_effect* FindEffect(FName skillId, FName race);
 
 	Fconfig_race* FindRace(FName raceId);
 	Fconfig_item* FindItem(FName itemId);

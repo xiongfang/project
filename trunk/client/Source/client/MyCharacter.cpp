@@ -573,6 +573,18 @@ void AMyCharacter::SkillEffect(AMyCharacter* User, FName skillId)
 {
 	hp -= User->patk();
 	hp = FMath::Clamp(hp, 0, maxhp());
+	if (hp == 0)
+		this->State = ActionState::Dead;
+	//播放受击动画
+	Fconfig_skill* skill = UMyGameSingleton::Get().FindSkill(skillId);
+	if (skill != NULL)
+	{
+		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skillId, race);
+		if (effect != NULL)
+		{
+			GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
+		}
+	}
 }
 
 void AMyCharacter::SelectTarget(AMyCharacter* User)

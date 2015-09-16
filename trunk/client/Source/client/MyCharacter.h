@@ -19,7 +19,8 @@ enum class ActionState :uint8
 	Jump,	//跳跃
 	Block,	//防御
 	Attack,	//攻击
-	EquipWeapon	//装备武器
+	EquipWeapon,	//装备武器
+	Dead
 };
 
 UCLASS()
