@@ -74,13 +74,6 @@ struct CLIENT_API Fconfig_class : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString description;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* attack_left;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* attack_right;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* attack_power;
 };
 
 
@@ -217,7 +210,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* start_weapon_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UStaticMesh> fly_body;
+		UAnimMontage* start_target_anim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<AActor> fly_body;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* hit_anim;
 };

@@ -536,28 +536,12 @@ void AMyCharacter::Attack(FName skillId)
 	if (!CanUseSkillTarget(skillId))
 		return;
 
-	if (skillId == skills[0])
+	current_skill = skillId;
+
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skillId, race);
+	if (effect != NULL)
 	{
-		attack_count = attack_count % 3;
-		Fconfig_class* classType = UMyGameSingleton::Get().FindClass(class_type);
-		check(classType);
-		if (attack_count == 0)
-		{
-			GetMesh()->GetAnimInstance()->Montage_Play(classType->attack_left);
-		}
-		else if (attack_count == 1)
-		{
-			GetMesh()->GetAnimInstance()->Montage_Play(classType->attack_right);
-		}
-		else
-		{ 
-			GetMesh()->GetAnimInstance()->Montage_Play(classType->attack_power);
-		}
-		attack_count++;
-	}
-	else
-	{
-		attack_count = 0;
+		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
 	}
 }
 
