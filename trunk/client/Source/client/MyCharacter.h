@@ -4,6 +4,7 @@
 
 #include "GameFramework/Character.h"
 #include "Animation/SkeletalMeshActor.h"
+#include "Skill.h"
 #include "MyCharacter.generated.h"
 
 
@@ -69,6 +70,8 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 hp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	int32 mp;
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 level;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 exp;
@@ -82,8 +85,8 @@ public:
 
 	TMap<FName,int32> items;
 
-	UPROPERTY(Category = Data, VisibleAnywhere,BlueprintReadOnly)
-	TArray<FName> skills;
+	UPROPERTY(Category = Data, VisibleAnywhere)
+	TMap<FName,USkill*> skills;
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	AMyCharacter* Target;  //当前选择的目标
@@ -92,9 +95,7 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	float skill_common_cd; //公共CD
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	FName current_skill;//当前正在使用的技能
-	//普攻攻击次数
-	int32 attack_count;
+	USkill* current_skill;//当前正在使用的技能
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
 	ActionState State;
@@ -108,6 +109,8 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	int32 maxhp();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	int32 maxmp();
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	int32 patk();
 	UFUNCTION(Category = Logic, BlueprintCallable)
@@ -151,7 +154,10 @@ public:
 		void Attack(FName skillId);
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-		void SkillEffect(AMyCharacter* User,FName skillId);
+		void SkillEffect(AMyCharacter* User, USkill* skill);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ReceiveSkillEffect(AMyCharacter* User, USkill* skill);
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void AnimNofity_SkillEffect();

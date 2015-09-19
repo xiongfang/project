@@ -93,6 +93,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 hp_plus;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mp_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 pdef_plus;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 mdef_plus;
@@ -177,26 +179,30 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float cd;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float range;
+		float common_cd;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float patk_percent;
+		int32 select; //选择目标类型
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 patk_plus;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float matk_percent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 matk_plus;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float target_maxhp_percent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 mp_cost;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 sp_cost;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float interrupt;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 hit_recover;
+		int32 target; //目标类型
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float distance; //释放距离
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float range; //攻击范围
+
+
+	enum eSelect
+	{
+		Battler,
+		Position
+	};
+
+	enum eTarget
+	{
+		Self,
+		Friend,
+		Enemy
+	};
 };
 
 USTRUCT(BlueprintType)
@@ -215,6 +221,8 @@ public:
 		TAssetPtr<AActor> fly_body;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* hit_anim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UParticleSystem* hit_fx;
 };
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_anim_group : public FTableRowBase

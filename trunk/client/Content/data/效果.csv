@@ -1,7 +1,7 @@
-﻿Name,start_self_anim,start_weapon_anim,start_target_anim,fly_body,hit_anim
-女人_左劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage
-女人_右劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage
-女人_重击,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage
-男人_左劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage
-男人_右劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage
-男人_重击,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage
+﻿Name,start_self_anim,start_weapon_anim,start_target_anim,fly_body,hit_anim,hit_fx
+女人_左劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage,
+女人_右劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage,
+女人_重击,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage,
+男人_左劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackleft.1hm_am_attackleft,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage,
+男人_右劈斩,/Game/meshes/actors/charactor/animations/1hm_am_attackright.1hm_am_attackright,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage,
+男人_重击,/Game/meshes/actors/charactor/animations/1hm_am_attackpower.1hm_am_attackpower,,,,/Game/meshes/actors/charactor/animations/1hm_staggerbacksmall_Montage.1hm_staggerbacksmall_Montage,

@@ -140,6 +140,17 @@ void AMyCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	//更新所有技能的CD
+	for (auto kv : skills)
+	{
+		kv.Value->Update(DeltaTime);
+	}
+	//更新公共CD
+	if (skill_common_cd > 0)
+	{
+		skill_common_cd -= DeltaTime;
+		skill_common_cd = FMath::Max(0.0f, skill_common_cd);
+	}
 }
 
 // Called to bind functionality to input
@@ -156,7 +167,19 @@ void AMyCharacter::LearnSkill(FName skillId)
 		TRACE("无效的技能ID %s", *skillId.ToString());
 		return;
 	}
-	skills.AddUnique(skillId);
+
+	if (skills.Contains(skillId))
+	{
+		TRACE("已经学过此技能 %s", *skillId.ToString());
+		return;
+	}
+		
+
+	USkill* s = NewObject<USkill>();
+	s->id = skillId;
+	s->level = 1;
+	
+	skills.Add(skillId,s);
 }
 
 
@@ -179,6 +202,21 @@ int32 AMyCharacter::maxhp()
 	}
 	
 	return maxhp;
+}
+int32 AMyCharacter::maxmp()
+{
+	int32 maxmp = 100 + level * 50;
+
+	for (int32 i = 0; i < equips.Num(); i++)
+	{
+		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (data != NULL)
+		{
+			maxmp += data->mp_plus;
+		}
+	}
+
+	return maxmp;
 }
 
 int32 AMyCharacter::patk()
@@ -513,7 +551,7 @@ bool AMyCharacter::CanMove()
 }
 bool AMyCharacter::CanUseSkill()
 {
-	if (!IsWeaponOpen())
+	if (!IsWeaponOpen() || skill_common_cd>0)
 		return false;
 
 	return State == ActionState::Idle || State == ActionState::Move;
@@ -522,12 +560,14 @@ bool AMyCharacter::CanUseSkillTarget(FName skillId)
 {
 	if (!CanUseSkill())
 		return false;
-	Fconfig_skill* skill = UMyGameSingleton::Get().FindSkill(skillId);
-	if (skill != NULL)
-	{
-		return skill->range >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
-	}
-	return false;
+	if (!skills.Contains(skillId))
+		return false;
+
+	USkill* skill = skills[skillId];
+	if (skill->cd > 0)
+		return false;
+
+	return skill->GetData()->distance >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
 }
 void AMyCharacter::Attack(FName skillId)
 {
@@ -536,7 +576,9 @@ void AMyCharacter::Attack(FName skillId)
 	if (!CanUseSkillTarget(skillId))
 		return;
 
-	current_skill = skillId;
+	current_skill = skills[skillId];
+	current_skill->cd = current_skill->GetData()->cd;
+	skill_common_cd = current_skill->GetData()->common_cd;
 
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skillId, race);
 	if (effect != NULL)
@@ -553,20 +595,30 @@ void AMyCharacter::AnimNofity_SkillEffect()
 	}
 }
 
-void AMyCharacter::SkillEffect(AMyCharacter* User, FName skillId)
+void AMyCharacter::SkillEffect(AMyCharacter* User, USkill* skill)
 {
-	hp -= User->patk();
+	
+	ReceiveSkillEffect(User, skill);
+
+	User->mp = FMath::Clamp(User->mp, 0, User->maxmp());
+	User->hp = FMath::Clamp(User->hp, 0, User->maxhp());
+
+	mp = FMath::Clamp(mp, 0, maxmp());
 	hp = FMath::Clamp(hp, 0, maxhp());
 	if (hp == 0)
-		this->State = ActionState::Dead;
-	//播放受击动画
-	Fconfig_skill* skill = UMyGameSingleton::Get().FindSkill(skillId);
-	if (skill != NULL)
 	{
-		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skillId, race);
+		this->State = ActionState::Dead;
+	}
+	
+	//播放受击动画
+	Fconfig_skill* skillData = skill->GetData();
+	if (skillData != NULL)
+	{
+		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, race);
 		if (effect != NULL)
 		{
 			GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect->hit_fx, GetTransform().GetLocation());
 		}
 	}
 }
