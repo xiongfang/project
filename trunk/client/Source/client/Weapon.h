@@ -3,6 +3,7 @@
 #include "Weapon.generated.h"
 
 class AMyCharacter;
+class ASkeletalMeshActor;
 
 UCLASS()
 class CLIENT_API UWeaponBase : public UActorComponent
@@ -59,4 +60,28 @@ class CLIENT_API UWeaponLongSword : public UWeaponSword
 	GENERATED_BODY()
 public:
 	UWeaponLongSword();
+};
+
+UCLASS()
+class CLIENT_API UWeaponBow : public UWeaponBase
+{
+	GENERATED_BODY()
+
+	FName WeaponSlotName;
+	FName WeaponBackName;
+	FName AppendSlotName;
+public:
+	UWeaponBow();
+
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		ASkeletalMeshActor* mh_weapon;  //¹­
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		AStaticMeshActor* mh_append; //¼ý
+
+	virtual void OnEquip(FName id);
+	virtual void OnUnEquip();
+	//ÄÃ³ö
+	virtual void Open();
+	//ÊÕÆð
+	virtual void Close();
 };

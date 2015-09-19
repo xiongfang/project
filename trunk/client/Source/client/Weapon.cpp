@@ -24,7 +24,15 @@ UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, int32 type)
 		Base->RegisterComponent();
 		return Base;
 	}
-	break;
+		break;
+	case Fconfig_equip::WeaponType::Bow:
+	{
+		UWeaponBase* Base = NewObject<UWeaponBow>(Parent, TEXT("WeaponBow"));
+		Base->Owner = Parent;
+		Base->RegisterComponent();
+		return Base;
+	}
+		break;
 	default:
 		break;
 	}
@@ -145,4 +153,113 @@ UWeaponLongSword::UWeaponLongSword()
 {
 	WeaponSlotName = TEXT("WEAPON");
 	AppendSlotName = TEXT("WeaponBack");
+}
+
+UWeaponBow::UWeaponBow()
+{
+	WeaponSlotName = TEXT("SHIELD");
+	WeaponBackName = TEXT("WeaponBow");
+	AppendSlotName = TEXT("QUIVER");
+}
+
+void UWeaponBow::OnEquip(FName id)
+{
+	Super::OnEquip(id);
+
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race);
+	if (weapon != NULL)
+	{
+
+		USkeletalMesh* skeletalMesh = Cast<USkeletalMesh>(weapon->model.ToStringReference().TryLoad());
+		if (mh_weapon == NULL)
+		{
+			mh_weapon = Cast<ASkeletalMeshActor>(GetWorld()->SpawnActor(*Owner->templateBow));
+		}
+		mh_weapon->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
+
+		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
+		if (sc != NULL)
+			sc->AttachActor(mh_weapon, Owner->GetMesh());
+		else
+			TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
+
+		//附件
+		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
+		if (mh_append == NULL)
+		{
+			mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+			mh_append->SetMobility(EComponentMobility::Movable);
+		}
+		mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
+
+		sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
+		if (sc != NULL)
+			sc->AttachActor(mh_append, Owner->GetMesh());
+		else
+			TRACE("sc == NULL  %s ", *AppendSlotName.ToString());
+
+		_isOpened = true;
+
+		//禁用碰撞
+		UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
+		if (Box != NULL)
+			Box->bGenerateOverlapEvents = false;
+	}
+
+}
+void UWeaponBow::OnUnEquip()
+{
+	if (mh_weapon != NULL)
+	{
+		mh_weapon->Destroy();
+		mh_weapon = NULL;
+	}
+	if (mh_append != NULL)
+	{
+		mh_append->Destroy();
+		mh_append = NULL;
+	}
+	Super::OnUnEquip();
+
+	this->UnregisterComponent();
+}
+
+
+//拿出
+void UWeaponBow::Open()
+{
+	Super::Open();
+
+	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	if (weapon != NULL)
+	{
+		if (mh_weapon != NULL)
+		{
+			mh_weapon->DetachRootComponentFromParent();
+			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
+			if (sc != NULL)
+				sc->AttachActor(mh_weapon, Owner->GetMesh());
+		}
+	}
+
+
+}
+//收起
+void UWeaponBow::Close()
+{
+	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	if (weapon != NULL)
+	{
+		if (mh_weapon != NULL)
+		{
+			mh_weapon->DetachRootComponentFromParent();
+			const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponBackName);
+			if (sc != NULL)
+				sc->AttachActor(mh_weapon, Owner->GetMesh());
+		}
+	}
+
+	Super::Close();
 }
