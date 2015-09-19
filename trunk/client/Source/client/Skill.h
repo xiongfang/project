@@ -17,7 +17,7 @@ public:
 	float cd;
 
 	Fconfig_skill* GetData();
-
+	
 	void Update(float deltaTime);
 
 };
@@ -43,6 +43,9 @@ public:
 	UPROPERTY()
 	FVector TargetPosition;
 
+	float speed; 
+
+	void InitCreate(AMyCharacter* o, AMyCharacter* t, USkill* s);
 
 	void BeginPlay() override;
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)override;

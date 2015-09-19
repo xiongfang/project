@@ -186,6 +186,7 @@ void AMyCharacter::LearnSkill(FName skillId)
 void AMyCharacter::Recover()
 {
 	hp = maxhp();
+	mp = maxmp();
 }
 
 int32 AMyCharacter::maxhp()
@@ -584,6 +585,18 @@ void AMyCharacter::Attack(FName skillId)
 	if (effect != NULL)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
+
+		//投掷体
+		if (effect->fly_body != nullptr)
+		{
+			AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body,GetTransform());
+			if (Projectile)
+			{
+				UProjectile* pj = NewObject<UProjectile>(Projectile);
+				pj->RegisterComponent();
+				pj->InitCreate(this, Target, current_skill);
+			}
+		}
 	}
 }
 

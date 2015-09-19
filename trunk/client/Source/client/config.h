@@ -218,7 +218,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* start_target_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<AActor> fly_body;
+		TSubclassOf<AActor> fly_body;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float fly_speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UParticleSystem* fly_explosion_fx;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* hit_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
