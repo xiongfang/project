@@ -581,22 +581,10 @@ void AMyCharacter::Attack(FName skillId)
 	current_skill->cd = current_skill->GetData()->cd;
 	skill_common_cd = current_skill->GetData()->common_cd;
 
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skillId, race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
 	if (effect != NULL)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
-
-		//投掷体
-		if (effect->fly_body != nullptr)
-		{
-			AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body,GetTransform());
-			if (Projectile)
-			{
-				UProjectile* pj = NewObject<UProjectile>(Projectile);
-				pj->RegisterComponent();
-				pj->InitCreate(this, Target, current_skill);
-			}
-		}
 	}
 }
 
@@ -605,6 +593,38 @@ void AMyCharacter::AnimNofity_SkillEffect()
 	if (Target != NULL)
 	{
 		Target->SkillEffect(this,current_skill);
+	}
+}
+
+void AMyCharacter::AnimNofity_TakeArrow()
+{
+	if (Weapons[0]!=NULL)
+		Weapons[0]->AttackStart();
+}
+
+void AMyCharacter::AnimNofity_Shoot()
+{
+	if (current_skill == NULL)
+		return;
+	if (Target == NULL)
+		return;
+
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
+	if (effect != NULL)
+	{
+		//投掷体
+		if (effect->fly_body != nullptr)
+		{
+			AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body, GetTransform());
+			if (Projectile)
+			{
+				UProjectile* pj = NewObject<UProjectile>(Projectile);
+				pj->RegisterComponent();
+				pj->InitCreate(this, Target, current_skill);
+			}
+		}
+
+		Weapons[0]->AttackEnd();
 	}
 }
 

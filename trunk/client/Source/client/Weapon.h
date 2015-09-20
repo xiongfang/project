@@ -27,6 +27,10 @@ public:
 
 	FName GetID(){ return _id; }
 
+	virtual void AttackStart(){}
+	virtual void AttackEnd(){}
+
+
 	static UWeaponBase* Create(AMyCharacter* Parent, int32 weaponType);
 };
 
@@ -76,7 +80,9 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		ASkeletalMeshActor* mh_weapon;  //¹­
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		AStaticMeshActor* mh_append; //¼ý
+		AStaticMeshActor* mh_append; //¼ý´ü
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		ASkeletalMeshActor* mh_fly_arrow; //¼ý
 
 	virtual void OnEquip(FName id);
 	virtual void OnUnEquip();
@@ -84,4 +90,7 @@ public:
 	virtual void Open();
 	//ÊÕÆð
 	virtual void Close();
+
+	virtual void AttackStart();
+	virtual void AttackEnd();
 };

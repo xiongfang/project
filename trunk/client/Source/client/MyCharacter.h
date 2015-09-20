@@ -161,6 +161,10 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void AnimNofity_SkillEffect();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void AnimNofity_Shoot();
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void AnimNofity_TakeArrow();
 
 	void UpdateMesh();
 	void UpdateAnimGroup();

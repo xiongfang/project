@@ -156,7 +156,8 @@ public:
 		TAssetPtr<UStaticMesh> append_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> append_2;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<USkeletalMesh> append_3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName anim_group;
@@ -219,6 +220,8 @@ public:
 		UAnimMontage* start_target_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AActor> fly_body;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FVector fly_offset;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float fly_speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

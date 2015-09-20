@@ -263,3 +263,39 @@ void UWeaponBow::Close()
 
 	Super::Close();
 }
+
+void UWeaponBow::AttackStart()
+{
+	//特殊处理一下箭
+	Fconfig_weapon_map* wp = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	if (wp != NULL && wp->append_3 != NULL)
+	{
+		USkeletalMesh* skeletalMesh = Cast<USkeletalMesh>(wp->append_3.ToStringReference().TryLoad());
+		mh_fly_arrow = Owner->GetWorld()->SpawnActor<ASkeletalMeshActor>();
+		mh_fly_arrow->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
+		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName("WEAPON");
+		if (sc != NULL)
+			sc->AttachActor(mh_fly_arrow, Owner->GetMesh());
+	}
+}
+void UWeaponBow::AttackEnd()
+{
+	if (mh_fly_arrow != NULL)
+	{
+		mh_fly_arrow->Destroy();
+		mh_fly_arrow = NULL;
+	}
+		
+	////特殊处理一下箭
+	//Fconfig_weapon_map* wp = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	//if (wp != NULL && wp->append_3 != NULL)
+	//{
+	//	USkeletalMesh* skeletalMesh = Cast<USkeletalMesh>(wp->append_3.ToStringReference().TryLoad());
+	//	ASkeletalMeshActor* mh_weapon = GetWorld()->SpawnActor<ASkeletalMeshActor>();
+	//	mh_weapon->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
+	//	mh_weapon->SetOwner(this);
+	//	const USkeletalMeshSocket* sc = GetMesh()->GetSocketByName("WEAPON");
+	//	//if (sc != NULL)
+	//	//	sc->
+	//}
+}
