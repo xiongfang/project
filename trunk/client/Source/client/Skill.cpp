@@ -27,7 +27,7 @@ UProjectile::UProjectile()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UProjectile::InitCreate(AMyCharacter* o, AMyCharacter* t, USkill* s)
+void UProjectile::InitCreate(AGameBattler* o, AGameBattler* t, USkill* s)
 {
 	check(o);
 	check(t);

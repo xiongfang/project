@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Animation/SkeletalMeshActor.h"
 #include "Skill.h"
+#include "GameBattler.h"
 #include "MyCharacter.generated.h"
 
 
@@ -25,7 +26,7 @@ enum class ActionState :uint8
 };
 
 UCLASS()
-class CLIENT_API AMyCharacter : public ACharacter
+class CLIENT_API AMyCharacter : public AGameBattler
 {
 	GENERATED_BODY()
 
@@ -67,16 +68,14 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ASkeletalMeshActor> templateBow;
 
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-	int32 hp;
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-	int32 mp;
+	//UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	//int32 hp;
+	//UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	//int32 mp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 level;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 exp;
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-	FName race;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName class_type;
 
@@ -89,7 +88,7 @@ public:
 	TMap<FName,USkill*> skills;
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AMyCharacter* Target;  //当前选择的目标
+	AGameBattler* Target;  //当前选择的目标
 
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
@@ -107,18 +106,12 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Recover();
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 maxhp();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 maxmp();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 patk();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 matk();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 pdef();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	int32 mdef();
+	int32 base_maxhp() override;
+	int32 base_maxmp() override;
+	int32 base_patk() override;
+	int32 base_matk() override;
+	int32 base_pdef() override;
+	int32 base_mdef() override;
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
@@ -153,11 +146,7 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void Attack(FName skillId);
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void SkillEffect(AMyCharacter* User, USkill* skill);
 
-	UFUNCTION(BlueprintImplementableEvent)
-		void ReceiveSkillEffect(AMyCharacter* User, USkill* skill);
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void AnimNofity_SkillEffect();
@@ -189,4 +178,6 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void SelectTarget(AMyCharacter* t);
+
+	void SkillEffect(AGameBattler* User, USkill* skill) override;
 };

@@ -190,7 +190,7 @@ void AMyCharacter::Recover()
 	mp = maxmp();
 }
 
-int32 AMyCharacter::maxhp()
+int32 AMyCharacter::base_maxhp()
 {
 	int32 maxhp = 100 + level * 50;
 
@@ -205,7 +205,7 @@ int32 AMyCharacter::maxhp()
 	
 	return maxhp;
 }
-int32 AMyCharacter::maxmp()
+int32 AMyCharacter::base_maxmp()
 {
 	int32 maxmp = 100 + level * 50;
 
@@ -221,7 +221,7 @@ int32 AMyCharacter::maxmp()
 	return maxmp;
 }
 
-int32 AMyCharacter::patk()
+int32 AMyCharacter::base_patk()
 {
 	int32 rt = level * 20;
 
@@ -237,7 +237,7 @@ int32 AMyCharacter::patk()
 	return rt;
 }
 
-int32 AMyCharacter::matk()
+int32 AMyCharacter::base_matk()
 {
 	int32 rt = level * 20;
 
@@ -254,7 +254,7 @@ int32 AMyCharacter::matk()
 }
 
 
-int32 AMyCharacter::pdef()
+int32 AMyCharacter::base_pdef()
 {
 	int32 rt = level * 5;
 
@@ -270,7 +270,7 @@ int32 AMyCharacter::pdef()
 	return rt;
 }
 
-int32 AMyCharacter::mdef()
+int32 AMyCharacter::base_mdef()
 {
 	int32 rt = level * 5;
 
@@ -629,21 +629,14 @@ void AMyCharacter::AnimNofity_Shoot()
 	}
 }
 
-void AMyCharacter::SkillEffect(AMyCharacter* User, USkill* skill)
+void AMyCharacter::SkillEffect(AGameBattler* User, USkill* skill)
 {
-	
-	ReceiveSkillEffect(User, skill);
+	Super::SkillEffect(User, skill);
 
-	User->mp = FMath::Clamp(User->mp, 0, User->maxmp());
-	User->hp = FMath::Clamp(User->hp, 0, User->maxhp());
-
-	mp = FMath::Clamp(mp, 0, maxmp());
-	hp = FMath::Clamp(hp, 0, maxhp());
 	if (hp == 0)
 	{
 		this->State = ActionState::Dead;
 	}
-	
 	//播放受击动画
 	Fconfig_skill* skillData = skill->GetData();
 	if (skillData != NULL)

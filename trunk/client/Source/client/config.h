@@ -2,6 +2,8 @@
 
 #pragma once
 #include "GameFramework/Character.h"
+#include "GameMonster.h"
+
 #include "config.generated.h"
 /**
  * 
@@ -263,4 +265,42 @@ public:
 		TAssetPtr<UAnimSequence> staggerforwardlarge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> staggerforwardlargest;
+};
+
+USTRUCT(BlueprintType)
+struct CLIENT_API Fconfig_monster : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName show_name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName race;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<USkeletalMesh> model;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	TAssetPtr<UBlendSpace> movement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName skill1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName skill2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 maxhp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 maxmp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 patk;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 matk;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 pdef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mdef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<AGameMonster> prefab;
 };

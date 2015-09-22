@@ -14,7 +14,7 @@ struct Fconfig_anim_group;
 struct Fconfig_skill;
 struct Fconfig_class;
 struct Fconfig_effect;
-
+struct Fconfig_monster;
 /**
  * 
  */
@@ -53,6 +53,8 @@ public:
 	UDataTable* config_class;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_effect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* config_monster;
 
 	static FName MakeKey(FName key1, FName key2);
 
@@ -66,4 +68,5 @@ public:
 	Fconfig_anim_group* FindAnimGroup(FName id);
 	Fconfig_skill* FindSkill(FName skillId);
 	Fconfig_class* FindClass(FName id);
+	Fconfig_monster* FindMonster(FName id);
 };

@@ -23,7 +23,7 @@ public:
 };
 
 
-class AMyCharacter;
+class AGameBattler;
 
 UCLASS()
 class UProjectile :public UActorComponent
@@ -36,16 +36,16 @@ public:
 	USkill* skill;
 
 	UPROPERTY()
-	AMyCharacter* Owner;
+	AGameBattler* Owner;
 	UPROPERTY()
-	AMyCharacter* Target;
+	AGameBattler* Target;
 
 	UPROPERTY()
 	FVector TargetPosition;
 
 	float speed; 
 
-	void InitCreate(AMyCharacter* o, AMyCharacter* t, USkill* s);
+	void InitCreate(AGameBattler* o, AGameBattler* t, USkill* s);
 
 	void BeginPlay() override;
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)override;
