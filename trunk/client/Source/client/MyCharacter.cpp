@@ -120,6 +120,7 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	//记录默认的身体模型
+	DefaultBodyMeshes.Reset();
 	for (int i = 0; i < Bodys.Num(); i++)
 	{
 		DefaultBodyMeshes.Add(Bodys[i]->SkeletalMesh);
