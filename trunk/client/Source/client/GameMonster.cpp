@@ -82,4 +82,13 @@ void AGameMonster::InitCreate(FName id)
 	//¼ÓÔØ×ÊÔ´
 	monsterData->model.ToStringReference().TryLoad();
 	GetMesh()->SetSkeletalMesh(monsterData->model.Get());
+
+	if (UMyGameSingleton::Get().FindSkill(monsterData->skill1) != NULL)
+	{
+		LearnSkill(monsterData->skill1);
+	}
+	if (UMyGameSingleton::Get().FindSkill(monsterData->skill2) != NULL)
+	{
+		LearnSkill(monsterData->skill2);
+	}
 }

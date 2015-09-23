@@ -140,18 +140,6 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
-	//更新所有技能的CD
-	for (auto kv : skills)
-	{
-		kv.Value->Update(DeltaTime);
-	}
-	//更新公共CD
-	if (skill_common_cd > 0)
-	{
-		skill_common_cd -= DeltaTime;
-		skill_common_cd = FMath::Max(0.0f, skill_common_cd);
-	}
 }
 
 // Called to bind functionality to input
@@ -159,35 +147,6 @@ void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompone
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
-}
-
-void AMyCharacter::LearnSkill(FName skillId)
-{
-	if (UMyGameSingleton::Get().FindSkill(skillId) == NULL)
-	{
-		TRACE("无效的技能ID %s", *skillId.ToString());
-		return;
-	}
-
-	if (skills.Contains(skillId))
-	{
-		TRACE("已经学过此技能 %s", *skillId.ToString());
-		return;
-	}
-		
-
-	USkill* s = NewObject<USkill>();
-	s->id = skillId;
-	s->level = 1;
-	
-	skills.Add(skillId,s);
-}
-
-
-void AMyCharacter::Recover()
-{
-	hp = maxhp();
-	mp = maxmp();
 }
 
 int32 AMyCharacter::base_maxhp()
@@ -207,6 +166,7 @@ int32 AMyCharacter::base_maxhp()
 }
 int32 AMyCharacter::base_maxmp()
 {
+
 	int32 maxmp = 100 + level * 50;
 
 	for (int32 i = 0; i < equips.Num(); i++)
@@ -541,61 +501,12 @@ bool AMyCharacter::ItemEnough(FName id, int32 count)
 
 void AMyCharacter::OnActorOverlap(AActor* OtherActor)
 {
-	
 	if (OtherActor->GetAttachParentActor() != this)
 		TRACE("OnActorOverlap %s", *OtherActor->GetName());
 }
 
 
-bool AMyCharacter::CanMove()
-{
-	return State == ActionState::Idle || State == ActionState::Move;
-}
-bool AMyCharacter::CanUseSkill()
-{
-	if (!IsWeaponOpen() || skill_common_cd>0)
-		return false;
 
-	return State == ActionState::Idle || State == ActionState::Move;
-}
-bool AMyCharacter::CanUseSkillTarget(FName skillId)
-{
-	if (!CanUseSkill())
-		return false;
-	if (!skills.Contains(skillId))
-		return false;
-
-	USkill* skill = skills[skillId];
-	if (skill->cd > 0)
-		return false;
-
-	return skill->GetData()->distance >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
-}
-void AMyCharacter::Attack(FName skillId)
-{
-	if (Target == NULL)
-		return;
-	if (!CanUseSkillTarget(skillId))
-		return;
-
-	current_skill = skills[skillId];
-	current_skill->cd = current_skill->GetData()->cd;
-	skill_common_cd = current_skill->GetData()->common_cd;
-
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
-	if (effect != NULL)
-	{
-		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
-	}
-}
-
-void AMyCharacter::AnimNofity_SkillEffect()
-{
-	if (Target != NULL)
-	{
-		Target->SkillEffect(this,current_skill);
-	}
-}
 
 void AMyCharacter::AnimNofity_TakeArrow()
 {
@@ -605,6 +516,8 @@ void AMyCharacter::AnimNofity_TakeArrow()
 
 void AMyCharacter::AnimNofity_Shoot()
 {
+	Super::AnimNofity_Shoot();
+
 	if (current_skill == NULL)
 		return;
 	if (Target == NULL)
@@ -613,18 +526,6 @@ void AMyCharacter::AnimNofity_Shoot()
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
 	if (effect != NULL)
 	{
-		//投掷体
-		if (effect->fly_body != nullptr)
-		{
-			AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body, GetTransform());
-			if (Projectile)
-			{
-				UProjectile* pj = NewObject<UProjectile>(Projectile);
-				pj->RegisterComponent();
-				pj->InitCreate(this, Target, current_skill);
-			}
-		}
-
 		Weapons[0]->AttackEnd();
 	}
 }
@@ -637,20 +538,21 @@ void AMyCharacter::SkillEffect(AGameBattler* User, USkill* skill)
 	{
 		this->State = ActionState::Dead;
 	}
-	//播放受击动画
-	Fconfig_skill* skillData = skill->GetData();
-	if (skillData != NULL)
-	{
-		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, race);
-		if (effect != NULL)
-		{
-			GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect->hit_fx, GetTransform().GetLocation());
-		}
-	}
 }
 
-void AMyCharacter::SelectTarget(AMyCharacter* User)
+
+bool AMyCharacter::can_move()
 {
-	Target = User;
+	if (!Super::can_move())
+		return false;
+	return State == ActionState::Idle || State == ActionState::Move;
+}
+
+bool AMyCharacter::can_use_skill()
+{
+	if (!Super::can_use_skill())
+		return false;
+	if (!IsWeaponOpen())
+		return false;
+	return true;
 }

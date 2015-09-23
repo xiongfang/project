@@ -174,8 +174,6 @@ struct CLIENT_API Fconfig_skill : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString class_type;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName show_name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;

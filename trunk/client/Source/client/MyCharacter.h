@@ -84,27 +84,7 @@ public:
 
 	TMap<FName,int32> items;
 
-	UPROPERTY(Category = Data, VisibleAnywhere)
-	TMap<FName,USkill*> skills;
 
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AGameBattler* Target;  //当前选择的目标
-
-
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	float skill_common_cd; //公共CD
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	USkill* current_skill;//当前正在使用的技能
-
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
-	ActionState State;
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	void LearnSkill(FName skillId);
-	
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	void Recover();
 
 	int32 base_maxhp() override;
 	int32 base_maxmp() override;
@@ -119,7 +99,8 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void UnEquip(int32 slot);
 
-
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
+		ActionState State;
 
 	//当前的动画状态
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
@@ -135,23 +116,7 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void ChangeWeaponState();
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		bool CanMove();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		bool CanUseSkill();
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		bool CanUseSkillTarget(FName skill);
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void Attack(FName skillId);
-
-
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void AnimNofity_SkillEffect();
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		void AnimNofity_Shoot();
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void AnimNofity_TakeArrow();
 
@@ -176,8 +141,11 @@ public:
 	void OnActorOverlap(AActor* OtherActor);
 
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-	void SelectTarget(AMyCharacter* t);
 
 	void SkillEffect(AGameBattler* User, USkill* skill) override;
-};
+
+	void AnimNofity_Shoot() override;
+
+	bool can_move()override;
+	bool can_use_skill()override;
+}; 
