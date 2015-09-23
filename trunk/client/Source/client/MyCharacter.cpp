@@ -237,9 +237,6 @@ void AMyCharacter::Tick( float DeltaTime )
 void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AMyCharacter::OnTouchPressed);
-	InputComponent->BindTouch(EInputEvent::IE_Released, this, &AMyCharacter::OnTouchReleased);
-	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AMyCharacter::OnTouchMove);
 }
 
 int32 AMyCharacter::base_maxhp()
@@ -648,36 +645,4 @@ bool AMyCharacter::can_use_skill()
 	if (!IsWeaponOpen())
 		return false;
 	return true;
-}
-
-
-void AMyCharacter::OnTouchPressed(ETouchIndex::Type index, FVector location)
-{
-	if (index == ETouchIndex::Touch1)
-	{
-		oldTouchPositions[0] = FVector2D(location.X,location.Y);
-	}
-	if (index == ETouchIndex::Touch2)
-	{
-		oldTouchPositions[1] = FVector2D(location.X, location.Y);
-		oldTouchVector = (oldTouchPositions[1] - oldTouchPositions[0]);
-		oldTouchDistance = oldTouchVector.Size();
-	}
-}
-
-void AMyCharacter::OnTouchReleased(ETouchIndex::Type index, FVector location)
-{
-
-}
-
-void AMyCharacter::OnTouchMove(ETouchIndex::Type index, FVector location)
-{
-	//FVector2D newTouchPositions[] = {
-	//	Input.GetTouch(0).position,
-	//	Input.GetTouch(1).position
-	//};
-	//Vector2 newTouchVector = newTouchPositions[0] - newTouchPositions[1];
-	//float newTouchDistance = newTouchVector.magnitude;
-
-	//float rotate = Mathf.Asin(Mathf.Clamp((oldTouchVector.y * newTouchVector.x - oldTouchVector.x * newTouchVector.y) / oldTouchDistance / newTouchDistance, -1f, 1f)) / 0.0174532924f*DataSet.world.client_touch_rotate_factor;
 }

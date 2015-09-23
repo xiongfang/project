@@ -276,8 +276,8 @@ public:
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName race;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<USkeletalMesh> model;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	TAssetPtr<USkeletalMesh> model;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	TAssetPtr<UBlendSpace> movement;
 
