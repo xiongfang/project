@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "GameBattler.generated.h"
 
@@ -51,13 +51,13 @@ public:
 		TMap<FName, USkill*> skills;
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		AGameBattler* Target;  //µ±Ç°Ñ¡ÔñµÄÄ¿±ê
+		AGameBattler* Target;  //å½“å‰é€‰æ‹©çš„ç›®æ ‡
 
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		float skill_common_cd; //¹«¹²CD
+		float skill_common_cd; //å…¬å…±CD
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		USkill* current_skill;//µ±Ç°ÕıÔÚÊ¹ÓÃµÄ¼¼ÄÜ
+		USkill* current_skill;//å½“å‰æ­£åœ¨ä½¿ç”¨çš„æŠ€èƒ½
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		virtual bool can_move();

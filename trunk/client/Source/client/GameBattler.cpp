@@ -1,4 +1,4 @@
-#include "client.h"
+ï»¿#include "client.h"
 #include "GameBattler.h"
 #include "Skill.h"
 #include "config.h"
@@ -8,12 +8,12 @@ void AGameBattler::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//¸üÐÂËùÓÐ¼¼ÄÜµÄCD
+	//æ›´æ–°æ‰€æœ‰æŠ€èƒ½çš„CD
 	for (auto kv : skills)
 	{
 		kv.Value->Update(DeltaTime);
 	}
-	//¸üÐÂ¹«¹²CD
+	//æ›´æ–°å…¬å…±CD
 	if (skill_common_cd > 0)
 	{
 		skill_common_cd -= DeltaTime;
@@ -31,7 +31,7 @@ void AGameBattler::Recover()
 void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 {
 
-	//²¥·ÅÊÜ»÷¶¯»­
+	//æ’­æ”¾å—å‡»åŠ¨ç”»
 	Fconfig_skill* skillData = skill->GetData();
 	if (skillData != NULL)
 	{
@@ -55,13 +55,13 @@ void AGameBattler::LearnSkill(FName skillId)
 {
 	if (UMyGameSingleton::Get().FindSkill(skillId) == NULL)
 	{
-		TRACE("ÎÞÐ§µÄ¼¼ÄÜID %s", *skillId.ToString());
+		TRACE("æ— æ•ˆçš„æŠ€èƒ½ID %s", *skillId.ToString());
 		return;
 	}
 
 	if (skills.Contains(skillId))
 	{
-		TRACE("ÒÑ¾­Ñ§¹ý´Ë¼¼ÄÜ %s", *skillId.ToString());
+		TRACE("å·²ç»å­¦è¿‡æ­¤æŠ€èƒ½ %s", *skillId.ToString());
 		return;
 	}
 
@@ -140,7 +140,7 @@ void AGameBattler::AnimNofity_Shoot()
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
 	if (effect != NULL)
 	{
-		//Í¶ÖÀÌå
+		//æŠ•æŽ·ä½“
 		if (effect->fly_body != nullptr)
 		{
 			AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body, GetTransform());
