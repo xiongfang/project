@@ -74,10 +74,14 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 		TargetPosition = Target->GetTransform().GetLocation();
 	}
 	FVector current = GetOwner()->GetTransform().GetLocation();
-	FVector dir = TargetPosition - current;
+	FVector dist = TargetPosition - current;
+	FVector dir = dist;
 	dir.Normalize();
+	dir = dir*speed*DeltaTime;
+	if (dir.SizeSquared() > dist.SizeSquared()) //·ÀÖ¹³¬³ö·¶Î§
+		dir = dist;
 
-	GetOwner()->AddActorWorldOffset(dir*speed*DeltaTime);
+	GetOwner()->AddActorWorldOffset(dir);
 	current = GetOwner()->GetTransform().GetLocation();
 
 	GetOwner()->SetActorRotation(FRotationMatrix::MakeFromX(TargetPosition - current).Rotator());
