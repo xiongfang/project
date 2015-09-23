@@ -79,11 +79,14 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName class_type;
 
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadOnly)
 	TArray<FName> equips;
 
+	UPROPERTY()
 	TMap<FName,int32> items;
 
+	UPROPERTY()
+	TMap<FName, UTask*> tasks;
 
 
 	int32 base_maxhp() override;
@@ -140,7 +143,13 @@ public:
 	UFUNCTION()
 	void OnActorOverlap(AActor* OtherActor);
 
-
+	//任务
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void TaskAdd(FName id);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void TaskFinish(FName id);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void TaskReward(FName id);
 
 	void SkillEffect(AGameBattler* User, USkill* skill) override;
 
@@ -150,7 +159,6 @@ public:
 	bool can_use_skill()override;
 
 	//相机控制
-	
 	USpringArmComponent* SprintArm;
 	FVector2D oldTouchPositions[2];
 	FVector2D oldTouchVector;

@@ -16,7 +16,7 @@ struct Fconfig_class;
 struct Fconfig_effect;
 struct Fconfig_monster;
 struct Fconfig_state;
-
+struct Fconfig_task;
 /**
  * 
  */
@@ -59,6 +59,8 @@ public:
 	UDataTable* config_monster;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_state;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* config_task;
 
 	static FName MakeKey(FName key1, FName key2);
 
@@ -74,4 +76,5 @@ public:
 	Fconfig_class* FindClass(FName id);
 	Fconfig_monster* FindMonster(FName id);
 	Fconfig_state* FindState(FName id);
+	Fconfig_task* FindTask(FName id);
 };

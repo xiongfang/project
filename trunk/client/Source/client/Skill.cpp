@@ -105,3 +105,8 @@ Fconfig_state* UState::GetData()
 {
 	return UMyGameSingleton::Get().FindState(id);
 }
+
+Fconfig_task* UTask::GetData()
+{
+	return UMyGameSingleton::Get().FindTask(id);
+}

@@ -96,3 +96,8 @@ Fconfig_state* UMyGameSingleton::FindState(FName id)
 {
 	return config_state->FindRow<Fconfig_state>(id, ContextString, false);
 }
+
+Fconfig_task* UMyGameSingleton::FindTask(FName id)
+{
+	return config_task->FindRow<Fconfig_task>(id, ContextString, false);
+}

@@ -646,3 +646,45 @@ bool AMyCharacter::can_use_skill()
 		return false;
 	return true;
 }
+
+
+void AMyCharacter::TaskAdd(FName id)
+{
+	if (tasks.Contains(id))
+	{
+		UE_LOG(client, Warning, TEXT("Task Has Bean Added %s"), *id.ToString());
+		return;
+	}
+
+	UTask* t = NewObject<UTask>();
+	t->id = id;
+	tasks.Add(id, t);
+}
+
+void AMyCharacter::TaskFinish(FName id)
+{
+	if (!tasks.Contains(id))
+	{
+		UE_LOG(client, Warning, TEXT("Task  %s Not Found"), *id.ToString());
+		return;
+	}
+	UTask* t = tasks[id];
+	if (t->State == UTask::TaskState::GOING)
+		t->State = UTask::TaskState::FINISHED;
+}
+
+void AMyCharacter::TaskReward(FName id)
+{
+	if (!tasks.Contains(id))
+	{
+		UE_LOG(client, Warning, TEXT("Task  %s Not Found"), *id.ToString());
+		return;
+	}
+	UTask* t = tasks[id];
+	if (t->State != UTask::TaskState::FINISHED)
+		return;
+	for (auto itemData : t->GetData()->rewards)
+	{
+		this->ItemAdd(itemData.Name, itemData.Num);
+	}
+}

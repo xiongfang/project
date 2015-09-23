@@ -78,3 +78,28 @@ public:
 
 	
 };
+
+
+
+UCLASS()
+class UTask :public UObject
+{
+	GENERATED_BODY()
+public:
+	UENUM()
+	enum class TaskState :uint8
+	{
+		GOING,
+		FINISHED
+	};
+
+	UPROPERTY()
+	FName id;
+
+	UPROPERTY()
+	TaskState State;
+
+	Fconfig_task* GetData();
+
+	
+};

@@ -165,7 +165,7 @@ public:
 		TAssetPtr<UAnimMontage> close_weapon;
 };
 
-USTRUCT(BlueprintType)
+USTRUCT()
 struct FStateChange
 {
 	GENERATED_USTRUCT_BODY()
@@ -353,4 +353,27 @@ public:
 		float time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float shock_release_prob;
+};
+
+
+USTRUCT()
+struct FItem
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 Num;
+};
+
+USTRUCT(BlueprintType)
+struct CLIENT_API Fconfig_task : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FItem> rewards;
 };
