@@ -114,6 +114,8 @@ AMyCharacter::AMyCharacter()
 
 	State = ActionState::Idle;
 	Target = NULL;
+
+	fingerState[0] = fingerState[1] = false;
 }
 
 // Called when the game starts or when spawned
@@ -134,19 +136,110 @@ void AMyCharacter::BeginPlay()
 
 	//完全回复
 	Recover();
+
+	SprintArm = FindComponentByClass<USpringArmComponent>();
 }
 
 // Called every frame
 void AMyCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+
+	APlayerController*Controller = Cast<APlayerController>(this->GetController());
+	if (Controller != NULL)
+	{
+		float client_camera_scale_min = 150.0f, client_camera_scale_max = 350.0f;
+		//桌面平台鼠标控制
+		{
+			if (Controller->IsInputKeyDown(FKey("G")))
+			{
+				Controller->AddYawInput(90 * DeltaTime);
+			}
+			if (Controller->IsInputKeyDown(FKey("H")))
+			{
+				float scale = DeltaTime * 500;
+				SprintArm->TargetArmLength += scale;
+				SprintArm->TargetArmLength = FMath::Clamp(SprintArm->TargetArmLength, client_camera_scale_min, client_camera_scale_max);
+			}
+			if (Controller->IsInputKeyDown(FKey("J")))
+			{
+				float scale = DeltaTime * 500;
+				SprintArm->TargetArmLength -= scale;
+				SprintArm->TargetArmLength = FMath::Clamp(SprintArm->TargetArmLength, client_camera_scale_min, client_camera_scale_max);
+			}
+		}
+
+		bool FingerPressed[2];
+
+		FVector2D NewLocation[2];
+
+		Controller->GetInputTouchState(ETouchIndex::Touch1, NewLocation[0].X, NewLocation[0].Y, FingerPressed[0]);
+		Controller->GetInputTouchState(ETouchIndex::Touch2, NewLocation[1].X, NewLocation[1].Y, FingerPressed[1]);
+
+		//旋转以及移动
+		if (FingerPressed[0] && FingerPressed[1])
+		{
+			if (!fingerState[1]) {
+				oldTouchPositions[0] = NewLocation[0];
+				oldTouchPositions[1] = NewLocation[1];
+				oldTouchVector = (oldTouchPositions[0] - oldTouchPositions[1]);
+				oldTouchDistance = oldTouchVector.Size();
+
+				fingerState[0] = fingerState[1] = true;
+			}
+			else
+			{
+				FVector2D newTouchVector = NewLocation[0] - NewLocation[1];
+				float newTouchDistance = newTouchVector.Size();
+
+				float rotate = FMath::Asin(FMath::Clamp((oldTouchVector.Y * newTouchVector.X - oldTouchVector.X * newTouchVector.Y) / oldTouchDistance / newTouchDistance, -1.0f, 1.0f)) / 0.0174532924f;
+
+				/*FVector hitPos = FVector::ZeroVector;
+
+				FVector Pos, Dir;
+				if (Controller->DeprojectScreenPositionToWorld(0.5f, 0.5f, Pos, Dir))
+				{
+					FHitResult HitInfo;
+					FCollisionQueryParams QParams;
+					FCollisionObjectQueryParams OParams;
+					if (GetWorld()->LineTraceSingle(HitInfo, Pos, Pos + Dir * 10240.f, QParams, OParams))
+					{
+						DrawDebugSphere(GetWorld(), HitInfo.ImpactPoint, 10, 10, FColor::Red, false, 1);
+
+					}
+					else
+					{
+					}
+					
+				}*/
+
+				float scale = (newTouchDistance - oldTouchDistance)*DeltaTime;
+				SprintArm->TargetArmLength += scale;
+				SprintArm->TargetArmLength = FMath::Clamp(SprintArm->TargetArmLength, client_camera_scale_min, client_camera_scale_max);
+
+				Controller->AddYawInput(rotate);
+
+				oldTouchPositions[0] = NewLocation[0];
+
+				oldTouchPositions[1] = NewLocation[1];
+				oldTouchVector = newTouchVector;
+				oldTouchDistance = newTouchDistance;
+			}
+		}
+		else
+		{
+			fingerState[0] = fingerState[1] = false;
+		}
+	}
 }
 
 // Called to bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
-
+	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AMyCharacter::OnTouchPressed);
+	InputComponent->BindTouch(EInputEvent::IE_Released, this, &AMyCharacter::OnTouchReleased);
+	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AMyCharacter::OnTouchMove);
 }
 
 int32 AMyCharacter::base_maxhp()
@@ -555,4 +648,36 @@ bool AMyCharacter::can_use_skill()
 	if (!IsWeaponOpen())
 		return false;
 	return true;
+}
+
+
+void AMyCharacter::OnTouchPressed(ETouchIndex::Type index, FVector location)
+{
+	if (index == ETouchIndex::Touch1)
+	{
+		oldTouchPositions[0] = FVector2D(location.X,location.Y);
+	}
+	if (index == ETouchIndex::Touch2)
+	{
+		oldTouchPositions[1] = FVector2D(location.X, location.Y);
+		oldTouchVector = (oldTouchPositions[1] - oldTouchPositions[0]);
+		oldTouchDistance = oldTouchVector.Size();
+	}
+}
+
+void AMyCharacter::OnTouchReleased(ETouchIndex::Type index, FVector location)
+{
+
+}
+
+void AMyCharacter::OnTouchMove(ETouchIndex::Type index, FVector location)
+{
+	//FVector2D newTouchPositions[] = {
+	//	Input.GetTouch(0).position,
+	//	Input.GetTouch(1).position
+	//};
+	//Vector2 newTouchVector = newTouchPositions[0] - newTouchPositions[1];
+	//float newTouchDistance = newTouchVector.magnitude;
+
+	//float rotate = Mathf.Asin(Mathf.Clamp((oldTouchVector.y * newTouchVector.x - oldTouchVector.x * newTouchVector.y) / oldTouchDistance / newTouchDistance, -1f, 1f)) / 0.0174532924f*DataSet.world.client_touch_rotate_factor;
 }

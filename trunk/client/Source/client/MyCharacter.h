@@ -148,4 +148,16 @@ public:
 
 	bool can_move()override;
 	bool can_use_skill()override;
+
+	//相机控制
+	
+	USpringArmComponent* SprintArm;
+	FVector2D oldTouchPositions[2];
+	FVector2D oldTouchVector;
+	bool fingerState[2];
+	float oldTouchDistance;
+
+	void OnTouchPressed(ETouchIndex::Type index, FVector location);
+	void OnTouchReleased(ETouchIndex::Type index, FVector location);
+	void OnTouchMove(ETouchIndex::Type index, FVector location);
 }; 
