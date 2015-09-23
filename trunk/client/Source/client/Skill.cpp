@@ -17,7 +17,17 @@ void USkill::Update(float deltaTime)
 		cd = FMath::Max(cd, 0.0f);
 	}
 }
-
+TArray<AGameBattler*> USkill::ReceiveSkillGetTargets_Implementation(AGameBattler* User, USkill* skill)
+{
+	TArray<AGameBattler*> targets;
+	if (User->Target!=NULL)
+		targets.Add(User->Target);
+	return targets;
+}
+void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattler* User, USkill* skill)
+{
+	Target->hp -= User->patk();
+}
 
 UProjectile::UProjectile()
 {

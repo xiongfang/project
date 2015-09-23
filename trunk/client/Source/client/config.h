@@ -164,6 +164,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimMontage> close_weapon;
 };
+
+USTRUCT(BlueprintType)
+struct FStateChange
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float rate;
+};
+
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_skill : public FTableRowBase
 {
@@ -187,6 +199,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float range; //攻击范围
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FStateChange> state_plus; //附加技能
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FStateChange> state_minus; //移除技能
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<USkill> prefab; //重写的技能
 
 	enum eSelect
 	{

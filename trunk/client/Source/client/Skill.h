@@ -2,7 +2,12 @@
 #include "MyGameSingleton.h"
 #include "Skill.generated.h"
 
-UCLASS()
+
+
+class AGameBattler;
+
+
+UCLASS(Blueprintable)
 class USkill :public UObject
 {
 	GENERATED_BODY()
@@ -20,10 +25,14 @@ public:
 	
 	void Update(float deltaTime);
 
+	TArray<AGameBattler*> ReceiveSkillGetTargets_Implementation(AGameBattler* User, USkill* skill);
+	void ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattler* User, USkill* skill);
+
+	UFUNCTION(BlueprintNativeEvent)
+		TArray<AGameBattler*> ReceiveSkillGetTargets(AGameBattler* User,USkill* skill);
+	UFUNCTION(BlueprintNativeEvent)
+		void ReceiveSkillEffect(AGameBattler* Target,AGameBattler* User, USkill* skill);
 };
-
-
-class AGameBattler;
 
 UCLASS()
 class UProjectile :public UActorComponent

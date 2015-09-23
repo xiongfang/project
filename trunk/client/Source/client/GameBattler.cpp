@@ -57,14 +57,15 @@ void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 		}
 	}
 
-	ReceiveSkillEffect(User, skill);
+	skill->ReceiveSkillEffect(this,User, skill);
 
 	mp = FMath::Clamp(mp, 0, maxmp());
 	hp = FMath::Clamp(hp, 0, maxhp());
 }
 void AGameBattler::LearnSkill(FName skillId)
 {
-	if (UMyGameSingleton::Get().FindSkill(skillId) == NULL)
+	Fconfig_skill* skill = UMyGameSingleton::Get().FindSkill(skillId);
+	if (skill == NULL)
 	{
 		TRACE("无效的技能ID %s", *skillId.ToString());
 		return;
@@ -77,7 +78,17 @@ void AGameBattler::LearnSkill(FName skillId)
 	}
 
 
-	USkill* s = NewObject<USkill>();
+	USkill* s = NULL;
+	
+	if (skill->prefab != NULL)
+	{
+		s = NewObject<USkill>(this, skill->prefab);
+	}
+	else
+	{
+		s = NewObject<USkill>();
+	}
+	
 	s->id = skillId;
 	s->level = 1;
 
@@ -143,9 +154,13 @@ void AGameBattler::SelectTarget(AGameBattler* User)
 
 void AGameBattler::AnimNofity_SkillEffect()
 {
-	if (Target != NULL)
+	if (current_skill == NULL)
+		return;
+	TArray<AGameBattler*> targets = current_skill->ReceiveSkillGetTargets(this, current_skill);
+
+	for (auto battler : targets)
 	{
-		Target->SkillEffect(this, current_skill);
+		battler->SkillEffect(this, current_skill);
 	}
 }
 

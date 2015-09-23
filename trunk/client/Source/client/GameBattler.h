@@ -76,8 +76,10 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		virtual void SkillEffect(AGameBattler* User, USkill* skill);
 
-	UFUNCTION(BlueprintImplementableEvent)
-		void ReceiveSkillEffect(AGameBattler* User, USkill* skill);
+	//UFUNCTION(BlueprintImplementableEvent)
+	//	TArray<AGameBattler*> ReceiveSkillGetTargets(USkill* skill);
+	//UFUNCTION(BlueprintImplementableEvent)
+	//	void ReceiveSkillEffect(AGameBattler* User, USkill* skill);
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void Attack(FName skillId);
