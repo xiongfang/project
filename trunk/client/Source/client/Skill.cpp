@@ -85,3 +85,9 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 		GetOwner()->Destroy();
 	}
 }
+
+
+Fconfig_state* UState::GetData()
+{
+	return UMyGameSingleton::Get().FindState(id);
+}

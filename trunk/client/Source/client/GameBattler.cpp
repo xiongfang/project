@@ -19,6 +19,21 @@ void AGameBattler::Tick(float DeltaTime)
 		skill_common_cd -= DeltaTime;
 		skill_common_cd = FMath::Max(0.0f, skill_common_cd);
 	}
+
+	TArray<FName> removedSkill;
+	//更新所有状态的CD
+	for (auto kv : states)
+	{
+		kv.Value->cd -= DeltaTime;
+		if (kv.Value->cd <= 0)
+		{
+			removedSkill.Add(kv.Key);
+		}
+	}
+	for (auto k : removedSkill)
+	{
+		RemoveState(k);
+	}
 }
 
 void AGameBattler::Recover()
@@ -30,7 +45,6 @@ void AGameBattler::Recover()
 
 void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 {
-
 	//播放受击动画
 	Fconfig_skill* skillData = skill->GetData();
 	if (skillData != NULL)
@@ -44,9 +58,6 @@ void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 	}
 
 	ReceiveSkillEffect(User, skill);
-
-	User->mp = FMath::Clamp(User->mp, 0, User->maxmp());
-	User->hp = FMath::Clamp(User->hp, 0, User->maxhp());
 
 	mp = FMath::Clamp(mp, 0, maxmp());
 	hp = FMath::Clamp(hp, 0, maxhp());
@@ -75,13 +86,22 @@ void AGameBattler::LearnSkill(FName skillId)
 
 bool AGameBattler::can_move()
 {
+	for (auto kv : states)
+	{
+		if (kv.Value->GetData()->cant_move)
+			return false;
+	}
 	return true;
 }
 bool AGameBattler::can_use_skill()
 {
 	if (skill_common_cd>0)
 		return false;
-
+	for (auto kv : states)
+	{
+		if (kv.Value->GetData()->cant_use_skill)
+			return false;
+	}
 	return true;
 }
 bool AGameBattler::can_use_skill_target(FName skillId)
@@ -152,4 +172,106 @@ void AGameBattler::AnimNofity_Shoot()
 			}
 		}
 	}
+}
+
+void AGameBattler::AddState(FName stateId)
+{
+	if (UMyGameSingleton::Get().FindState(stateId) == NULL)
+	{
+		TRACE("无效的状态ID %s", *stateId.ToString());
+		return;
+	}
+
+	if (states.Contains(stateId))
+	{
+		states[stateId]->cd = states[stateId]->GetData()->time;
+		return;
+	}
+		
+	UState* s = NewObject<UState>();
+	s->id = stateId;
+	s->cd = s->GetData()->time;
+
+	states.Add(stateId, s);
+}
+void AGameBattler::RemoveState(FName stateId)
+{
+	if (states.Contains(stateId))
+	{
+		UState* s = states[stateId];
+		if (s->PS != NULL)
+		{
+			s->PS->Destroy();
+			s->PS = NULL;
+		}	
+	}
+	states.Remove(stateId); 
+}
+
+
+
+int32 AGameBattler::maxhp()
+{ 
+	int32 base = base_maxhp(); 
+	for (auto kv : states)
+	{
+		base = base*kv.Value->GetData()->hp_percent + kv.Value->GetData()->hp_plus;
+	}
+
+	return base;
+}
+
+int32 AGameBattler::maxmp()
+{ 
+	int32 base = base_maxmp();
+	for (auto kv : states)
+	{
+		base = base + kv.Value->GetData()->mp_plus;
+	}
+
+	return base;
+}
+
+int32 AGameBattler::patk()
+{
+	int32 base = base_patk();
+	for (auto kv : states)
+	{
+		base = base*kv.Value->GetData()->patk_percent + kv.Value->GetData()->patk_plus;
+	}
+
+	return base;
+}
+
+int32 AGameBattler::matk()
+{
+	int32 base = base_matk();
+	for (auto kv : states)
+	{
+		base = base*kv.Value->GetData()->matk_percent + kv.Value->GetData()->matk_plus;
+	}
+
+	return base;
+}
+
+int32 AGameBattler::pdef()
+{
+	int32 base = base_pdef();
+	for (auto kv : states)
+	{
+		base = base + kv.Value->GetData()->pdef_plus;
+	}
+
+	return base;
+}
+
+int32 AGameBattler::mdef()
+{ 
+	int32 base = base_mdef();
+	for (auto kv : states)
+	{
+		base = base + kv.Value->GetData()->mdef_plus;
+	}
+
+	return base;
 }

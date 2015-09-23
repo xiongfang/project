@@ -3,6 +3,7 @@
 #include "GameBattler.generated.h"
 
 class USkill;
+class UState;
 
 UCLASS(abstract)
 class AGameBattler :public ACharacter
@@ -34,21 +35,23 @@ public:
 		virtual int32 base_mdef(){ return 0; }
 
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual int32 maxhp(){ return base_maxhp(); }
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual int32 maxmp(){ return base_maxmp(); }
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual int32 patk(){ return base_patk(); }
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual int32 matk(){ return base_matk(); }
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual int32 pdef(){ return base_pdef(); }
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual int32 mdef(){ return base_mdef(); }
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 maxhp();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 maxmp();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 patk();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 matk();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 pdef();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 mdef();
 
 	UPROPERTY(Category = Data, VisibleAnywhere)
 		TMap<FName, USkill*> skills;
+	UPROPERTY(Category = Data, VisibleAnywhere)
+		TMap<FName, UState*> states;
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		AGameBattler* Target;  //当前选择的目标
@@ -92,4 +95,10 @@ public:
 		virtual void AnimNofity_SkillEffect();
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		virtual void AnimNofity_Shoot();
+
+	//状态
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void AddState(FName stateId);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void RemoveState(FName stateId);
 };

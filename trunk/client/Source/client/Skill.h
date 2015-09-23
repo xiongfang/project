@@ -51,3 +51,21 @@ public:
 	void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)override;
 
 };
+
+UCLASS()
+class UState :public UObject
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	FName id;
+
+	UPROPERTY()
+	AActor* PS;
+
+	float cd;
+
+	Fconfig_state* GetData();
+
+	
+};

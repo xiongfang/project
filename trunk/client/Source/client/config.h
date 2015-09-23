@@ -14,11 +14,9 @@ struct CLIENT_API Fconfig_item : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName show_name;
+		TAssetPtr<UTexture> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -58,8 +56,6 @@ struct CLIENT_API Fconfig_race : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString show_name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 sex;
@@ -85,7 +81,7 @@ struct CLIENT_API Fconfig_equip : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FString class_type;
+		TArray<FName> class_type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 slot;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -174,7 +170,7 @@ struct CLIENT_API Fconfig_skill : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName show_name;
+		TAssetPtr<UTexture> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -271,8 +267,6 @@ struct CLIENT_API Fconfig_monster : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName show_name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName race;
@@ -301,4 +295,44 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AGameMonster> prefab;
+};
+
+
+USTRUCT(BlueprintType)
+struct CLIENT_API Fconfig_state : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UTexture> icon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float patk_percent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 patk_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float matk_percent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 matk_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float hp_percent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hp_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mp_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 pdef_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mdef_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool cant_move;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool cant_use_skill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FName> state_minus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float shock_release_prob;
 };

@@ -91,3 +91,8 @@ Fconfig_monster* UMyGameSingleton::FindMonster(FName id)
 {
 	return config_monster->FindRow<Fconfig_monster>(id, ContextString, false);
 }
+
+Fconfig_state* UMyGameSingleton::FindState(FName id)
+{
+	return config_state->FindRow<Fconfig_state>(id, ContextString, false);
+}
