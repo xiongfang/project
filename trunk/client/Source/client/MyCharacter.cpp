@@ -241,7 +241,9 @@ void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompone
 
 int32 AMyCharacter::base_maxhp()
 {
-	int32 maxhp = 100 + level * 50;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 maxhp = data->hp + (level-1)*data->hp_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -256,8 +258,9 @@ int32 AMyCharacter::base_maxhp()
 }
 int32 AMyCharacter::base_maxmp()
 {
-
-	int32 maxmp = 100 + level * 50;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 maxmp = data->mp + (level - 1)*data->mp_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -273,7 +276,9 @@ int32 AMyCharacter::base_maxmp()
 
 int32 AMyCharacter::base_patk()
 {
-	int32 rt = level * 20;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 rt = data->patk + (level - 1)*data->patk_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -289,7 +294,9 @@ int32 AMyCharacter::base_patk()
 
 int32 AMyCharacter::base_matk()
 {
-	int32 rt = level * 20;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 rt = data->matk + (level - 1)*data->matk_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -306,7 +313,10 @@ int32 AMyCharacter::base_matk()
 
 int32 AMyCharacter::base_pdef()
 {
-	int32 rt = level * 5;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 rt = data->pdef + (level - 1)*data->pdef_add;
+
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -322,7 +332,9 @@ int32 AMyCharacter::base_pdef()
 
 int32 AMyCharacter::base_mdef()
 {
-	int32 rt = level * 5;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 rt = data->mdef + (level - 1)*data->mdef_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -337,7 +349,9 @@ int32 AMyCharacter::base_mdef()
 }
 int32 AMyCharacter::base_hit()
 {
-	int32 rt = level * 5;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 rt = data->hit + (level - 1)*data->hit_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
@@ -352,7 +366,9 @@ int32 AMyCharacter::base_hit()
 }
 int32 AMyCharacter::base_eva()
 {
-	int32 rt = level * 5;
+	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
+	check(data);
+	int32 rt = data->eva + (level - 1)*data->eva_add;
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{

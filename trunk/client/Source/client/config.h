@@ -78,6 +78,40 @@ struct CLIENT_API Fconfig_class : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hp_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mp_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 patk;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 patk_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 matk;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 matk_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 pdef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 pdef_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mdef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 mdef_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hit;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hit_add;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 eva;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 eva_add;
+
 };
 
 

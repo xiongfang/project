@@ -62,6 +62,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_task;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_hp;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_mp;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_patk;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_matk;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_pdef;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_mdef;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_hit;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	UCurveTable* config_curve_eva;
+
 	static FName MakeKey(FName key1, FName key2);
 
 	Fconfig_armor_map* FindArmorMap(FName equipId, FName race);
