@@ -634,6 +634,31 @@ bool AMyCharacter::ItemEnough(FName id, int32 count)
 	return items[id] >= count;
 }
 
+TArray<FItem> AMyCharacter::GetItems()
+{
+	TArray<FItem> data;
+	for (auto kv : items)
+	{
+		if (kv.Value > 0)
+		{
+			FItem item;
+			item.Name = kv.Key;
+			item.Num = kv.Value;
+			data.Add(item);
+		}
+	}
+	return data;
+}
+
+TArray<USkill*> AMyCharacter::GetSkills()
+{
+	TArray<USkill*> data;
+	for (auto kv : skills)
+	{
+		data.Add(kv.Value);
+	}
+	return data;
+}
 
 void AMyCharacter::OnActorOverlap(AActor* OtherActor)
 {

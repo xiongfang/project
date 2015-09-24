@@ -166,4 +166,10 @@ public:
 	FVector2D oldTouchVector;
 	bool fingerState[2];
 	float oldTouchDistance;
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		TArray<FItem> GetItems();
+	
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		TArray<USkill*> GetSkills();
 }; 
