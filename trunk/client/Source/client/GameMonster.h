@@ -37,6 +37,8 @@ public:
 	int32 base_matk() override;
 	int32 base_pdef() override;
 	int32 base_mdef() override;
+	int32 base_hit() override;
+	int32 base_eva() override;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void InitCreate(FName monsterId);

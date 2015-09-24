@@ -335,6 +335,36 @@ int32 AMyCharacter::base_mdef()
 
 	return rt;
 }
+int32 AMyCharacter::base_hit()
+{
+	int32 rt = level * 5;
+
+	for (int32 i = 0; i < equips.Num(); i++)
+	{
+		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (data != NULL)
+		{
+			rt += data->hit_plus;
+		}
+	}
+
+	return rt;
+}
+int32 AMyCharacter::base_eva()
+{
+	int32 rt = level * 5;
+
+	for (int32 i = 0; i < equips.Num(); i++)
+	{
+		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (data != NULL)
+		{
+			rt += data->eva_plus;
+		}
+	}
+
+	return rt;
+}
 
 
 void AMyCharacter::Equip(FName id)

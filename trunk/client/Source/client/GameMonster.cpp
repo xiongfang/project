@@ -69,6 +69,14 @@ int32 AGameMonster::base_mdef()
 {
 	return GetData()->mdef;
 }
+int32 AGameMonster::base_hit()
+{
+	return GetData()->hit;
+}
+int32 AGameMonster::base_eva()
+{
+	return GetData()->eva;
+}
 
 void AGameMonster::InitCreate(FName id)
 {

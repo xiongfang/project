@@ -24,6 +24,16 @@ void AGameBattler::Tick(float DeltaTime)
 	//更新所有状态的CD
 	for (auto kv : states)
 	{
+		if (kv.Value->GetData()->time_schedule > 0)
+		{
+			kv.Value->schedule_timer += DeltaTime;
+			if (kv.Value->schedule_timer >= kv.Value->GetData()->time_schedule)
+			{
+				kv.Value->ReceiveTimeSchedule(this);
+				kv.Value->schedule_timer = 0.0f;
+			}
+		}
+
 		kv.Value->cd -= DeltaTime;
 		if (kv.Value->cd <= 0)
 		{
@@ -57,7 +67,7 @@ void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 		}
 	}
 
-	skill->ReceiveSkillEffect(this,User, skill);
+	skill->ReceiveSkillEffect(this,User);
 
 	mp = FMath::Clamp(mp, 0, maxmp());
 	hp = FMath::Clamp(hp, 0, maxhp());
@@ -123,7 +133,7 @@ bool AGameBattler::can_use_skill_target(FName skillId)
 		return false;
 
 	USkill* skill = skills[skillId];
-	if (skill->cd > 0)
+	if (skill->cd > 0 || mp < skill->GetData()->cost_mp)
 		return false;
 
 	return skill->GetData()->distance >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
@@ -135,9 +145,12 @@ void AGameBattler::Attack(FName skillId)
 	if (!can_use_skill_target(skillId))
 		return;
 
+	
 	current_skill = skills[skillId];
 	current_skill->cd = current_skill->GetData()->cd;
 	skill_common_cd = current_skill->GetData()->common_cd;
+	mp -= current_skill->GetData()->cost_mp;
+	mp = FMath::Clamp(mp, 0, maxmp());
 
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
 	if (effect != NULL)
@@ -156,7 +169,7 @@ void AGameBattler::AnimNofity_SkillEffect()
 {
 	if (current_skill == NULL)
 		return;
-	TArray<AGameBattler*> targets = current_skill->ReceiveSkillGetTargets(this, current_skill);
+	TArray<AGameBattler*> targets = current_skill->ReceiveSkillGetTargets(this);
 
 	for (auto battler : targets)
 	{
@@ -178,12 +191,30 @@ void AGameBattler::AnimNofity_Shoot()
 		//投掷体
 		if (effect->fly_body != nullptr)
 		{
-			AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body, GetTransform());
-			if (Projectile)
+			if (effect->fly_all_target)
 			{
-				UProjectile* pj = NewObject<UProjectile>(Projectile);
-				pj->RegisterComponent();
-				pj->InitCreate(this, Target, current_skill);
+				TArray<AGameBattler*> targets = current_skill->ReceiveSkillGetTargets(this);
+
+				for (auto battler : targets)
+				{
+					AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body, GetTransform());
+					if (Projectile)
+					{
+						UProjectile* pj = NewObject<UProjectile>(Projectile);
+						pj->RegisterComponent();
+						pj->InitCreate(this, battler, current_skill);
+					}
+				}
+			}
+			else
+			{
+				AActor* Projectile = GetWorld()->SpawnActor<AActor>(effect->fly_body, GetTransform());
+				if (Projectile)
+				{
+					UProjectile* pj = NewObject<UProjectile>(Projectile);
+					pj->RegisterComponent();
+					pj->InitCreate(this, Target, current_skill);
+				}
 			}
 		}
 	}
@@ -191,7 +222,8 @@ void AGameBattler::AnimNofity_Shoot()
 
 void AGameBattler::AddState(FName stateId)
 {
-	if (UMyGameSingleton::Get().FindState(stateId) == NULL)
+	Fconfig_state* state = UMyGameSingleton::Get().FindState(stateId);
+	if (state == NULL)
 	{
 		TRACE("无效的状态ID %s", *stateId.ToString());
 		return;
@@ -202,10 +234,27 @@ void AGameBattler::AddState(FName stateId)
 		states[stateId]->cd = states[stateId]->GetData()->time;
 		return;
 	}
-		
-	UState* s = NewObject<UState>();
+	
+	UState* s = NULL;
+	if (state->prefab != NULL)
+	{
+		s = NewObject<UState>(this, state->prefab);
+	}
+	else
+	{
+		s = NewObject<UState>();
+	}
 	s->id = stateId;
 	s->cd = s->GetData()->time;
+	if (state->ps != NULL)
+	{
+		state->ps.ToStringReference().TryLoad();
+		UParticleSystemComponent* ps = NewObject<UParticleSystemComponent>(this);
+		ps->SetTemplate(state->ps.Get());
+		ps->RegisterComponent();
+		s->PS = ps;
+		ps->AttachTo(RootComponent);
+	}
 
 	states.Add(stateId, s);
 }
@@ -216,9 +265,9 @@ void AGameBattler::RemoveState(FName stateId)
 		UState* s = states[stateId];
 		if (s->PS != NULL)
 		{
-			s->PS->Destroy();
+			s->PS->UnregisterComponent();
 			s->PS = NULL;
-		}	
+		}
 	}
 	states.Remove(stateId); 
 }
@@ -286,6 +335,27 @@ int32 AGameBattler::mdef()
 	for (auto kv : states)
 	{
 		base = base + kv.Value->GetData()->mdef_plus;
+	}
+
+	return base;
+}
+
+int32 AGameBattler::hit()
+{
+	int32 base = base_hit();
+	for (auto kv : states)
+	{
+		base = base + kv.Value->GetData()->hit_plus;
+	}
+
+	return base;
+}
+int32 AGameBattler::eva()
+{
+	int32 base = base_eva();
+	for (auto kv : states)
+	{
+		base = base + kv.Value->GetData()->eva_plus;
 	}
 
 	return base;

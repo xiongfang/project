@@ -11,9 +11,18 @@ class AGameBattler :public ACharacter
 	GENERATED_BODY()
 
 public:
+	UENUM()
+	enum class CampType :uint8
+	{
+		Party,
+		Enemy
+	};
+
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+		CampType camp;
 
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		int32 hp;
@@ -21,6 +30,10 @@ public:
 		int32 mp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		FName race;
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool IsEnemy(AGameBattler* battler){ check(battler);  return battler->camp != camp; }
+
 
 		virtual int32 base_maxhp(){ return 0; }
 
@@ -33,6 +46,8 @@ public:
 		virtual int32 base_pdef(){ return 0; }
 
 		virtual int32 base_mdef(){ return 0; }
+		virtual int32 base_hit(){ return 0; }
+		virtual int32 base_eva(){ return 0; }
 
 
 		UFUNCTION(Category = Logic, BlueprintCallable)
@@ -47,6 +62,10 @@ public:
 			virtual int32 pdef();
 		UFUNCTION(Category = Logic, BlueprintCallable)
 			virtual int32 mdef();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 hit();
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual int32 eva();
 
 	UPROPERTY(Category = Data, VisibleAnywhere)
 		TMap<FName, USkill*> skills;

@@ -8,17 +8,29 @@
 /**
  * 
  */
+
+UENUM()
+enum class ItemType :uint8
+{
+	Money,
+	Item,
+	Equip
+};
+
+
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_item : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UTexture> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 type;
+		ItemType type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName child_key;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -40,13 +52,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString script;
 
-
-	enum ItemType
-	{
-		Money,
-		Item,
-		Equip
-	};
+	
 };
 
 
@@ -96,6 +102,10 @@ public:
 		int32 pdef_plus;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 mdef_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hit_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 eva_plus;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 double_hand;
@@ -176,11 +186,42 @@ public:
 		float rate;
 };
 
+UENUM()
+enum class SkillSelectTargetType:uint8
+{
+	Battler,
+	Position
+};
+UENUM()
+enum class SkillEffectTargetType :uint8
+{
+	Enemy,
+	Friend,
+	Self
+};
+
+UENUM()
+enum class SkillRangeType :uint8
+{
+	None,
+	Self,
+	Target
+};
+UENUM()
+enum class SkillDamageType :uint8
+{
+	Physic, //物理
+	Magic	//魔法
+};
+
+
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_skill : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UTexture> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -190,34 +231,34 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float common_cd;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 select; //选择目标类型
+		SkillSelectTargetType select_type; //选择目标类型
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 target; //目标类型
+		SkillEffectTargetType target_type; //目标类型
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		SkillRangeType range_type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float range;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		SkillDamageType damage_type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool must_hit;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool ignoring_defense;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float atk_percent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float atk_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 cost_mp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float distance; //释放距离
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float range; //攻击范围
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FStateChange> state_plus; //附加技能
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FStateChange> state_minus; //移除技能
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<USkill> prefab; //重写的技能
-
-	enum eSelect
-	{
-		Battler,
-		Position
-	};
-
-	enum eTarget
-	{
-		Self,
-		Friend,
-		Enemy
-	};
 };
 
 USTRUCT(BlueprintType)
@@ -232,6 +273,8 @@ public:
 		UAnimMontage* start_weapon_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* start_target_anim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool fly_all_target;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AActor> fly_body;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -310,6 +353,10 @@ public:
 		int32 pdef;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 mdef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hit;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 eva;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AGameMonster> prefab;
@@ -323,6 +370,8 @@ struct CLIENT_API Fconfig_state : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UTexture> icon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UParticleSystem> ps;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -344,6 +393,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 mdef_plus;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 hit_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 eva_plus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool cant_move;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool cant_use_skill;
@@ -353,6 +406,11 @@ public:
 		float time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float shock_release_prob;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float time_schedule;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<UState> prefab;
 };
 
 

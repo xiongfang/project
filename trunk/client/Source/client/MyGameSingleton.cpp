@@ -65,7 +65,7 @@ Fconfig_item* UMyGameSingleton::FindItem(FName itemId)
 Fconfig_equip* UMyGameSingleton::FindEquip(FName itemId)
 {
 	Fconfig_item* item = FindItem(itemId);
-	if (item != NULL && item->type == Fconfig_item::Equip)
+	if (item != NULL && item->type == ItemType::Equip)
 	{
 		return config_equip->FindRow<Fconfig_equip>(item->child_key, ContextString, false);
 	}

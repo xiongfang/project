@@ -25,13 +25,13 @@ public:
 	
 	void Update(float deltaTime);
 
-	TArray<AGameBattler*> ReceiveSkillGetTargets_Implementation(AGameBattler* User, USkill* skill);
-	void ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattler* User, USkill* skill);
+	TArray<AGameBattler*> ReceiveSkillGetTargets_Implementation(AGameBattler* User);
+	void ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattler* User);
 
 	UFUNCTION(BlueprintNativeEvent)
-		TArray<AGameBattler*> ReceiveSkillGetTargets(AGameBattler* User,USkill* skill);
+		TArray<AGameBattler*> ReceiveSkillGetTargets(AGameBattler* User);
 	UFUNCTION(BlueprintNativeEvent)
-		void ReceiveSkillEffect(AGameBattler* Target,AGameBattler* User, USkill* skill);
+		void ReceiveSkillEffect(AGameBattler* Target,AGameBattler* User);
 };
 
 UCLASS()
@@ -61,7 +61,7 @@ public:
 
 };
 
-UCLASS()
+UCLASS(Blueprintable)
 class UState :public UObject
 {
 	GENERATED_BODY()
@@ -70,13 +70,16 @@ public:
 	FName id;
 
 	UPROPERTY()
-	AActor* PS;
+	UParticleSystemComponent* PS;
 
 	float cd;
+	float schedule_timer;
 
 	Fconfig_state* GetData();
 
-	
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ReceiveTimeSchedule(AGameBattler* User);
 };
 
 
@@ -100,6 +103,4 @@ public:
 	TaskState State;
 
 	Fconfig_task* GetData();
-
-	
 };
