@@ -26,7 +26,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UTexture> icon;
+		TAssetPtr<UTexture2D> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -257,7 +257,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UTexture> icon;
+		TAssetPtr<UTexture2D> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString description;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -403,7 +403,7 @@ struct CLIENT_API Fconfig_state : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UTexture> icon;
+		TAssetPtr<UTexture2D> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UParticleSystem> ps;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -91,10 +91,14 @@ void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattle
 	if (hit)
 	{
 		int atk = skillData->damage_type == SkillDamageType::Physic ? User->patk(): User->matk();
-		atk = atk*(1+skillData->atk_percent) + skillData->atk_plus;
+		atk = atk*skillData->atk_percent + skillData->atk_plus;
 		int def = skillData->damage_type == SkillDamageType::Physic ? Target->pdef(): Target->mdef();
 		int dmg = skillData->ignoring_defense ? atk:atk * (def / (5000.0f + def));
 		Target->hp -= dmg;
+		if (dmg>=0)
+			Target->ShowDamageUI(FString::Printf(TEXT("%d"),dmg),FColor::Red);
+		else
+			Target->ShowDamageUI(FString::Printf(TEXT("%d"), dmg), FColor::Green);
 
 		//Ôö¼Óbuff
 		for (auto buff : skillData->state_plus)
@@ -108,6 +112,10 @@ void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattle
 			if (buff.rate>FMath::FRand())
 				Target->RemoveState(buff.Name);
 		}
+	}
+	else
+	{
+		Target->ShowDamageUI(TEXT("Î´ÃüÖÐ"));
 	}
 }
 

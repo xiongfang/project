@@ -122,4 +122,7 @@ public:
 		void AddState(FName stateId);
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void RemoveState(FName stateId);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void ShowDamageUI(const FString& dmg, const FColor& color=FColor::White);
 };

@@ -14,12 +14,13 @@ class USkill :public UObject
 
 
 public:
-	UPROPERTY()
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	FName id;
-	UPROPERTY()
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	int32 level;
-
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	float cd;
+
 
 	Fconfig_skill* GetData();
 	

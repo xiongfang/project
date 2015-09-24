@@ -87,6 +87,7 @@ void AGameBattler::LearnSkill(FName skillId)
 		return;
 	}
 
+	skill->icon.LoadSynchronous();
 
 	USkill* s = NULL;
 	
