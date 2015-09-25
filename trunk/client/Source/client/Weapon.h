@@ -1,6 +1,7 @@
 #pragma once
-
+#include "config.h"
 #include "Weapon.generated.h"
+
 
 class AMyCharacter;
 class ASkeletalMeshActor;
@@ -30,8 +31,9 @@ public:
 	virtual void AttackStart(){}
 	virtual void AttackEnd(){}
 
+	virtual void PlayAnim(UAnimMontage* anim){};
 
-	static UWeaponBase* Create(AMyCharacter* Parent, int32 weaponType);
+	static UWeaponBase* Create(AMyCharacter* Parent, WeaponType weaponType);
 };
 
 UCLASS()
@@ -93,4 +95,5 @@ public:
 
 	virtual void AttackStart();
 	virtual void AttackEnd();
+	virtual void PlayAnim(UAnimMontage* anim);
 };

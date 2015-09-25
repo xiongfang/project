@@ -115,6 +115,17 @@ public:
 };
 
 
+UENUM()
+enum class WeaponType :uint8
+{
+	Sword,
+	LongSword,
+	Bow,
+	Shield
+};
+
+
+
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_equip : public FTableRowBase
 {
@@ -142,12 +153,12 @@ public:
 		int32 eva_plus;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 double_hand;
+		bool double_hand;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 weapon_type;
+		WeaponType weapon_type;
 
-	enum EquipPos
+	enum EquipSlot
 	{
 		Head,
 		Body,
@@ -155,15 +166,6 @@ public:
 		Feet,
 		MainHand,
 		SecondHand
-	};
-
-	enum WeaponType
-	{
-		Sword,
-		LongSword,
-		Bow,
-		Shield,
-		Count
 	};
 };
 
@@ -193,7 +195,7 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	FName anim_group;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UStaticMesh> model;
+		TSubclassOf<AActor> prefab;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UStaticMesh> append_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -211,6 +213,7 @@ public:
 		TAssetPtr<UAnimSequence> block;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 block_priorit;//越大越优先
+
 };
 
 USTRUCT()

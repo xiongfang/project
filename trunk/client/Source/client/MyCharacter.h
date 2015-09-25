@@ -63,10 +63,10 @@ public:
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	TArray<UWeaponBase*> Weapons;
 	
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AStaticMeshActor> templateSword;
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ASkeletalMeshActor> templateBow;
+	//UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	//TSubclassOf<AStaticMeshActor> templateSword;
+	//UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	//TSubclassOf<ASkeletalMeshActor> templateBow;
 
 	//UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	//int32 hp;
@@ -155,13 +155,14 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void TaskReward(FName id);
 
+	bool Attack(FName skillId)override;
 	void SkillEffect(AGameBattler* User, USkill* skill) override;
 
 	void AnimNofity_Shoot() override;
 
 	bool can_move()override;
 	bool can_use_skill()override;
-
+	
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	bool can_block();
 

@@ -1,15 +1,13 @@
 ﻿#include "client.h"
 #include "Weapon.h"
-#include "config.h"
-
 #include "MyCharacter.h"
 #include "MyGameSingleton.h"
 
-UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, int32 type)
+UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, WeaponType type)
 {
 	switch (type)
 	{
-	case Fconfig_equip::WeaponType::Sword:
+	case WeaponType::Sword:
 	{
 		UWeaponBase* Base = NewObject<UWeaponSword>(Parent,TEXT("WeaponSword"));
 		Base->Owner = Parent;
@@ -17,7 +15,7 @@ UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, int32 type)
 		return Base;
 	}
 		break;
-	case Fconfig_equip::WeaponType::LongSword:
+	case WeaponType::LongSword:
 	{
 		UWeaponBase* Base = NewObject<UWeaponLongSword>(Parent, TEXT("WeaponLongSword"));
 		Base->Owner = Parent;
@@ -25,7 +23,7 @@ UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, int32 type)
 		return Base;
 	}
 		break;
-	case Fconfig_equip::WeaponType::Bow:
+	case WeaponType::Bow:
 	{
 		UWeaponBase* Base = NewObject<UWeaponBow>(Parent, TEXT("WeaponBow"));
 		Base->Owner = Parent;
@@ -52,14 +50,11 @@ void UWeaponSword::OnEquip(FName id)
 	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race);
 	if (weapon != NULL)
 	{
-						
-		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->model.ToStringReference().TryLoad());
 		if (mh_weapon == NULL)
 		{
-			mh_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*Owner->templateSword));
+			mh_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*weapon->prefab));
 			mh_weapon->SetMobility(EComponentMobility::Movable);
 		}
-		mh_weapon->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
 
 		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
 		if (sc != NULL)
@@ -68,7 +63,7 @@ void UWeaponSword::OnEquip(FName id)
 			TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
 	
 		//附件
-		staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
+		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
 		if (mh_append == NULL)
 		{
 			mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
@@ -169,13 +164,10 @@ void UWeaponBow::OnEquip(FName id)
 	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race);
 	if (weapon != NULL)
 	{
-
-		USkeletalMesh* skeletalMesh = Cast<USkeletalMesh>(weapon->model.ToStringReference().TryLoad());
 		if (mh_weapon == NULL)
 		{
-			mh_weapon = Cast<ASkeletalMeshActor>(GetWorld()->SpawnActor(*Owner->templateBow));
+			mh_weapon = Cast<ASkeletalMeshActor>(GetWorld()->SpawnActor(*weapon->prefab));
 		}
-		mh_weapon->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
 
 		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
 		if (sc != NULL)
@@ -298,4 +290,11 @@ void UWeaponBow::AttackEnd()
 	//	//if (sc != NULL)
 	//	//	sc->
 	//}
+}
+
+void UWeaponBow::PlayAnim(UAnimMontage* anim)
+{
+	UAnimInstance* animInst = mh_weapon->GetSkeletalMeshComponent()->GetAnimInstance();
+	if (animInst!=NULL)
+		animInst->Montage_Play(anim);
 }

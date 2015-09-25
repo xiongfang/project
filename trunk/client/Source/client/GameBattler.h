@@ -101,7 +101,7 @@ public:
 	//	void ReceiveSkillEffect(AGameBattler* User, USkill* skill);
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-		void Attack(FName skillId);
+		virtual bool Attack(FName skillId);
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)

@@ -127,12 +127,12 @@ bool AGameBattler::can_use_skill_target(FName skillId)
 
 	return skill->GetData()->distance >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
 }
-void AGameBattler::Attack(FName skillId)
+bool AGameBattler::Attack(FName skillId)
 {
 	if (Target == NULL)
-		return;
+		return false;
 	if (!can_use_skill_target(skillId))
-		return;
+		return false;
 
 	
 	current_skill = skills[skillId];
@@ -146,6 +146,8 @@ void AGameBattler::Attack(FName skillId)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
 	}
+
+	return true;
 }
 
 void AGameBattler::SelectTarget(AGameBattler* User)

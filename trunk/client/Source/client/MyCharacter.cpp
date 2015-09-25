@@ -708,6 +708,23 @@ void AMyCharacter::AnimNofity_Shoot()
 	}
 }
 
+bool AMyCharacter::Attack(FName skillId)
+{
+	if (!Super::Attack(skillId))
+		return false;
+
+	//播放武器动画
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
+	if (effect != NULL && effect->start_weapon_anim!=NULL)
+	{
+		for (auto weapon : Weapons)
+		{
+			if (weapon != NULL)
+				weapon->PlayAnim(effect->start_weapon_anim);
+		}
+	}
+	return true;
+}
 void AMyCharacter::SkillEffect(AGameBattler* User, USkill* skill)
 {
 	Super::SkillEffect(User, skill);
