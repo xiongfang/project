@@ -114,6 +114,8 @@ public:
 		TAssetPtr<UAnimMontage> anim_openweapon;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		TAssetPtr<UAnimMontage> anim_closeweapon;
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		TAssetPtr<UAnimSequence> anim_block;
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
@@ -160,6 +162,9 @@ public:
 	bool can_move()override;
 	bool can_use_skill()override;
 
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	bool can_block();
+
 	//相机控制
 	USpringArmComponent* SprintArm;
 	FVector2D oldTouchPositions[2];
@@ -172,4 +177,7 @@ public:
 	
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		TArray<USkill*> GetSkills();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		TArray<UTask*> GetTasks();
 }; 

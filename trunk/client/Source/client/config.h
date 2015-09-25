@@ -207,6 +207,10 @@ public:
 		TAssetPtr<UAnimMontage> open_weapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimMontage> close_weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<UAnimSequence> block;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 block_priorit;//越大越优先
 };
 
 USTRUCT()

@@ -55,18 +55,6 @@ void AGameBattler::Recover()
 
 void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 {
-	//播放受击动画
-	Fconfig_skill* skillData = skill->GetData();
-	if (skillData != NULL)
-	{
-		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, User->race);
-		if (effect != NULL)
-		{
-			GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect->hit_fx, GetTransform().GetLocation());
-		}
-	}
-
 	skill->ReceiveSkillEffect(this,User);
 
 	mp = FMath::Clamp(mp, 0, maxmp());
@@ -280,7 +268,7 @@ int32 AGameBattler::maxhp()
 	int32 base = base_maxhp(); 
 	for (auto kv : states)
 	{
-		base = base*kv.Value->GetData()->hp_percent + kv.Value->GetData()->hp_plus;
+		base = base*(1.0f+kv.Value->GetData()->hp_percent) + kv.Value->GetData()->hp_plus;
 	}
 
 	return base;
@@ -302,7 +290,7 @@ int32 AGameBattler::patk()
 	int32 base = base_patk();
 	for (auto kv : states)
 	{
-		base = base*kv.Value->GetData()->patk_percent + kv.Value->GetData()->patk_plus;
+		base = base*(1.0f + kv.Value->GetData()->patk_percent) + kv.Value->GetData()->patk_plus;
 	}
 
 	return base;
@@ -313,7 +301,7 @@ int32 AGameBattler::matk()
 	int32 base = base_matk();
 	for (auto kv : states)
 	{
-		base = base*kv.Value->GetData()->matk_percent + kv.Value->GetData()->matk_plus;
+		base = base*(1.0f + kv.Value->GetData()->matk_percent) + kv.Value->GetData()->matk_plus;
 	}
 
 	return base;

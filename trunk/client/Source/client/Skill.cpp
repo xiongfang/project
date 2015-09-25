@@ -96,9 +96,9 @@ void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattle
 		int dmg = skillData->ignoring_defense ? atk:atk * (def / (5000.0f + def));
 		Target->hp -= dmg;
 		if (dmg>=0)
-			Target->ShowDamageUI(FString::Printf(TEXT("%d"),dmg),FColor::Red);
+			Target->ShowDamageUI(FString::Printf(TEXT("%d"),FMath::Abs(dmg)),FColor::Red);
 		else
-			Target->ShowDamageUI(FString::Printf(TEXT("%d"), dmg), FColor::Green);
+			Target->ShowDamageUI(FString::Printf(TEXT("+%d"), FMath::Abs(dmg)), FColor::Green);
 
 		//增加buff
 		for (auto buff : skillData->state_plus)
@@ -112,11 +112,27 @@ void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattle
 			if (buff.rate>FMath::FRand())
 				Target->RemoveState(buff.Name);
 		}
+
+		//播放受击动画
+		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, Target->race);
+		if (effect != NULL)
+		{
+			Target->GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
+		}
+
 	}
 	else
 	{
 		Target->ShowDamageUI(TEXT("未命中"));
 	}
+
+	//播放受击特效
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, Target->race);
+	if (effect != NULL)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), effect->hit_fx, Target->GetTransform().GetLocation());
+	}
+	
 }
 
 UProjectile::UProjectile()

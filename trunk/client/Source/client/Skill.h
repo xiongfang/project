@@ -97,10 +97,10 @@ public:
 		FINISHED
 	};
 
-	UPROPERTY()
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	FName id;
 
-	UPROPERTY()
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	TaskState State;
 
 	Fconfig_task* GetData();

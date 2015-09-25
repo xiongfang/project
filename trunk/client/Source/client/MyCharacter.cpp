@@ -554,15 +554,16 @@ void AMyCharacter::UpdateAnimGroup()
 	anim_group = race_data->anim_group;
 	anim_openweapon = NULL;
 	anim_closeweapon = NULL;
-
+	anim_block = NULL;
+	int block_priorit = 0;
 	if (Weapons[0] != NULL)
 	{
 		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race);
 
-		if (weaponMap->open_weapon.Get() == NULL)
-			weaponMap->open_weapon.ToStringReference().TryLoad();
-		if (weaponMap->close_weapon.Get() == NULL)
-			weaponMap->close_weapon.ToStringReference().TryLoad();
+		weaponMap->open_weapon.LoadSynchronous();
+		weaponMap->close_weapon.LoadSynchronous();
+		anim_block = weaponMap->block.LoadSynchronous();
+		block_priorit = weaponMap->block_priorit;
 
 		anim_openweapon = weaponMap->open_weapon;
 		anim_closeweapon = weaponMap->close_weapon;
@@ -572,7 +573,14 @@ void AMyCharacter::UpdateAnimGroup()
 			anim_group = weaponMap->anim_group;
 		}
 	}
-
+	if (Weapons[1] != NULL)
+	{
+		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race);
+		if (weaponMap->block_priorit > block_priorit)
+		{
+			anim_block = weaponMap->block.LoadSynchronous();
+		}
+	}
 
 	Fconfig_anim_group* ag = UMyGameSingleton::Get().FindAnimGroup(anim_group);
 	if (ag != NULL)
@@ -659,6 +667,15 @@ TArray<USkill*> AMyCharacter::GetSkills()
 	}
 	return data;
 }
+TArray<UTask*> AMyCharacter::GetTasks()
+{
+	TArray<UTask*> data;
+	for (auto kv : tasks)
+	{
+		data.Add(kv.Value);
+	}
+	return data;
+}
 
 void AMyCharacter::OnActorOverlap(AActor* OtherActor)
 {
@@ -713,6 +730,17 @@ bool AMyCharacter::can_use_skill()
 {
 	if (!Super::can_use_skill())
 		return false;
+	if (!IsWeaponOpen())
+		return false;
+	return true;
+}
+
+bool AMyCharacter::can_block()
+{
+	if (!(State == ActionState::Idle || State == ActionState::Move))
+	{
+		return false;
+	}
 	if (!IsWeaponOpen())
 		return false;
 	return true;
