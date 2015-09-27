@@ -26,13 +26,15 @@ public:
 	
 	void Update(float deltaTime);
 
-	TArray<AGameBattler*> ReceiveSkillGetTargets_Implementation(AGameBattler* User);
-	void ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattler* User);
+	virtual TArray<AGameBattler*> GetTargets_Implementation(AGameBattler* User);
+	virtual void SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User);
 
 	UFUNCTION(BlueprintNativeEvent)
-		TArray<AGameBattler*> ReceiveSkillGetTargets(AGameBattler* User);
+		TArray<AGameBattler*> GetTargets(AGameBattler* User);
 	UFUNCTION(BlueprintNativeEvent)
-		void ReceiveSkillEffect(AGameBattler* Target,AGameBattler* User);
+		void SkillEffect(AGameBattler* Target, AGameBattler* User);
+
+	bool can_use(){ return cd <= 0; }
 };
 
 UCLASS()

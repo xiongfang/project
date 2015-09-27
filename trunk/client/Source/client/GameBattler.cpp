@@ -55,7 +55,7 @@ void AGameBattler::Recover()
 
 void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 {
-	skill->ReceiveSkillEffect(this,User);
+	skill->SkillEffect(this,User);
 
 	mp = FMath::Clamp(mp, 0, maxmp());
 	hp = FMath::Clamp(hp, 0, maxhp());
@@ -103,7 +103,8 @@ bool AGameBattler::can_move()
 	}
 	return true;
 }
-bool AGameBattler::can_use_skill()
+
+bool AGameBattler::can_use_skill(USkill* skill)
 {
 	if (skill_common_cd>0)
 		return false;
@@ -112,30 +113,46 @@ bool AGameBattler::can_use_skill()
 		if (kv.Value->GetData()->cant_use_skill)
 			return false;
 	}
-	return true;
-}
-bool AGameBattler::can_use_skill_target(FName skillId)
-{
-	if (!can_use_skill())
+	if (!skills.Contains(skill->id))
 		return false;
-	if (!skills.Contains(skillId))
-		return false;
-
-	USkill* skill = skills[skillId];
 	if (skill->cd > 0 || mp < skill->GetData()->cost_mp)
 		return false;
+	return true;
+}
+bool AGameBattler::can_use_skill_target(USkill* skill, AGameBattler* bt)
+{
+	check(skill);
+	check(bt);
+	if (!can_use_skill(skill))
+		return false;
+	if (skill->GetData()->target_type == SkillEffectTargetType::Self && bt!=this)
+	{
+		return false;
+	}
+	if (skill->GetData()->target_type == SkillEffectTargetType::Enemy && !this->IsEnemy(bt))
+	{
+		return false;
+	}
+	if (skill->GetData()->target_type == SkillEffectTargetType::Friend && this->IsEnemy(bt))
+	{
+		return false;
+	}
 
-	return skill->GetData()->distance >= FVector::Dist(Target->GetTransform().GetLocation(), GetTransform().GetLocation());
+	return skill->GetData()->distance >= FVector::Dist(bt->GetTransform().GetLocation(), GetTransform().GetLocation());
 }
 bool AGameBattler::Attack(FName skillId)
 {
 	if (Target == NULL)
 		return false;
-	if (!can_use_skill_target(skillId))
+	if (!skills.Contains(skillId))
 		return false;
 
-	
-	current_skill = skills[skillId];
+	USkill* skill = skills[skillId];
+
+	if (!can_use_skill_target(skill, Target))
+		return false;
+
+	current_skill = skill;
 	current_skill->cd = current_skill->GetData()->cd;
 	skill_common_cd = current_skill->GetData()->common_cd;
 	mp -= current_skill->GetData()->cost_mp;
@@ -160,7 +177,7 @@ void AGameBattler::AnimNofity_SkillEffect()
 {
 	if (current_skill == NULL)
 		return;
-	TArray<AGameBattler*> targets = current_skill->ReceiveSkillGetTargets(this);
+	TArray<AGameBattler*> targets = current_skill->GetTargets(this);
 
 	for (auto battler : targets)
 	{
@@ -184,7 +201,7 @@ void AGameBattler::AnimNofity_Shoot()
 		{
 			if (effect->fly_all_target)
 			{
-				TArray<AGameBattler*> targets = current_skill->ReceiveSkillGetTargets(this);
+				TArray<AGameBattler*> targets = current_skill->GetTargets(this);
 
 				for (auto battler : targets)
 				{
@@ -350,4 +367,15 @@ int32 AGameBattler::eva()
 	}
 
 	return base;
+}
+
+
+TArray<USkill*> AGameBattler::GetSkills()
+{
+	TArray<USkill*> data;
+	for (auto kv : skills)
+	{
+		data.Add(kv.Value);
+	}
+	return data;
 }

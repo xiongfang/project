@@ -61,7 +61,7 @@ void TraceTargetRange(AGameBattler* User, FVector TargetPos,Fconfig_skill* skill
 		}
 	}
 }
-TArray<AGameBattler*> USkill::ReceiveSkillGetTargets_Implementation(AGameBattler* User)
+TArray<AGameBattler*> USkill::GetTargets_Implementation(AGameBattler* User)
 {
 	TArray<AGameBattler*> targets;
 	Fconfig_skill* skillData = GetData();
@@ -81,7 +81,7 @@ TArray<AGameBattler*> USkill::ReceiveSkillGetTargets_Implementation(AGameBattler
 
 	return targets;
 }
-void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattler* User)
+void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User)
 {
 	//命中判定
 	Fconfig_skill* skillData = GetData();
@@ -114,7 +114,7 @@ void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattle
 		}
 
 		//播放受击动画
-		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, Target->race);
+		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
 		if (effect != NULL)
 		{
 			Target->GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
@@ -127,7 +127,7 @@ void USkill::ReceiveSkillEffect_Implementation(AGameBattler* Target, AGameBattle
 	}
 
 	//播放受击特效
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, Target->race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
 	if (effect != NULL)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), effect->hit_fx, Target->GetTransform().GetLocation());

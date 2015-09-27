@@ -261,8 +261,6 @@ struct CLIENT_API Fconfig_skill : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UTexture2D> icon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -398,6 +396,8 @@ public:
 		int32 hit;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 eva;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float attention_range;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AGameMonster> prefab;

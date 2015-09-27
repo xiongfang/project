@@ -658,15 +658,6 @@ TArray<FItem> AMyCharacter::GetItems()
 	return data;
 }
 
-TArray<USkill*> AMyCharacter::GetSkills()
-{
-	TArray<USkill*> data;
-	for (auto kv : skills)
-	{
-		data.Add(kv.Value);
-	}
-	return data;
-}
 TArray<UTask*> AMyCharacter::GetTasks()
 {
 	TArray<UTask*> data;
@@ -743,9 +734,9 @@ bool AMyCharacter::can_move()
 	return State == ActionState::Idle || State == ActionState::Move;
 }
 
-bool AMyCharacter::can_use_skill()
+bool AMyCharacter::can_use_skill(USkill* skill)
 {
-	if (!Super::can_use_skill())
+	if (!Super::can_use_skill(skill))
 		return false;
 	if (!IsWeaponOpen())
 		return false;

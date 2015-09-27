@@ -84,13 +84,15 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		virtual bool can_move();
 	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual bool can_use_skill();
-
+		virtual bool can_use_skill(USkill* skill);
 	UFUNCTION(Category = Logic, BlueprintCallable)
-		virtual bool can_use_skill_target(FName skill);
+		virtual bool can_use_skill_target(USkill* skill,AGameBattler* bt);
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void LearnSkill(FName skillId);
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		TArray<USkill*> GetSkills();
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		virtual void SkillEffect(AGameBattler* User, USkill* skill);
@@ -125,4 +127,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void ShowDamageUI(const FString& dmg, const FColor& color=FColor::White);
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool IsDead(){ return hp <= 0; }
 };

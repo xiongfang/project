@@ -42,4 +42,9 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void InitCreate(FName monsterId);
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		float attention_range();
+
+
 };

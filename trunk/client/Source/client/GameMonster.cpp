@@ -10,7 +10,7 @@ AGameMonster::AGameMonster()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	camp = CampType::Enemy; //默认为敌人阵营
 }
 
 // Called when the game starts or when spawned
@@ -77,6 +77,9 @@ int32 AGameMonster::base_eva()
 {
 	return GetData()->eva;
 }
+
+float AGameMonster::attention_range()
+{ return GetData()->attention_range; }
 
 void AGameMonster::InitCreate(FName id)
 {

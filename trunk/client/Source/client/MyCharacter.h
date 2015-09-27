@@ -161,7 +161,7 @@ public:
 	void AnimNofity_Shoot() override;
 
 	bool can_move()override;
-	bool can_use_skill()override;
+	bool can_use_skill(USkill* skill)override;
 	
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	bool can_block();
@@ -175,9 +175,7 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		TArray<FItem> GetItems();
-	
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		TArray<USkill*> GetSkills();
+
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		TArray<UTask*> GetTasks();
