@@ -139,3 +139,11 @@ void AMonster_AIController::TickAI(float DeltaSeconds)
 		return;
 	}
 }
+
+void AMonster_AIController::OnHit(AGameBattler* User, USkill* skill)
+{
+	if (Monster != NULL && Monster->Target == NULL && !Monster->IsDead())
+	{
+		Monster->Target = User;
+	}
+}

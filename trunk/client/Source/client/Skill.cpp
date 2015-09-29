@@ -133,6 +133,8 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), effect->hit_fx, Target->GetTransform().GetLocation());
 	}
 	
+	//通知目标受击
+	Target->Event_OnHit(User, this);
 }
 
 UProjectile::UProjectile()

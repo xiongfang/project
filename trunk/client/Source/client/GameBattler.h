@@ -130,4 +130,13 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		bool IsDead(){ return hp <= 0; }
+
+
+	virtual void Event_OnHit_Implementation(AGameBattler* User, USkill* skill){}
+	virtual void Event_OnSelect_Implementation(AGameBattler* User){}
+
+	UFUNCTION(BlueprintNativeEvent)
+		void Event_OnHit(AGameBattler* User,USkill* skill);
+	UFUNCTION(BlueprintNativeEvent)
+		void Event_OnSelect(AGameBattler* User);
 };

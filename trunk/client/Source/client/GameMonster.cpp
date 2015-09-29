@@ -4,6 +4,7 @@
 #include "GameMonster.h"
 #include "MyGameSingleton.h"
 #include "config.h"
+#include "Monster_AIController.h"
 
 // Sets default values
 AGameMonster::AGameMonster()
@@ -101,5 +102,15 @@ void AGameMonster::InitCreate(FName id)
 	if (UMyGameSingleton::Get().FindSkill(monsterData->skill2) != NULL)
 	{
 		LearnSkill(monsterData->skill2);
+	}
+}
+
+
+void AGameMonster::Event_OnHit_Implementation(AGameBattler* User, USkill* skill)
+{
+	AMonster_AIController* controller = Cast<AMonster_AIController>(GetController());
+	if (controller != NULL)
+	{
+		controller->OnHit(User, skill);
 	}
 }

@@ -46,5 +46,6 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		float attention_range();
 
+	void Event_OnHit_Implementation(AGameBattler* User, USkill* skill)override;
 
 };

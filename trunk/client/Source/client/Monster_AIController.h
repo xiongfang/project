@@ -6,7 +6,7 @@
 #include "Monster_AIController.generated.h"
 
 class AGameMonster;
-
+class USkill;
 /**
  * 
  */
@@ -43,4 +43,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 		AGameBattler* SelectTarget(const TArray<AGameBattler*>& battlers);
+
+	void OnHit(AGameBattler* User, USkill* skill);
 };
