@@ -3,6 +3,7 @@
 #pragma once
 #include "GameFramework/Character.h"
 #include "GameMonster.h"
+#include "Skill.h"
 
 #include "config.generated.h"
 /**
@@ -472,7 +473,17 @@ struct CLIENT_API Fconfig_task : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString description;
+	int32 level; //需要等级
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//FString title;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FItem> rewards;
+	FString description;	//任务描述
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FItem> condition; //任务达成条件
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName npc_finish;	//完成NPC，不一定完成
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FItem> rewards;	//奖励
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UTask> prefab;
 };

@@ -757,13 +757,27 @@ bool AMyCharacter::can_block()
 
 void AMyCharacter::TaskAdd(FName id)
 {
+	Fconfig_task* data = UMyGameSingleton::Get().FindTask(id);
+	if (data == NULL)
+	{
+		UE_LOG(client, Warning, TEXT("Task Not Found %s"), *id.ToString());
+		return;
+	}
 	if (tasks.Contains(id))
 	{
 		UE_LOG(client, Warning, TEXT("Task Has Bean Added %s"), *id.ToString());
 		return;
 	}
 
-	UTask* t = NewObject<UTask>();
+	UTask* t = NULL;
+	if (data->prefab != NULL)
+	{
+		t = NewObject<UTask>(this, data->prefab);
+	}
+	else
+	{
+		t = NewObject<UTask>();
+	}
 	t->id = id;
 	tasks.Add(id, t);
 }

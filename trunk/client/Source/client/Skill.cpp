@@ -218,3 +218,35 @@ Fconfig_task* UTask::GetData()
 {
 	return UMyGameSingleton::Get().FindTask(id);
 }
+
+
+bool UTask::can_finish_Implementation(AMyCharacter* owner)
+{
+	if (State != TaskState::GOING)
+		return false;
+
+	Fconfig_task* data = GetData();
+	for (auto d : data->condition)
+	{
+		if (!owner->ItemEnough(d.Name, d.Num))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void UTask::finish_Implementation(AMyCharacter* owner)
+{
+	Fconfig_task* data = GetData();
+	for (auto d : data->condition)
+	{
+		owner->ItemLose(d.Name, d.Num);
+	}
+	//½±Àø
+	for (auto d : data->rewards)
+	{
+		owner->ItemAdd(d.Name, d.Num);
+	}
+	State = TaskState::FINISHED;
+}

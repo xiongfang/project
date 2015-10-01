@@ -86,8 +86,9 @@ public:
 };
 
 
+class AMyCharacter;
 
-UCLASS()
+UCLASS(Blueprintable)
 class UTask :public UObject
 {
 	GENERATED_BODY()
@@ -105,5 +106,17 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	TaskState State;
 
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
+	FName npc_finish;
+
 	Fconfig_task* GetData();
+
+	virtual bool can_finish_Implementation(AMyCharacter* owner);
+	virtual void finish_Implementation(AMyCharacter* owner);
+
+	UFUNCTION(BlueprintNativeEvent)
+		bool can_finish(AMyCharacter* owner);
+
+	UFUNCTION(BlueprintNativeEvent)
+		void finish(AMyCharacter* owner);
 };
