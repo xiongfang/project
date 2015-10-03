@@ -160,10 +160,10 @@ int32 AMyCharacter::base_maxhp()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			maxhp += data->hp_plus;
+			maxhp += equip_data->hp_plus;
 		}
 	}
 	
@@ -177,10 +177,10 @@ int32 AMyCharacter::base_maxmp()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			maxmp += data->mp_plus;
+			maxmp += equip_data->mp_plus;
 		}
 	}
 
@@ -195,10 +195,10 @@ int32 AMyCharacter::base_patk()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			rt += data->patk_plus;
+			rt += equip_data->patk_plus;
 		}
 	}
 
@@ -213,10 +213,10 @@ int32 AMyCharacter::base_matk()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			rt += data->matk_plus;
+			rt += equip_data->matk_plus;
 		}
 	}
 
@@ -233,10 +233,10 @@ int32 AMyCharacter::base_pdef()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			rt += data->pdef_plus;
+			rt += equip_data->pdef_plus;
 		}
 	}
 
@@ -251,10 +251,10 @@ int32 AMyCharacter::base_mdef()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			rt += data->mdef_plus;
+			rt += equip_data->mdef_plus;
 		}
 	}
 
@@ -268,10 +268,10 @@ int32 AMyCharacter::base_hit()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			rt += data->hit_plus;
+			rt += equip_data->hit_plus;
 		}
 	}
 
@@ -285,10 +285,10 @@ int32 AMyCharacter::base_eva()
 
 	for (int32 i = 0; i < equips.Num(); i++)
 	{
-		Fconfig_equip* data = UMyGameSingleton::Get().FindEquip(equips[i]);
-		if (data != NULL)
+		Fconfig_equip* equip_data = UMyGameSingleton::Get().FindEquip(equips[i]);
+		if (equip_data != NULL)
 		{
-			rt += data->eva_plus;
+			rt += equip_data->eva_plus;
 		}
 	}
 
