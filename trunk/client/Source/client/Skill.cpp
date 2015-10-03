@@ -1,4 +1,4 @@
-#include "client.h"
+ï»¿#include "client.h"
 #include "Skill.h"
 #include "MyCharacter.h"
 #include "config.h"
@@ -83,7 +83,7 @@ TArray<AGameBattler*> USkill::GetTargets_Implementation(AGameBattler* User)
 }
 void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User)
 {
-	//ÃüÖĞÅĞ¶¨
+	//å‘½ä¸­åˆ¤å®š
 	Fconfig_skill* skillData = GetData();
 
 	bool hit = skillData->must_hit || (User->hit() - Target->eva() >= FMath::Rand() % 10000);
@@ -100,20 +100,20 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 		else
 			Target->ShowDamageUI(FString::Printf(TEXT("+%d"), FMath::Abs(dmg)), FColor::Green);
 
-		//Ôö¼Óbuff
+		//å¢åŠ buff
 		for (auto buff : skillData->state_plus)
 		{
 			if (buff.rate>FMath::FRand())
 				Target->AddState(buff.Name);
 		}
-		//ÒÆ³ıbuff
+		//ç§»é™¤buff
 		for (auto buff : skillData->state_minus)
 		{
 			if (buff.rate>FMath::FRand())
 				Target->RemoveState(buff.Name);
 		}
 
-		//²¥·ÅÊÜ»÷¶¯»­
+		//æ’­æ”¾å—å‡»åŠ¨ç”»
 		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
 		if (effect != NULL)
 		{
@@ -123,17 +123,17 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 	}
 	else
 	{
-		Target->ShowDamageUI(TEXT("Î´ÃüÖĞ"));
+		Target->ShowDamageUI(TEXT("æœªå‘½ä¸­"));
 	}
 
-	//²¥·ÅÊÜ»÷ÌØĞ§,ÒôĞ§
+	//æ’­æ”¾å—å‡»ç‰¹æ•ˆ,éŸ³æ•ˆ
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
 	if (effect != NULL)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), effect->hit_fx, Target->GetTransform().GetLocation());
 		UGameplayStatics::PlaySoundAtLocation(Target->GetWorld(), effect->hit_sound, Target->GetTransform().GetLocation());
 	}
-	//Í¨ÖªÄ¿±êÊÜ»÷
+	//é€šçŸ¥ç›®æ ‡å—å‡»
 	Target->Event_OnHit(User, this);
 }
 
@@ -157,7 +157,7 @@ void UProjectile::InitCreate(AGameBattler* o, AGameBattler* t, USkill* s)
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(s->id, Owner->race);
 	speed = effect->fly_speed;
 
-	//³õÊ¼»¯Æ«ÒÆ
+	//åˆå§‹åŒ–åç§»
 	if (Target != NULL)
 	{
 		TargetPosition = Target->GetTransform().GetLocation();
@@ -165,7 +165,7 @@ void UProjectile::InitCreate(AGameBattler* o, AGameBattler* t, USkill* s)
 	FVector current = GetOwner()->GetTransform().GetLocation();
 	FRotator rot= FRotationMatrix::MakeFromX(TargetPosition - current).Rotator();
 	GetOwner()->AddActorWorldOffset(rot.RotateVector(effect->fly_offset));
-	//³õÊ¼»¯·½Ïò
+	//åˆå§‹åŒ–æ–¹å‘
 	GetOwner()->SetActorRotation(rot);
 }
 void UProjectile::BeginPlay()
@@ -186,7 +186,7 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 	FVector dir = dist;
 	dir.Normalize();
 	dir = dir*speed*DeltaTime;
-	if (dir.SizeSquared() > dist.SizeSquared()) //·ÀÖ¹³¬³ö·¶Î§
+	if (dir.SizeSquared() > dist.SizeSquared()) //é˜²æ­¢è¶…å‡ºèŒƒå›´
 		dir = dist;
 
 	GetOwner()->AddActorWorldOffset(dir);
@@ -194,7 +194,7 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 
 	GetOwner()->SetActorRotation(FRotationMatrix::MakeFromX(TargetPosition - current).Rotator());
 
-	//ÅĞ¶¨ÒÆ¶¯Íê³É
+	//åˆ¤å®šç§»åŠ¨å®Œæˆ
 	if (FVector::DistSquared(current, TargetPosition) < 30.0f)
 	{
 		if (Target != NULL)
@@ -204,7 +204,7 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, Owner->race);
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect->fly_explosion_fx, TargetPosition);
 		UGameplayStatics::PlaySoundAtLocation(Target->GetWorld(), effect->fly_explosion_sound, TargetPosition);
-		//×Ô¶¯Ïú»Ù×ÔÉí
+		//è‡ªåŠ¨é”€æ¯è‡ªèº«
 		GetOwner()->Destroy();
 	}
 }
@@ -244,7 +244,7 @@ void UTask::finish_Implementation(AMyCharacter* owner)
 	{
 		owner->ItemLose(d.Name, d.Num);
 	}
-	//½±Àø
+	//å¥–åŠ±
 	for (auto d : data->rewards)
 	{
 		owner->ItemAdd(d.Name, d.Num);

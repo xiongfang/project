@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "MyGameSingleton.h"
 #include "Skill.generated.h"
 
