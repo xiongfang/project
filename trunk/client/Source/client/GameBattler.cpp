@@ -50,15 +50,44 @@ void AGameBattler::Recover()
 {
 	hp = maxhp();
 	mp = maxmp();
+
+	TMap<FName, UState*> s = states;
+	for (auto state : s)
+	{
+		this->RemoveState(state.Key);
+	}
+
+	//if (GetMesh() != NULL)
+	//{
+	//	GetMesh()->PutAllRigidBodiesToSleep();
+	//	GetMesh()->SetAllBodiesSimulatePhysics(false);
+	//}
 }
 
+FName DeadStateName("战斗不能");
 
 void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 {
+	bool dead = IsDead();
+
 	skill->SkillEffect(this,User);
 
 	mp = FMath::Clamp(mp, 0, maxmp());
 	hp = FMath::Clamp(hp, 0, maxhp());
+
+
+	if (!dead && IsDead())
+	{
+		TMap<FName, UState*> s = states;
+		for (auto state : s)
+		{
+			this->RemoveState(state.Key);
+		}
+		AddState(DeadStateName);
+
+		Event_OnDead();
+	}
+
 }
 void AGameBattler::LearnSkill(FName skillId)
 {
@@ -96,6 +125,8 @@ void AGameBattler::LearnSkill(FName skillId)
 
 bool AGameBattler::can_move()
 {
+	if (IsDead())
+		return false; 
 	for (auto kv : states)
 	{
 		if (kv.Value->GetData()->cant_move)
@@ -378,4 +409,19 @@ TArray<USkill*> AGameBattler::GetSkills()
 		data.Add(kv.Value);
 	}
 	return data;
+}
+
+
+void AGameBattler::Event_OnDead_Implementation()
+{
+	USoundBase* ds = dead_sound();
+	if(ds != NULL)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ds, GetActorLocation());
+	}
+	//if (GetMesh() != NULL)
+	//{
+	//	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	//	GetMesh()->WakeAllRigidBodies();
+	//}
 }

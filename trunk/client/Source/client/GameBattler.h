@@ -24,16 +24,21 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		CampType camp;
 
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadOnly)
 		int32 hp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		int32 mp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		FName race;
 
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+		bool immortal;
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		bool IsEnemy(AGameBattler* battler){ check(battler);  return battler->camp != camp; }
 
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool IsDead(){ return hp <= 0 && !immortal; }
 
 		virtual int32 base_maxhp(){ return 0; }
 
@@ -49,6 +54,7 @@ public:
 		virtual int32 base_hit(){ return 0; }
 		virtual int32 base_eva(){ return 0; }
 
+		virtual USoundBase* dead_sound(){ return NULL;}
 
 		UFUNCTION(Category = Logic, BlueprintCallable)
 			virtual int32 maxhp();
@@ -74,7 +80,6 @@ public:
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		AGameBattler* Target;  //当前选择的目标
-
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		float skill_common_cd; //公共CD
@@ -111,7 +116,7 @@ public:
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-		void Recover();
+		virtual void Recover();
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
@@ -128,15 +133,18 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void ShowDamageUI(const FString& dmg, const FColor& color=FColor::White);
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		bool IsDead(){ return hp <= 0; }
+
 
 
 	virtual void Event_OnHit_Implementation(AGameBattler* User, USkill* skill){}
 	virtual void Event_OnSelect_Implementation(AGameBattler* User){}
+	virtual void Event_OnDead_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent)
 		void Event_OnHit(AGameBattler* User,USkill* skill);
 	UFUNCTION(BlueprintNativeEvent)
 		void Event_OnSelect(AGameBattler* User);
+	UFUNCTION(BlueprintNativeEvent)
+		void Event_OnDead();
+
 };

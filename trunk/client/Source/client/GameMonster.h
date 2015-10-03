@@ -39,6 +39,7 @@ public:
 	int32 base_mdef() override;
 	int32 base_hit() override;
 	int32 base_eva() override;
+	USoundBase* dead_sound()override;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void InitCreate(FName monsterId);
@@ -48,4 +49,8 @@ public:
 
 	void Event_OnHit_Implementation(AGameBattler* User, USkill* skill)override;
 
+
+	void Drop();
+
+	virtual void Event_OnDead_Implementation()override;
 };

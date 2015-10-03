@@ -2,6 +2,7 @@
 
 #pragma once
 #include "Animation/SkeletalMeshActor.h"
+#include "ItemActor.h"
 #include "MyGameSingleton.generated.h"
 
 
@@ -61,6 +62,9 @@ public:
 	UDataTable* config_state;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* config_task;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AItemActor> item_actor_class;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	UCurveTable* config_curve_hp;

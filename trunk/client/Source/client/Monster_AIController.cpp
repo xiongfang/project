@@ -72,7 +72,7 @@ void AMonster_AIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (Monster!=NULL)
+	if (Monster!=NULL && !Monster->IsDead())
 		TickAI(DeltaSeconds);
 }
 

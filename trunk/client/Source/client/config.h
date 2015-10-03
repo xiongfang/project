@@ -324,9 +324,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* fly_explosion_fx;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundBase* fly_explosion_sound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAnimMontage* hit_anim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* hit_fx;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundBase* hit_sound;
 };
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_anim_group : public FTableRowBase
@@ -334,7 +338,7 @@ struct CLIENT_API Fconfig_anim_group : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UBlendSpace> movement;
+		TAssetPtr<UBlendSpace1D> movement;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimMontage> block_hit;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -361,6 +365,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> staggerforwardlargest;
 };
+
+USTRUCT()
+struct FDropItem
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 num;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float rate;
+};
+
 
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_monster : public FTableRowBase
@@ -402,6 +420,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AGameMonster> prefab;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FDropItem> drops;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TAssetPtr<USoundBase> dead_sound;
 };
 
 

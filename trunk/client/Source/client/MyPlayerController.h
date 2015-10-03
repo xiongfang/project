@@ -23,6 +23,18 @@ public:
 	virtual void BeginPlay() override;
 
 	// Called every frame
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused)override;
 	
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	float client_camera_scale_min;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	float client_camera_scale_max;
+
+	//Ïà»ú¿ØÖÆ
+	USpringArmComponent* SprintArm;
+	FVector2D oldTouchPositions[2];
+	FVector2D oldTouchVector;
+	bool fingerState[2];
+	float oldTouchDistance;
+
 };

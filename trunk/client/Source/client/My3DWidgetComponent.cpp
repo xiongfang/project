@@ -2,7 +2,7 @@
 
 #include "client.h"
 #include "My3DWidgetComponent.h"
-
+#include "GameBattler.h"
 
 UMy3DWidgetComponent::UMy3DWidgetComponent()
 {
@@ -19,9 +19,14 @@ void UMy3DWidgetComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 
 		if (TargetPlayer != NULL && TargetPlayer->PlayerController!=NULL)
 		{
-			FVector playerPos = TargetPlayer->PlayerController->GetControlledPawn()->GetActorLocation();
-			bool show = FVector::Dist(playerPos, GetOwner()->GetActorLocation()) < show_distance;
-			this->SetVisibility(show);
+			AGameBattler* battler = Cast<AGameBattler>(TargetPlayer->PlayerController->GetPawn());
+			if (battler != NULL)
+			{
+				FVector playerPos = battler->GetActorLocation();
+				bool show = FVector::Dist(playerPos, GetOwner()->GetActorLocation()) < show_distance && !battler->IsDead();
+				this->SetVisibility(show);
+			}
+			
 		}
 	}
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

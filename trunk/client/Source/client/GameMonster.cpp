@@ -5,6 +5,7 @@
 #include "MyGameSingleton.h"
 #include "config.h"
 #include "Monster_AIController.h"
+#include "ItemActor.h"
 
 // Sets default values
 AGameMonster::AGameMonster()
@@ -79,6 +80,11 @@ int32 AGameMonster::base_eva()
 	return GetData()->eva;
 }
 
+USoundBase* AGameMonster::dead_sound()
+{
+	return GetData()->dead_sound.LoadSynchronous();
+}
+
 float AGameMonster::attention_range()
 { return GetData()->attention_range; }
 
@@ -113,4 +119,34 @@ void AGameMonster::Event_OnHit_Implementation(AGameBattler* User, USkill* skill)
 	{
 		controller->OnHit(User, skill);
 	}
+}
+
+void AGameMonster::Drop()
+{
+	TMap<FName,int32> items;
+	Fconfig_monster* data = GetData();
+	for (auto drop : data->drops)
+	{
+		Fconfig_item* item = UMyGameSingleton::Get().FindItem(drop.name);
+		if (item != NULL && FMath::FRand() <= drop.rate)
+		{
+			items.Add(drop.name, drop.num);
+		}
+	}
+	if (items.Num() > 0)
+	{
+		FVector randOffset;
+		randOffset.X = FMath::FRand();
+		randOffset.Y = FMath::FRand();
+		randOffset *= 100.0f;
+
+		AItemActor* actor = GetWorld()->SpawnActor<AItemActor>(UMyGameSingleton::Get().item_actor_class, GetActorLocation() + randOffset, FRotator::ZeroRotator);
+		actor->items.Append(items);
+	}
+}
+
+void AGameMonster::Event_OnDead_Implementation()
+{
+	Super::Event_OnDead_Implementation();
+	Drop();
 }

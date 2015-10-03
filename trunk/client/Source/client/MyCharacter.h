@@ -4,7 +4,7 @@
 
 #include "GameFramework/Character.h"
 #include "Animation/SkeletalMeshActor.h"
-#include "Skill.h"
+#include "config.h"
 #include "GameBattler.h"
 #include "MyCharacter.generated.h"
 
@@ -165,13 +165,6 @@ public:
 	
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	bool can_block();
-
-	//相机控制
-	USpringArmComponent* SprintArm;
-	FVector2D oldTouchPositions[2];
-	FVector2D oldTouchVector;
-	bool fingerState[2];
-	float oldTouchDistance;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		TArray<FItem> GetItems();

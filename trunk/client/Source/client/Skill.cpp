@@ -93,7 +93,7 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 		int atk = skillData->damage_type == SkillDamageType::Physic ? User->patk(): User->matk();
 		atk = atk*skillData->atk_percent + skillData->atk_plus;
 		int def = skillData->damage_type == SkillDamageType::Physic ? Target->pdef(): Target->mdef();
-		int dmg = skillData->ignoring_defense ? atk:atk * (def / (5000.0f + def));
+		int dmg = skillData->ignoring_defense ? atk:(atk * (1.0f-(def / (5000.0f + def))));
 		Target->hp -= dmg;
 		if (dmg>=0)
 			Target->ShowDamageUI(FString::Printf(TEXT("%d"),FMath::Abs(dmg)),FColor::Red);
@@ -126,13 +126,13 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 		Target->ShowDamageUI(TEXT("未命中"));
 	}
 
-	//播放受击特效
+	//播放受击特效,音效
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
 	if (effect != NULL)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), effect->hit_fx, Target->GetTransform().GetLocation());
+		UGameplayStatics::PlaySoundAtLocation(Target->GetWorld(), effect->hit_sound, Target->GetTransform().GetLocation());
 	}
-	
 	//通知目标受击
 	Target->Event_OnHit(User, this);
 }
@@ -203,6 +203,7 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 		}
 		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, Owner->race);
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect->fly_explosion_fx, TargetPosition);
+		UGameplayStatics::PlaySoundAtLocation(Target->GetWorld(), effect->fly_explosion_sound, TargetPosition);
 		//自动销毁自身
 		GetOwner()->Destroy();
 	}
