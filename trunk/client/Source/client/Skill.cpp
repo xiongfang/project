@@ -137,6 +137,27 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 	Target->Event_OnHit(User, this);
 }
 
+bool USkill::valid_target(AGameBattler* owner, AGameBattler* target)
+{
+	if (GetData()->target_type == SkillEffectTargetType::Self && target != owner)
+	{
+		return false;
+	}
+	if (GetData()->target_type == SkillEffectTargetType::Enemy && !owner->IsEnemy(target))
+	{
+		return false;
+	}
+	if (GetData()->target_type == SkillEffectTargetType::Friend && owner->IsEnemy(target))
+	{
+		return false;
+	}
+	return true;
+}
+bool USkill::in_distance(float dist)
+{
+	return GetData()->distance >= dist;
+}
+
 UProjectile::UProjectile()
 {
 	skill = NULL;

@@ -29,45 +29,6 @@ void AMonster_AIController::SetPawn(APawn* pawn)
 	}
 }
 
-
-TArray<AGameBattler*> AMonster_AIController::GetAttentionBattlers()
-{
-	TArray<AGameBattler*> results;
-
-	TArray<struct FOverlapResult> OutOverlaps;
-
-	static const FName SphereTraceMultiName(TEXT("SphereTraceMulti"));
-
-	FCollisionQueryParams Params(SphereTraceMultiName, false);
-	Params.bReturnPhysicalMaterial = true;
-	Params.bTraceAsyncScene = true;
-	FCollisionObjectQueryParams ObjectParams;
-	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
-	if (ObjectParams.IsValid() == false)
-	{
-		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
-		return results;
-	}
-
-	float Radius = Monster->attention_range();
-	UWorld* World = GetWorld();
-	bool const bHit = World->OverlapMultiByObjectType(OutOverlaps, Monster->GetActorLocation(), FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(Radius), Params);
-	if (bHit)
-	{
-		for (auto hit : OutOverlaps)
-		{
-			AActor* hitActor = hit.Actor.Get();
-			AGameBattler* battler = Cast<AGameBattler>(hitActor);
-			if (battler != NULL)
-			{
-				results.Add(battler);
-			}
-		}
-	}
-	return results;
-}
-
-
 void AMonster_AIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -98,7 +59,7 @@ void AMonster_AIController::TickAI(float DeltaSeconds)
 	//如果无目标，选择目标
 	if (Monster->Target == NULL)
 	{
-		TArray<AGameBattler*> battlers = GetAttentionBattlers();
+		TArray<AGameBattler*> battlers = Monster->FindBattlers(Monster->attention_range());
 		AGameBattler* target = SelectTarget(battlers);
 		Monster->SelectTarget(target);
 	}

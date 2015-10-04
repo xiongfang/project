@@ -360,6 +360,7 @@ void AMyCharacter::UpdateMesh()
 		{
 			switch (equip->slot)
 			{
+#if USE_BODY_EQUIP
 			case Fconfig_equip::Head:
 			case Fconfig_equip::Body:
 			case Fconfig_equip::Hand:
@@ -372,7 +373,7 @@ void AMyCharacter::UpdateMesh()
 					TRACE("armor == NULL %s", *equips[i].ToString());
 				break;
 			}
-			
+#endif
 			case Fconfig_equip::MainHand:
 			case Fconfig_equip::SecondHand:
 			{
@@ -401,6 +402,7 @@ void AMyCharacter::UpdateMesh()
 		{
 			switch (i)
 			{
+#if USE_BODY_EQUIP
 			case Fconfig_equip::Head:
 			{
 				GetMesh()->SetSkeletalMesh(DefaultBodyMeshes[i]);
@@ -412,6 +414,7 @@ void AMyCharacter::UpdateMesh()
 			case Fconfig_equip::Feet:
 				Bodys[i]->SetSkeletalMesh(DefaultBodyMeshes[i]);
 				break;
+#endif
 			case Fconfig_equip::MainHand:
 			case Fconfig_equip::SecondHand:
 			{
@@ -721,4 +724,14 @@ void AMyCharacter::TaskReward(FName id)
 	{
 		this->ItemAdd(itemData.Name, itemData.Num);
 	}
+}
+
+
+FString AMyCharacter::GetAttributeText()
+{
+	return FString::Printf(TEXT("生命值:%d/%d        魔法值%d/%d\n\
+		物攻:%d        魔攻:%d\n\
+		物防:%d        魔防:%d\n\
+		命中:%d%%      闪避:%d%%"
+		), hp,maxhp(),mp,maxmp(),patk(),matk(),pdef(),mdef(),(int32)(hit()/10000.0f),(int32)(eva()/10000.0f));
 }

@@ -3,6 +3,7 @@
 #include "client.h"
 #include "MyPlayerController.h"
 #include "GameBattler.h"
+#include "Skill.h"
 
 AMyPlayerController::AMyPlayerController()
 {
@@ -12,6 +13,7 @@ AMyPlayerController::AMyPlayerController()
 	client_camera_scale_max = 300.0f;
 	client_camera_scale_speed = 100.0f;
 	fingerState[0] = fingerState[1] = false;
+	attention_range = 5000.0f;
 }
 
 void AMyPlayerController::SetPawn(APawn* pawn)
@@ -158,9 +160,28 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 
 		}
 	}
+}
 
+bool AMyPlayerController::AutoSelectTarget(USkill* skill)
+{
+	TArray<AGameBattler*> targets = Battler->FindBattlers(this->attention_range);
+	if (Battler->Target != NULL || skill==NULL)
+		targets.Remove(Battler->Target);
 
+	if (skill == NULL && targets.Num()>0)
+	{
+		Battler->SelectTarget(targets[0]);
+		return true;
+	}
 
+	for (auto bt : targets)
+	{
+		if (skill->valid_target(Battler, bt))
+		{
+			Battler->SelectTarget(bt);
+			return true;
+		}	
+	}
 
-	
+	return false;
 }

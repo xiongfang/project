@@ -35,6 +35,10 @@ public:
 		void SkillEffect(AGameBattler* Target, AGameBattler* User);
 
 	bool can_use(){ return cd <= 0; }
+
+	bool valid_target(AGameBattler* owner, AGameBattler* target);
+
+	bool in_distance(float dist);
 };
 
 UCLASS()

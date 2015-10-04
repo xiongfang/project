@@ -35,10 +35,6 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		TArray<AGameBattler*> GetAttentionBattlers();
-
 	AGameBattler* SelectTarget_Implementation(const TArray<AGameBattler*>& battlers);
 
 	UFUNCTION(BlueprintNativeEvent)

@@ -13,6 +13,8 @@
 class UWeaponBase;
 
 
+#define USE_BODY_EQUIP	0
+
 UENUM()
 enum class ActionState :uint8
 {
@@ -172,4 +174,7 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		TArray<UTask*> GetTasks();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		FString GetAttributeText();
 }; 

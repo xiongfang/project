@@ -156,20 +156,10 @@ bool AGameBattler::can_use_skill_target(USkill* skill, AGameBattler* bt)
 	check(bt);
 	if (!can_use_skill(skill))
 		return false;
-	if (skill->GetData()->target_type == SkillEffectTargetType::Self && bt!=this)
-	{
+	if (!skill->valid_target(this,bt))
 		return false;
-	}
-	if (skill->GetData()->target_type == SkillEffectTargetType::Enemy && !this->IsEnemy(bt))
-	{
-		return false;
-	}
-	if (skill->GetData()->target_type == SkillEffectTargetType::Friend && this->IsEnemy(bt))
-	{
-		return false;
-	}
 
-	return skill->GetData()->distance >= FVector::Dist(bt->GetTransform().GetLocation(), GetTransform().GetLocation());
+	return skill->in_distance(FVector::Dist(bt->GetTransform().GetLocation(), GetTransform().GetLocation()));
 }
 bool AGameBattler::Attack(FName skillId)
 {
@@ -424,4 +414,55 @@ void AGameBattler::Event_OnDead_Implementation()
 	//	GetMesh()->SetAllBodiesSimulatePhysics(true);
 	//	GetMesh()->WakeAllRigidBodies();
 	//}
+}
+
+class BattlerSort
+{
+public:
+	FVector origin;
+
+	bool operator()(AGameBattler& A, AGameBattler& B) const
+	{
+		return FVector::Dist(origin, A.GetActorLocation()) < FVector::Dist(origin, B.GetActorLocation());
+	}
+};
+TArray<AGameBattler*> AGameBattler::FindBattlers(float Radius)
+{
+	TArray<AGameBattler*> results;
+
+	TArray<struct FOverlapResult> OutOverlaps;
+
+	static const FName SphereTraceMultiName(TEXT("SphereTraceMulti"));
+
+	FCollisionQueryParams Params(SphereTraceMultiName, false);
+	Params.bReturnPhysicalMaterial = true;
+	Params.bTraceAsyncScene = true;
+	FCollisionObjectQueryParams ObjectParams;
+	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+	if (ObjectParams.IsValid() == false)
+	{
+		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
+		return results;
+	}
+
+	UWorld* World = GetWorld();
+	bool const bHit = World->OverlapMultiByObjectType(OutOverlaps, GetActorLocation(), FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(Radius), Params);
+	if (bHit)
+	{
+		for (auto hit : OutOverlaps)
+		{
+			AActor* hitActor = hit.Actor.Get();
+			AGameBattler* battler = Cast<AGameBattler>(hitActor);
+			if (battler != NULL)
+			{
+				results.Add(battler);
+			}
+		}
+	}
+
+	BattlerSort sort;
+	sort.origin = GetActorLocation();
+	results.Sort(sort);
+
+	return results;
 }

@@ -6,6 +6,7 @@
 #include "MyPlayerController.generated.h"
 
 class AGameBattler;
+class USkill;
 /**
  * 
  */
@@ -31,6 +32,12 @@ public:
 	float client_camera_scale_max;
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	float client_camera_scale_speed;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	float attention_range;
+
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	bool AutoSelectTarget(USkill* skill);
 
 	//Ïà»ú¿ØÖÆ
 	USpringArmComponent* SprintArm;
@@ -38,5 +45,4 @@ public:
 	FVector2D oldTouchVector;
 	bool fingerState[2];
 	float oldTouchDistance;
-
 };

@@ -147,4 +147,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 		void Event_OnDead();
 
+	//查找指定半径的战斗者，并按距离从近到远排列
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	TArray<AGameBattler*> FindBattlers(float Radius);
 };
