@@ -10,6 +10,7 @@ AMyPlayerController::AMyPlayerController()
 
 	client_camera_scale_min = 150.0f;
 	client_camera_scale_max = 300.0f;
+	client_camera_scale_speed = 100.0f;
 	fingerState[0] = fingerState[1] = false;
 }
 
@@ -48,36 +49,6 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 	GetInputTouchState(ETouchIndex::Touch1, NewLocation[0].X, NewLocation[0].Y, FingerPressed[0]);
 	GetInputTouchState(ETouchIndex::Touch2, NewLocation[1].X, NewLocation[1].Y, FingerPressed[1]);
 
-	//选择目标或者对象
-	if (FingerPressed[0] && !FingerPressed[1])
-	{
-		FVector Pos, Dir;
-		if (DeprojectScreenPositionToWorld(NewLocation[0].X, NewLocation[0].Y, Pos, Dir))
-		{
-			FHitResult HitInfo;
-			FCollisionQueryParams QParams;
-			FCollisionObjectQueryParams OParams;
-			if (GetWorld()->LineTraceSingleByObjectType(HitInfo, Pos, Pos + Dir * 10240.f, OParams, QParams))
-			{
-				//DrawDebugSphere(GetWorld(), HitInfo.ImpactPoint, 10, 10, FColor::Red, false, 1);
-
-				AGameBattler* battler = Cast<AGameBattler>(HitInfo.Actor.Get());
-				if (battler != NULL)
-				{
-					Battler->Target = battler;
-					battler->Event_OnSelect(this->Battler);
-				}
-				else //移动到指定点
-				{
-					UNavigationSystem::SimpleMoveToLocation(this, HitInfo.ImpactPoint);
-				}
-			}
-			else
-			{
-			}
-
-		}
-	}
 
 
 	//桌面平台鼠标控制
@@ -137,7 +108,7 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 
 			}*/
 
-			float scale = (newTouchDistance - oldTouchDistance)*DeltaSeconds;
+			float scale = (newTouchDistance - oldTouchDistance)*DeltaSeconds*client_camera_scale_speed;
 			SprintArm->TargetArmLength += scale;
 			SprintArm->TargetArmLength = FMath::Clamp(SprintArm->TargetArmLength, client_camera_scale_min, client_camera_scale_max);
 
@@ -149,11 +120,46 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 			oldTouchVector = newTouchVector;
 			oldTouchDistance = newTouchDistance;
 		}
+
+		return;
 	}
 	else
 	{
 		fingerState[0] = fingerState[1] = false;
 	}
+
+	//选择目标或者对象
+	if (FingerPressed[0] && !FingerPressed[1] && fingerState[0] == false && fingerState[1]==false)
+	{
+		FVector Pos, Dir;
+		if (DeprojectScreenPositionToWorld(NewLocation[0].X, NewLocation[0].Y, Pos, Dir))
+		{
+			FHitResult HitInfo;
+			FCollisionQueryParams QParams;
+			FCollisionObjectQueryParams OParams;
+			if (GetWorld()->LineTraceSingleByObjectType(HitInfo, Pos, Pos + Dir * 10240.f, OParams, QParams))
+			{
+				//DrawDebugSphere(GetWorld(), HitInfo.ImpactPoint, 10, 10, FColor::Red, false, 1);
+
+				AGameBattler* battler = Cast<AGameBattler>(HitInfo.Actor.Get());
+				if (battler != NULL)
+				{
+					Battler->Target = battler;
+					battler->Event_OnSelect(this->Battler);
+				}
+				else //移动到指定点
+				{
+					UNavigationSystem::SimpleMoveToLocation(this, HitInfo.ImpactPoint);
+				}
+			}
+			else
+			{
+			}
+
+		}
+	}
+
+
 
 
 	

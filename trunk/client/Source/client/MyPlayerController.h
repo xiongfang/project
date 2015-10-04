@@ -29,6 +29,8 @@ public:
 	float client_camera_scale_min;
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 	float client_camera_scale_max;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	float client_camera_scale_speed;
 
 	//Ïà»ú¿ØÖÆ
 	USpringArmComponent* SprintArm;
