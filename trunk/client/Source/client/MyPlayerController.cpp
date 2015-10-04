@@ -108,7 +108,7 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 
 			}*/
 
-			float scale = (newTouchDistance - oldTouchDistance)*DeltaSeconds*client_camera_scale_speed;
+			float scale = -(newTouchDistance - oldTouchDistance)*DeltaSeconds*client_camera_scale_speed;
 			SprintArm->TargetArmLength += scale;
 			SprintArm->TargetArmLength = FMath::Clamp(SprintArm->TargetArmLength, client_camera_scale_min, client_camera_scale_max);
 
