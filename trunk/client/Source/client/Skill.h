@@ -90,7 +90,7 @@ public:
 };
 
 
-class AMyCharacter;
+class AGameCharacter;
 
 UCLASS(Blueprintable)
 class UTask :public UObject
@@ -115,12 +115,12 @@ public:
 
 	Fconfig_task* GetData();
 
-	virtual bool can_finish_Implementation(AMyCharacter* owner);
-	virtual void finish_Implementation(AMyCharacter* owner);
+	virtual bool can_finish_Implementation(AGameCharacter* owner);
+	virtual void finish_Implementation(AGameCharacter* owner);
 
 	UFUNCTION(BlueprintNativeEvent)
-		bool can_finish(AMyCharacter* owner);
+		bool can_finish(AGameCharacter* owner);
 
 	UFUNCTION(BlueprintNativeEvent)
-		void finish(AMyCharacter* owner);
+		void finish(AGameCharacter* owner);
 };

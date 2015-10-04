@@ -1,6 +1,6 @@
 ﻿#include "client.h"
 #include "Skill.h"
-#include "MyCharacter.h"
+#include "GameCharacter.h"
 #include "config.h"
 
 Fconfig_skill* USkill::GetData()
@@ -242,7 +242,7 @@ Fconfig_task* UTask::GetData()
 }
 
 
-bool UTask::can_finish_Implementation(AMyCharacter* owner)
+bool UTask::can_finish_Implementation(AGameCharacter* owner)
 {
 	if (State != TaskState::GOING)
 		return false;
@@ -258,7 +258,7 @@ bool UTask::can_finish_Implementation(AMyCharacter* owner)
 	return true;
 }
 
-void UTask::finish_Implementation(AMyCharacter* owner)
+void UTask::finish_Implementation(AGameCharacter* owner)
 {
 	Fconfig_task* data = GetData();
 	for (auto d : data->condition)

@@ -6,7 +6,7 @@
 #include "Animation/SkeletalMeshActor.h"
 #include "config.h"
 #include "GameBattler.h"
-#include "MyCharacter.generated.h"
+#include "GameCharacter.generated.h"
 
 
 
@@ -28,13 +28,13 @@ enum class ActionState :uint8
 };
 
 UCLASS()
-class CLIENT_API AMyCharacter : public AGameBattler
+class CLIENT_API AGameCharacter : public AGameBattler
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AMyCharacter();
+	AGameCharacter();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

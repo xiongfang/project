@@ -1,9 +1,9 @@
 ﻿#include "client.h"
 #include "Weapon.h"
-#include "MyCharacter.h"
+#include "GameCharacter.h"
 #include "MyGameSingleton.h"
 
-UWeaponBase* UWeaponBase::Create(AMyCharacter* Parent, WeaponType type)
+UWeaponBase* UWeaponBase::Create(AGameCharacter* Parent, WeaponType type)
 {
 	switch (type)
 	{

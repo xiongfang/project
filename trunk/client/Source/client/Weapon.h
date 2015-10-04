@@ -3,7 +3,7 @@
 #include "Weapon.generated.h"
 
 
-class AMyCharacter;
+class AGameCharacter;
 class ASkeletalMeshActor;
 
 UCLASS()
@@ -12,7 +12,7 @@ class CLIENT_API UWeaponBase : public UActorComponent
 	GENERATED_BODY()
 
 protected:
-	AMyCharacter* Owner;
+	AGameCharacter* Owner;
 	FName _id;
 	bool _isOpened;
 public:
@@ -33,7 +33,7 @@ public:
 
 	virtual void PlayAnim(UAnimMontage* anim){};
 
-	static UWeaponBase* Create(AMyCharacter* Parent, WeaponType weaponType);
+	static UWeaponBase* Create(AGameCharacter* Parent, WeaponType weaponType);
 };
 
 UCLASS()

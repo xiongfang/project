@@ -5,7 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "ItemActor.generated.h"
 
-class AMyCharacter;
+class AGameCharacter;
 
 UCLASS()
 class CLIENT_API AItemActor : public AActor
@@ -23,5 +23,5 @@ public:
 	TMap<FName,int32> items;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void Pickup(AMyCharacter* character);
+	void Pickup(AGameCharacter* character);
 };

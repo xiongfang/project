@@ -2,7 +2,7 @@
 
 #include "client.h"
 #include "ItemActor.h"
-#include "MyCharacter.h"
+#include "GameCharacter.h"
 
 // Sets default values
 AItemActor::AItemActor()
@@ -17,7 +17,7 @@ void AItemActor::BeginPlay()
 }
 
 
-void AItemActor::Pickup(AMyCharacter* character)
+void AItemActor::Pickup(AGameCharacter* character)
 {
 	for (auto item : items)
 	{

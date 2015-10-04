@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "client.h"
-#include "MyCharacter.h"
+#include "GameCharacter.h"
 #include "MyGameSingleton.h"
 #include "config.h"
 #include "Weapon.h"
@@ -13,7 +13,7 @@ DEFINE_LOG_CATEGORY(client);
 #define WEAPON_SLOT_START  4
 
 // Sets default values
-AMyCharacter::AMyCharacter()
+AGameCharacter::AGameCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -118,7 +118,7 @@ AMyCharacter::AMyCharacter()
 }
 
 // Called when the game starts or when spawned
-void AMyCharacter::BeginPlay()
+void AGameCharacter::BeginPlay()
 {
 	//记录默认的身体模型
 	DefaultBodyMeshes.Reset();
@@ -131,7 +131,7 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//绑定碰撞事件
-	OnActorBeginOverlap.AddDynamic(this, &AMyCharacter::OnActorOverlap);
+	OnActorBeginOverlap.AddDynamic(this, &AGameCharacter::OnActorOverlap);
 
 	//完全回复
 	Recover();
@@ -140,19 +140,19 @@ void AMyCharacter::BeginPlay()
 }
 
 // Called every frame
-void AMyCharacter::Tick( float DeltaTime )
+void AGameCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
 }
 
 // Called to bind functionality to input
-void AMyCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 }
 
-int32 AMyCharacter::base_maxhp()
+int32 AGameCharacter::base_maxhp()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -169,7 +169,7 @@ int32 AMyCharacter::base_maxhp()
 	
 	return maxhp;
 }
-int32 AMyCharacter::base_maxmp()
+int32 AGameCharacter::base_maxmp()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -187,7 +187,7 @@ int32 AMyCharacter::base_maxmp()
 	return maxmp;
 }
 
-int32 AMyCharacter::base_patk()
+int32 AGameCharacter::base_patk()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -205,7 +205,7 @@ int32 AMyCharacter::base_patk()
 	return rt;
 }
 
-int32 AMyCharacter::base_matk()
+int32 AGameCharacter::base_matk()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -224,7 +224,7 @@ int32 AMyCharacter::base_matk()
 }
 
 
-int32 AMyCharacter::base_pdef()
+int32 AGameCharacter::base_pdef()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -243,7 +243,7 @@ int32 AMyCharacter::base_pdef()
 	return rt;
 }
 
-int32 AMyCharacter::base_mdef()
+int32 AGameCharacter::base_mdef()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -260,7 +260,7 @@ int32 AMyCharacter::base_mdef()
 
 	return rt;
 }
-int32 AMyCharacter::base_hit()
+int32 AGameCharacter::base_hit()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -277,7 +277,7 @@ int32 AMyCharacter::base_hit()
 
 	return rt;
 }
-int32 AMyCharacter::base_eva()
+int32 AGameCharacter::base_eva()
 {
 	Fconfig_class* data = UMyGameSingleton::Get().FindClass(class_type);
 	check(data);
@@ -296,7 +296,7 @@ int32 AMyCharacter::base_eva()
 }
 
 
-void AMyCharacter::Equip(FName id)
+void AGameCharacter::Equip(FName id)
 {
 	Fconfig_equip* item = UMyGameSingleton::Get().FindEquip(id);
 	if (item==NULL)
@@ -337,7 +337,7 @@ void AMyCharacter::Equip(FName id)
 	UpdateAnimGroup();
 }
 
-void AMyCharacter::UnEquip(int32 slot)
+void AGameCharacter::UnEquip(int32 slot)
 {
 	if (!equips[slot].IsNone())
 	{
@@ -349,7 +349,7 @@ void AMyCharacter::UnEquip(int32 slot)
 	}
 }
 
-void AMyCharacter::UpdateMesh()
+void AGameCharacter::UpdateMesh()
 {
 	
 	Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
@@ -434,7 +434,7 @@ void AMyCharacter::UpdateMesh()
 }
 
 
-void AMyCharacter::ChangeWeaponState()
+void AGameCharacter::ChangeWeaponState()
 {
 	if (IsWeaponOpen())
 	{
@@ -456,7 +456,7 @@ void AMyCharacter::ChangeWeaponState()
 	UpdateAnimGroup();
 }
 
-bool AMyCharacter::IsWeaponOpen()
+bool AGameCharacter::IsWeaponOpen()
 {
 	if(Weapons[0]!=NULL && Weapons[0]->IsOpen())
 		return true;
@@ -464,7 +464,7 @@ bool AMyCharacter::IsWeaponOpen()
 }
 
 
-void AMyCharacter::UpdateAnimGroup()
+void AGameCharacter::UpdateAnimGroup()
 {
 	Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
 	anim_group = race_data->anim_group;
@@ -523,7 +523,7 @@ void AMyCharacter::UpdateAnimGroup()
 	}
 }
 
-int32 AMyCharacter::ItemAdd(FName id, int32 count)
+int32 AGameCharacter::ItemAdd(FName id, int32 count)
 {
 	if (!items.Contains(id))
 		items.Add(id);
@@ -533,7 +533,7 @@ int32 AMyCharacter::ItemAdd(FName id, int32 count)
 	return items[id];
 }
 
-int32 AMyCharacter::ItemLose(FName id, int32 count)
+int32 AGameCharacter::ItemLose(FName id, int32 count)
 {
 	if (!items.Contains(id))
 		items.Add(id);
@@ -543,7 +543,7 @@ int32 AMyCharacter::ItemLose(FName id, int32 count)
 }
 
 
-int32 AMyCharacter::ItemMax(FName id)
+int32 AGameCharacter::ItemMax(FName id)
 {
 	Fconfig_item* itemData = UMyGameSingleton::Get().FindItem(id);
 	if (itemData != NULL)
@@ -551,14 +551,14 @@ int32 AMyCharacter::ItemMax(FName id)
 	return 0;
 }
 
-bool AMyCharacter::ItemEnough(FName id, int32 count)
+bool AGameCharacter::ItemEnough(FName id, int32 count)
 {
 	if (!items.Contains(id))
 		items.Add(id);
 	return items[id] >= count;
 }
 
-TArray<FItem> AMyCharacter::GetItems()
+TArray<FItem> AGameCharacter::GetItems()
 {
 	TArray<FItem> data;
 	for (auto kv : items)
@@ -574,7 +574,7 @@ TArray<FItem> AMyCharacter::GetItems()
 	return data;
 }
 
-TArray<UTask*> AMyCharacter::GetTasks()
+TArray<UTask*> AGameCharacter::GetTasks()
 {
 	TArray<UTask*> data;
 	for (auto kv : tasks)
@@ -584,7 +584,7 @@ TArray<UTask*> AMyCharacter::GetTasks()
 	return data;
 }
 
-void AMyCharacter::OnActorOverlap(AActor* OtherActor)
+void AGameCharacter::OnActorOverlap(AActor* OtherActor)
 {
 	if (OtherActor->GetAttachParentActor() != this)
 		TRACE("OnActorOverlap %s", *OtherActor->GetName());
@@ -593,13 +593,13 @@ void AMyCharacter::OnActorOverlap(AActor* OtherActor)
 
 
 
-void AMyCharacter::AnimNofity_TakeArrow()
+void AGameCharacter::AnimNofity_TakeArrow()
 {
 	if (Weapons[0]!=NULL)
 		Weapons[0]->AttackStart();
 }
 
-void AMyCharacter::AnimNofity_Shoot()
+void AGameCharacter::AnimNofity_Shoot()
 {
 	Super::AnimNofity_Shoot();
 
@@ -615,7 +615,7 @@ void AMyCharacter::AnimNofity_Shoot()
 	}
 }
 
-bool AMyCharacter::Attack(FName skillId)
+bool AGameCharacter::Attack(FName skillId)
 {
 	if (!Super::Attack(skillId))
 		return false;
@@ -632,7 +632,7 @@ bool AMyCharacter::Attack(FName skillId)
 	}
 	return true;
 }
-void AMyCharacter::SkillEffect(AGameBattler* User, USkill* skill)
+void AGameCharacter::SkillEffect(AGameBattler* User, USkill* skill)
 {
 	Super::SkillEffect(User, skill);
 
@@ -643,14 +643,14 @@ void AMyCharacter::SkillEffect(AGameBattler* User, USkill* skill)
 }
 
 
-bool AMyCharacter::can_move()
+bool AGameCharacter::can_move()
 {
 	if (!Super::can_move())
 		return false;
 	return State == ActionState::Idle || State == ActionState::Move;
 }
 
-bool AMyCharacter::can_use_skill(USkill* skill)
+bool AGameCharacter::can_use_skill(USkill* skill)
 {
 	if (!Super::can_use_skill(skill))
 		return false;
@@ -659,7 +659,7 @@ bool AMyCharacter::can_use_skill(USkill* skill)
 	return true;
 }
 
-bool AMyCharacter::can_block()
+bool AGameCharacter::can_block()
 {
 	if (!(State == ActionState::Idle || State == ActionState::Move))
 	{
@@ -671,7 +671,7 @@ bool AMyCharacter::can_block()
 }
 
 
-void AMyCharacter::TaskAdd(FName id)
+void AGameCharacter::TaskAdd(FName id)
 {
 	Fconfig_task* data = UMyGameSingleton::Get().FindTask(id);
 	if (data == NULL)
@@ -698,7 +698,7 @@ void AMyCharacter::TaskAdd(FName id)
 	tasks.Add(id, t);
 }
 
-void AMyCharacter::TaskFinish(FName id)
+void AGameCharacter::TaskFinish(FName id)
 {
 	if (!tasks.Contains(id))
 	{
@@ -710,7 +710,7 @@ void AMyCharacter::TaskFinish(FName id)
 		t->State = UTask::TaskState::FINISHED;
 }
 
-void AMyCharacter::TaskReward(FName id)
+void AGameCharacter::TaskReward(FName id)
 {
 	if (!tasks.Contains(id))
 	{
@@ -727,7 +727,7 @@ void AMyCharacter::TaskReward(FName id)
 }
 
 
-FString AMyCharacter::GetAttributeText()
+FString AGameCharacter::GetAttributeText()
 {
 	return FString::Printf(TEXT("生命值:%d/%d        魔法值%d/%d\n\
 		物攻:%d        魔攻:%d\n\
