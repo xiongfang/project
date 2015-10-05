@@ -84,14 +84,16 @@ USoundBase* AGameMonster::dead_sound()
 {
 	return GetData()->dead_sound.LoadSynchronous();
 }
-
+FName AGameMonster::race()
+{
+	return GetData()->race;
+}
 float AGameMonster::attention_range()
 { return GetData()->attention_range; }
 
 void AGameMonster::InitCreate(FName id)
 {
 	this->id = id;
-	this->race = GetData()->race;
 
 	//创建所有身体
 	Fconfig_monster* monsterData = UMyGameSingleton::Get().FindMonster(id);

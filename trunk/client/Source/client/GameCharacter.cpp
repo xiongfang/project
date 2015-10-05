@@ -115,6 +115,9 @@ AGameCharacter::AGameCharacter()
 	State = ActionState::Idle;
 	Target = NULL;
 
+	race = TEXT("女人");
+	class_type = TEXT("战士");
+	level = 1;
 }
 
 // Called when the game starts or when spawned

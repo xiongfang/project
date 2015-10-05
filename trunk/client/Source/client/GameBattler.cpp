@@ -179,7 +179,7 @@ bool AGameBattler::Attack(FName skillId)
 	mp -= current_skill->GetData()->cost_mp;
 	mp = FMath::Clamp(mp, 0, maxmp());
 
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race());
 	if (effect != NULL)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
@@ -214,7 +214,7 @@ void AGameBattler::AnimNofity_Shoot()
 	if (Target == NULL)
 		return;
 
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race());
 	if (effect != NULL)
 	{
 		//投掷体

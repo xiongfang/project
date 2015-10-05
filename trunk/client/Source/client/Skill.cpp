@@ -114,7 +114,7 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 		}
 
 		//播放受击动画
-		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
+		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race());
 		if (effect != NULL)
 		{
 			Target->GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
@@ -127,7 +127,7 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 	}
 
 	//播放受击特效,音效
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(id, User->race());
 	if (effect != NULL)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), effect->hit_fx, Target->GetTransform().GetLocation());
@@ -175,7 +175,7 @@ void UProjectile::InitCreate(AGameBattler* o, AGameBattler* t, USkill* s)
 	Owner = o;
 	Target = t;
 	skill = s;
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(s->id, Owner->race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(s->id, Owner->race());
 	speed = effect->fly_speed;
 
 	//初始化偏移
@@ -222,7 +222,7 @@ void UProjectile::TickComponent(float DeltaTime, enum ELevelTick TickType, FActo
 		{
 			Target->SkillEffect(Owner, skill);
 		}
-		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, Owner->race);
+		Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(skill->id, Owner->race());
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), effect->fly_explosion_fx, TargetPosition);
 		UGameplayStatics::PlaySoundAtLocation(Target->GetWorld(), effect->fly_explosion_sound, TargetPosition);
 		//自动销毁自身

@@ -40,6 +40,7 @@ public:
 	int32 base_hit() override;
 	int32 base_eva() override;
 	USoundBase* dead_sound()override;
+	FName race()override;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void InitCreate(FName monsterId);

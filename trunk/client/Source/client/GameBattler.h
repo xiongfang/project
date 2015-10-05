@@ -28,8 +28,6 @@ public:
 		int32 hp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		int32 mp;
-	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-		FName race;
 
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		bool immortal;
@@ -72,6 +70,9 @@ public:
 			virtual int32 hit();
 		UFUNCTION(Category = Logic, BlueprintCallable)
 			virtual int32 eva();
+
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual FName race(){ return NAME_None; }
 
 	UPROPERTY(Category = Data, VisibleAnywhere)
 		TMap<FName, USkill*> skills;

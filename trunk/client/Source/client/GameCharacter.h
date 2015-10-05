@@ -80,6 +80,8 @@ public:
 	int32 exp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName class_type;
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	FName race;
 
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadOnly)
 	TArray<FName> equips;
