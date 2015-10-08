@@ -3,7 +3,7 @@
 #pragma once
 
 #include "GameFramework/PlayerController.h"
-#include "MyPlayerController.generated.h"
+#include "GamePlayerController.generated.h"
 
 class AGameBattler;
 class USkill;
@@ -11,13 +11,15 @@ class USkill;
  * 
  */
 UCLASS()
-class CLIENT_API AMyPlayerController : public APlayerController
+class CLIENT_API AGamePlayerController : public APlayerController
 {
 	GENERATED_BODY()
+	
 
 	AGameBattler* Battler;
 public:
-	AMyPlayerController();
+	AGamePlayerController();
+
 	virtual void SetPawn(APawn* pawn)override;
 
 	// Called when the game starts or when spawned
@@ -25,19 +27,19 @@ public:
 
 	// Called every frame
 	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused)override;
-	
+
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	float client_camera_scale_min;
+		float client_camera_scale_min;
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	float client_camera_scale_max;
+		float client_camera_scale_max;
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	float client_camera_scale_speed;
+		float client_camera_scale_speed;
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-	float attention_range;
+		float attention_range;
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	bool AutoSelectTarget(USkill* skill);
+		bool AutoSelectTarget(USkill* skill);
 
 	//Ïà»ú¿ØÖÆ
 	USpringArmComponent* SprintArm;
@@ -45,4 +47,6 @@ public:
 	FVector2D oldTouchVector;
 	bool fingerState[2];
 	float oldTouchDistance;
+	
+	
 };

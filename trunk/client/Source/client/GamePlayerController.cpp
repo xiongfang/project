@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "client.h"
-#include "MyPlayerController.h"
+#include "GamePlayerController.h"
 #include "GameBattler.h"
 #include "Skill.h"
 
-AMyPlayerController::AMyPlayerController()
+AGamePlayerController::AGamePlayerController()
 {
 	Battler = NULL;
 
@@ -16,7 +16,7 @@ AMyPlayerController::AMyPlayerController()
 	attention_range = 5000.0f;
 }
 
-void AMyPlayerController::SetPawn(APawn* pawn)
+void AGamePlayerController::SetPawn(APawn* pawn)
 {
 	Super::SetPawn(pawn);
 
@@ -28,13 +28,13 @@ void AMyPlayerController::SetPawn(APawn* pawn)
 	}
 }
 // Called when the game starts or when spawned
-void AMyPlayerController::BeginPlay()
+void AGamePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame
-void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool bGamePaused)
+void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const bool bGamePaused)
 {
 	Super::PostProcessInput(DeltaSeconds, bGamePaused);
 
@@ -131,7 +131,7 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 	}
 
 	//选择目标或者对象
-	if (FingerPressed[0] && !FingerPressed[1] && fingerState[0] == false && fingerState[1]==false)
+	if (FingerPressed[0] && !FingerPressed[1] && fingerState[0] == false && fingerState[1] == false)
 	{
 		FVector Pos, Dir;
 		if (DeprojectScreenPositionToWorld(NewLocation[0].X, NewLocation[0].Y, Pos, Dir))
@@ -162,10 +162,10 @@ void AMyPlayerController::PostProcessInput(const float DeltaSeconds, const bool 
 	}
 }
 
-bool AMyPlayerController::AutoSelectTarget(USkill* skill)
+bool AGamePlayerController::AutoSelectTarget(USkill* skill)
 {
 	TArray<AGameBattler*> targets = Battler->FindBattlers(this->attention_range);
-	if (Battler->Target != NULL || skill==NULL)
+	if (Battler->Target != NULL || skill == NULL)
 		targets.Remove(Battler->Target);
 
 	if (skill == NULL && targets.Num()>0)
@@ -180,8 +180,9 @@ bool AMyPlayerController::AutoSelectTarget(USkill* skill)
 		{
 			Battler->SelectTarget(bt);
 			return true;
-		}	
+		}
 	}
 
 	return false;
 }
+
