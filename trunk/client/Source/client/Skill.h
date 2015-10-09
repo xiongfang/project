@@ -76,7 +76,7 @@ public:
 	UPROPERTY()
 	FName id;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UParticleSystemComponent* PS;
 
 	float cd;

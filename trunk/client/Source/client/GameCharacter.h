@@ -179,4 +179,6 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		FString GetAttributeText();
+
+	void SerializeProperty(FArchive& ar);
 }; 

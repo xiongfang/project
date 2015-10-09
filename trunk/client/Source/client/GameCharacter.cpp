@@ -738,3 +738,8 @@ FString AGameCharacter::GetAttributeText()
 		命中:%d%%      闪避:%d%%"
 		), hp,maxhp(),mp,maxmp(),patk(),matk(),pdef(),mdef(),(int32)(hit()/10000.0f),(int32)(eva()/10000.0f));
 }
+
+void AGameCharacter::SerializeProperty(FArchive& ar)
+{
+	ar << hp << mp << (uint8&)(camp) << skills << level << exp << class_type << race << equips << items << tasks;
+}
