@@ -17,6 +17,14 @@ public:
 	UPROPERTY()
 	TArray<uint8> character;
 	
+	UPROPERTY(BlueprintReadOnly)
+	FString map_name;
+
+	UPROPERTY(BlueprintReadOnly)
+	TAssetPtr<UTexture> icon;
+
+	UPROPERTY(BlueprintReadOnly)
+	FString time;
 };
 
 

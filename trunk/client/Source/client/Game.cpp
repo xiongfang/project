@@ -6,49 +6,115 @@
 #include "MySaveGame.h"
 
 
-class FObjectSaveLoad :public FReloadObjectArc
+UGame::UGame()
 {
-public:
-	void GetData(TArray<uint8>& data){ data = Bytes; }
-	void SetData(TArray<uint8>& data){
-		Bytes = data;
-		Reset();
-	}
-};
-
-void UGame::Save(AGameCharacter* character, TArray<uint8>& data)
-{
-	FMemoryWriter ar(data);
-	FGameObjectProxyArchive arObject(ar);
-	character->SerializeProperty(arObject);
-	//arTemp.ActivateWriter();
-	//arTemp.SerializeObject(character);
-	//ar.GetData(data);
-	//ar << character;
-	//FObjectWriter writer(character, data, true, true);
-}
-void UGame::Load(AGameCharacter* character,TArray<uint8>& data)
-{
-	FMemoryReader ar(data);
-	FGameObjectProxyArchive arObject(ar);
-	character->SerializeProperty(arObject);
-	//FObjectReader reader(character, data, true, true);
-	//arTemp.ActivateReader();
-	//arTemp.SerializeObject(character);
 }
 
-void UGame::AutoSaveGameCharacter(AGameCharacter* character)
+
+void UGame::Init()
 {
-	if (TempSavedGame == NULL)
+	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UGame::OnPreLoadMap);
+	FCoreUObjectDelegates::PostLoadMap.AddUObject(this, &UGame::OnPostLoadMap);
+}
+void UGame::Shutdown()
+{
+
+}
+void UGame::OnPreLoadMap()
+{
+	//在切换地图之前，临时存档
+	AutoSaveGameCharacter();
+}
+void UGame::OnPostLoadMap()
+{
+	AGameCharacter* character = Cast<AGameCharacter>(LocalPlayers[0]->PlayerController->GetPawn());
+	if (character != NULL && TempSavedGame!=NULL)
 	{
-		TempSavedGame = NewObject<UMySaveGame>();
+		FMemoryReader ar(TempSavedGame->character);
+		FGameObjectProxyArchive arObject(ar);
+		character->SerializeProperty(arObject);
 	}
-	Save(character, TempSavedGame->character);
 }
 
-void UGame::AutoLoadGameCharacter(AGameCharacter* character)
+void UGame::AutoSaveGameCharacter()
 {
-	if (TempSavedGame == NULL)
-		return;
-	Load(character, TempSavedGame->character);
+	if (LocalPlayers.Num() > 0 && LocalPlayers[0]->PlayerController!=NULL)
+	{
+		AGameCharacter* character = Cast<AGameCharacter>(LocalPlayers[0]->PlayerController->GetPawn());
+		if (character != NULL)
+		{
+			UMySaveGame* SaveObject = NewObject<UMySaveGame>();
+			FMemoryWriter ar(SaveObject->character);
+			FGameObjectProxyArchive arObject(ar);
+			character->SerializeProperty(arObject);
+			SaveObject->map_name = character->GetWorld()->GetCurrentLevel()->GetPathName();
+			SaveObject->time = FDateTime::Now().ToString();
+			TempSavedGame = SaveObject;
+		}
+	}
+}
+
+void UGame::SaveSlot(int32 slotIndex)
+{
+	if (LocalPlayers.Num() > 0 && LocalPlayers[0]->PlayerController != NULL)
+	{
+		AGameCharacter* character = Cast<AGameCharacter>(LocalPlayers[0]->PlayerController->GetPawn());
+		if (character != NULL)
+		{
+			UMySaveGame* SaveObject = NewObject<UMySaveGame>();
+			FMemoryWriter ar(SaveObject->character);
+			FGameObjectProxyArchive arObject(ar);
+			character->SerializeProperty(arObject);
+			SaveObject->map_name = character->GetWorld()->GetCurrentLevel()->GetPathName();
+			SaveObject->time = FDateTime::Now().ToString();
+			UGameplayStatics::SaveGameToSlot(SaveObject, FString::Printf(TEXT("SLOT_%d"), slotIndex), 0);
+		}
+	}
+}
+
+void UGame::LoadSlot(int32 slotIndex)
+{
+	UMySaveGame* SaveObject = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(FString::Printf(TEXT("SLOT_%d"), slotIndex), 0));
+	if (SaveObject != NULL && GetWorld()!=NULL)
+	{
+		//序列化玩家数据
+		if (LocalPlayers.Num() > 0 && LocalPlayers[0]->PlayerController != NULL)
+		{
+			AGameCharacter* character = Cast<AGameCharacter>(LocalPlayers[0]->PlayerController->GetPawn());
+			if (character != NULL)
+			{
+				FMemoryReader ar(SaveObject->character);
+				FGameObjectProxyArchive arObject(ar);
+				character->SerializeProperty(arObject);
+			}
+		}
+		
+		//如果地图不同，切换地图
+		FString current_map_name = GetWorld()->GetCurrentLevel()->GetPathName();
+		if (SaveObject->map_name != current_map_name)
+		{
+			TempSavedGame = SaveObject;
+			GetWorld()->ServerTravel(SaveObject->map_name);
+		}
+	}
+}
+
+
+void UGame::CapetureScreenShot()
+{
+	GIsHighResScreenshot = true;
+	GScreenshotResolutionX = 100;
+	GScreenshotResolutionY = 100;
+	FScreenshotRequest::RequestScreenshot(TEXT("SLOT_0"), false,false);
+}
+
+
+TArray<UMySaveGame*> UGame::LoadAllSaved()
+{
+	TArray<UMySaveGame*> slots;
+	for (int32 i = 0; i < 3; i++)
+	{
+		slots.Add(Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(FString::Printf(TEXT("SLOT_%d"), i), 0)));
+	}
+	return slots;
 }

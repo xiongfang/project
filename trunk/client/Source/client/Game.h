@@ -15,15 +15,29 @@ class CLIENT_API UGame : public UGameInstance
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
-	UMySaveGame* TempSavedGame;
+
 public:
+	UGame();
+	virtual void Init()override;
+	virtual void Shutdown()override;
 
-	void Save(AGameCharacter* character, TArray<uint8>& data);
-	void Load(AGameCharacter* character, TArray<uint8>& data);
+	UPROPERTY(BlueprintReadOnly)
+	UMySaveGame* TempSavedGame;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void AutoSaveGameCharacter(AGameCharacter* character);
+	void AutoSaveGameCharacter();
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
-	void AutoLoadGameCharacter(AGameCharacter* character);
+		void SaveSlot(int32 slot);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void LoadSlot(int32 slot);
+
+	void OnPreLoadMap();
+	void OnPostLoadMap();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void CapetureScreenShot();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		TArray<UMySaveGame*> LoadAllSaved();
 };
