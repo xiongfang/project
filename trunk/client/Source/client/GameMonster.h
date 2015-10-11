@@ -53,5 +53,5 @@ public:
 
 	void Drop();
 
-	virtual void Event_OnDead_Implementation()override;
+	virtual void Event_OnDead_Implementation(AGameBattler* User)override;
 };

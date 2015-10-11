@@ -13,7 +13,7 @@ AGamePlayerController::AGamePlayerController()
 	client_camera_scale_max = 300.0f;
 	client_camera_scale_speed = 100.0f;
 	fingerState[0] = fingerState[1] = false;
-	attention_range = 5000.0f;
+
 }
 
 void AGamePlayerController::SetPawn(APawn* pawn)
@@ -138,6 +138,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		{
 			FHitResult HitInfo;
 			FCollisionQueryParams QParams;
+			QParams.AddIgnoredActor(Battler);//ºöÂÔ×Ô¼º
 			FCollisionObjectQueryParams OParams;
 			if (GetWorld()->LineTraceSingleByObjectType(HitInfo, Pos, Pos + Dir * 10240.f, OParams, QParams))
 			{
@@ -160,29 +161,5 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 
 		}
 	}
-}
-
-bool AGamePlayerController::AutoSelectTarget(USkill* skill)
-{
-	TArray<AGameBattler*> targets = Battler->FindBattlers(this->attention_range);
-	if (Battler->Target != NULL || skill == NULL)
-		targets.Remove(Battler->Target);
-
-	if (skill == NULL && targets.Num()>0)
-	{
-		Battler->SelectTarget(targets[0]);
-		return true;
-	}
-
-	for (auto bt : targets)
-	{
-		if (skill->valid_target(Battler, bt))
-		{
-			Battler->SelectTarget(bt);
-			return true;
-		}
-	}
-
-	return false;
 }
 

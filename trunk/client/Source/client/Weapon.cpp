@@ -47,7 +47,7 @@ void UWeaponSword::OnEquip(FName id)
 {
 	Super::OnEquip(id);
 
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race());
 	if (weapon != NULL)
 	{
 		if (mh_weapon == NULL)
@@ -110,7 +110,7 @@ void UWeaponSword::Open()
 	Super::Open();
 
 	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race());
 	if (weapon != NULL)
 	{
 		if (mh_weapon != NULL)
@@ -128,7 +128,7 @@ void UWeaponSword::Open()
 void UWeaponSword::Close()
 {
 	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race());
 	if (weapon != NULL)
 	{
 		if (mh_weapon != NULL)
@@ -161,7 +161,7 @@ void UWeaponBow::OnEquip(FName id)
 {
 	Super::OnEquip(id);
 
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race());
 	if (weapon != NULL)
 	{
 		if (mh_weapon == NULL)
@@ -223,7 +223,7 @@ void UWeaponBow::Open()
 	Super::Open();
 
 	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race());
 	if (weapon != NULL)
 	{
 		if (mh_weapon != NULL)
@@ -241,7 +241,7 @@ void UWeaponBow::Open()
 void UWeaponBow::Close()
 {
 	Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(_id);
-	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race());
 	if (weapon != NULL)
 	{
 		if (mh_weapon != NULL)
@@ -259,7 +259,7 @@ void UWeaponBow::Close()
 void UWeaponBow::AttackStart()
 {
 	//特殊处理一下箭
-	Fconfig_weapon_map* wp = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race);
+	Fconfig_weapon_map* wp = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race());
 	if (wp != NULL && wp->append_3 != NULL)
 	{
 		USkeletalMesh* skeletalMesh = Cast<USkeletalMesh>(wp->append_3.ToStringReference().TryLoad());

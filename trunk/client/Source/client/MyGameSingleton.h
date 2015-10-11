@@ -18,6 +18,7 @@ struct Fconfig_effect;
 struct Fconfig_monster;
 struct Fconfig_state;
 struct Fconfig_task;
+struct Fconfig_exp;
 /**
  * 
  */
@@ -66,6 +67,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AItemActor> item_actor_class;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* config_exp;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> EquipSlotNames;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystem* ps_levelup;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* sound_levelup;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	UCurveTable* config_curve_hp;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -98,4 +109,8 @@ public:
 	Fconfig_monster* FindMonster(FName id);
 	Fconfig_state* FindState(FName id);
 	Fconfig_task* FindTask(FName id);
+
+	int32 GetLevelExp(int32 level);
+
+
 };

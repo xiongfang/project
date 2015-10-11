@@ -101,3 +101,8 @@ Fconfig_task* UMyGameSingleton::FindTask(FName id)
 {
 	return config_task->FindRow<Fconfig_task>(id, ContextString, false);
 }
+
+int32 UMyGameSingleton::GetLevelExp(int32 level)
+{
+	return config_exp->FindRow<Fconfig_exp>(*FString::Printf(TEXT("%d"),level), ContextString, false)->exp;
+}

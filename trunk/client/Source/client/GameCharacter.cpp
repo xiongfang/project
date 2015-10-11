@@ -115,9 +115,10 @@ AGameCharacter::AGameCharacter()
 	State = ActionState::Idle;
 	Target = NULL;
 
-	race = TEXT("女人");
-	class_type = TEXT("战士");
+	race_type = TEXT("女人");
+	class_type = TEXT("剑士");
 	level = 1;
+	attention_range = 5000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -139,7 +140,9 @@ void AGameCharacter::BeginPlay()
 	//完全回复
 	Recover();
 
-	
+	UpdateMesh();
+	UpdateAnimGroup();
+	UpdateClassSkills();
 }
 
 // Called every frame
@@ -355,7 +358,7 @@ void AGameCharacter::UnEquip(int32 slot)
 void AGameCharacter::UpdateMesh()
 {
 	
-	Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
+	Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race());
 	for (int i = 0; i < equips.Num(); i++)
 	{
 		Fconfig_equip* equip = UMyGameSingleton::Get().FindEquip(equips[i]);
@@ -469,7 +472,7 @@ bool AGameCharacter::IsWeaponOpen()
 
 void AGameCharacter::UpdateAnimGroup()
 {
-	Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race);
+	Fconfig_race* race_data = UMyGameSingleton::Get().FindRace(race());
 	anim_group = race_data->anim_group;
 	anim_openweapon = NULL;
 	anim_closeweapon = NULL;
@@ -477,7 +480,7 @@ void AGameCharacter::UpdateAnimGroup()
 	int block_priorit = 0;
 	if (Weapons[0] != NULL)
 	{
-		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race);
+		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race());
 
 		weaponMap->open_weapon.LoadSynchronous();
 		weaponMap->close_weapon.LoadSynchronous();
@@ -494,7 +497,7 @@ void AGameCharacter::UpdateAnimGroup()
 	}
 	if (Weapons[1] != NULL)
 	{
-		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race);
+		Fconfig_weapon_map* weaponMap = UMyGameSingleton::Get().FindWeaponMap(Weapons[0]->GetID(), race());
 		if (weaponMap->block_priorit > block_priorit)
 		{
 			anim_block = weaponMap->block.LoadSynchronous();
@@ -611,7 +614,7 @@ void AGameCharacter::AnimNofity_Shoot()
 	if (Target == NULL)
 		return;
 
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race());
 	if (effect != NULL)
 	{
 		Weapons[0]->AttackEnd();
@@ -620,11 +623,22 @@ void AGameCharacter::AnimNofity_Shoot()
 
 bool AGameCharacter::Attack(FName skillId)
 {
+	if (Target == NULL)
+	{
+		if (!skills.Contains(skillId))
+			return false;
+
+		USkill* skill = skills[skillId];
+
+		if (!AutoSelectTarget(skill))
+			return false;
+	}
+
 	if (!Super::Attack(skillId))
 		return false;
 
 	//播放武器动画
-	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race);
+	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race());
 	if (effect != NULL && effect->start_weapon_anim!=NULL)
 	{
 		for (auto weapon : Weapons)
@@ -736,10 +750,81 @@ FString AGameCharacter::GetAttributeText()
 		物攻:%d        魔攻:%d\n\
 		物防:%d        魔防:%d\n\
 		命中:%d%%      闪避:%d%%"
-		), hp,maxhp(),mp,maxmp(),patk(),matk(),pdef(),mdef(),(int32)(hit()/10000.0f),(int32)(eva()/10000.0f));
+		), hp,maxhp(),mp,maxmp(),patk(),matk(),pdef(),mdef(),(int32)(hit()/100.0f),(int32)(eva()/100.0f));
 }
 
 void AGameCharacter::SerializeProperty(FArchive& ar)
 {
-	ar << hp << mp << (uint8&)(camp) << skills << level << exp << class_type << race << equips << items << tasks;
+	ar << hp << mp << (uint8&)(camp) << skills << level << exp << class_type << race_type << equips << items << tasks;
+}
+
+#define MAX_LEVEL 80
+void AGameCharacter::AddExp(int32 e)
+{
+	int32 max_exp = UMyGameSingleton::Get().GetLevelExp(level);
+	if (level >= MAX_LEVEL)
+	{
+		exp = max_exp;
+		return;
+	}
+	exp += e;
+	while (exp >= max_exp)
+	{
+		exp -= max_exp;
+		LevelUp();
+		max_exp = UMyGameSingleton::Get().GetLevelExp(level);
+	}
+}
+
+
+void AGameCharacter::LevelUp()
+{
+	if (level < MAX_LEVEL)
+	{
+		level++;
+
+		UpdateClassSkills();
+
+		//播放升级音效和特效
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), UMyGameSingleton::Get().sound_levelup, GetActorLocation());
+		UGameplayStatics::SpawnEmitterAtLocation(Target->GetWorld(), UMyGameSingleton::Get().ps_levelup, GetActorLocation());
+	}
+}
+
+void AGameCharacter::UpdateClassSkills()
+{
+	//学习新技能
+	Fconfig_class* classData = UMyGameSingleton::Get().FindClass(class_type);
+	for (auto skill : classData->skills)
+	{
+		if (level >= skill.level && !skills.Contains(skill.Name))
+		{
+			LearnSkill(skill.Name);
+		}
+	}
+}
+
+
+bool AGameCharacter::AutoSelectTarget(USkill* skill)
+{
+	TArray<AGameBattler*> targets = this->FindBattlers(this->attention_range);
+	if (this->Target != NULL || skill == NULL)
+		targets.Remove(this->Target);
+
+	if (skill == NULL && targets.Num()>0)
+	{
+		this->SelectTarget(targets[0]);
+		return true;
+	}
+
+	for (auto bt : targets)
+	{
+		if (skill->valid_target(this, bt))
+		{
+			this->SelectTarget(bt);
+			return true;
+		}
+	}
+
+	return false;
 }

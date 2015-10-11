@@ -56,7 +56,10 @@ void AGameBattler::Recover()
 	{
 		this->RemoveState(state.Key);
 	}
-
+	if (this->GetCapsuleComponent() != NULL)
+	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
 	//if (GetMesh() != NULL)
 	//{
 	//	GetMesh()->PutAllRigidBodiesToSleep();
@@ -85,7 +88,7 @@ void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 		}
 		AddState(DeadStateName);
 
-		Event_OnDead();
+		Event_OnDead(User);
 	}
 
 }
@@ -402,13 +405,18 @@ TArray<USkill*> AGameBattler::GetSkills()
 }
 
 
-void AGameBattler::Event_OnDead_Implementation()
+void AGameBattler::Event_OnDead_Implementation(AGameBattler* User)
 {
 	USoundBase* ds = dead_sound();
 	if(ds != NULL)
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ds, GetActorLocation());
 	}
+	if (this->GetCapsuleComponent() != NULL)
+	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
 	//if (GetMesh() != NULL)
 	//{
 	//	GetMesh()->SetAllBodiesSimulatePhysics(true);

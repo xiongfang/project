@@ -6,7 +6,7 @@
 #include "config.h"
 #include "Monster_AIController.h"
 #include "ItemActor.h"
-
+#include "GameCharacter.h"
 // Sets default values
 AGameMonster::AGameMonster()
 {
@@ -143,12 +143,19 @@ void AGameMonster::Drop()
 		randOffset *= 100.0f;
 
 		AItemActor* actor = GetWorld()->SpawnActor<AItemActor>(UMyGameSingleton::Get().item_actor_class, GetActorLocation() + randOffset, FRotator::ZeroRotator);
-		actor->items.Append(items);
+		if (actor!=NULL)
+			actor->items.Append(items);
 	}
 }
 
-void AGameMonster::Event_OnDead_Implementation()
+void AGameMonster::Event_OnDead_Implementation(AGameBattler* User)
 {
-	Super::Event_OnDead_Implementation();
+	Super::Event_OnDead_Implementation(User);
 	Drop();
+
+	AGameCharacter* character = Cast<AGameCharacter>(User);
+	if (character != NULL)
+	{
+		character->AddExp(GetData()->exp);
+	}
 }

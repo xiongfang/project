@@ -72,6 +72,17 @@ public:
 		FName anim_group;
 };
 
+USTRUCT()
+struct FClassSkill
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 level;
+};
+
 USTRUCT(BlueprintType)
 struct CLIENT_API Fconfig_class : public FTableRowBase
 {
@@ -113,6 +124,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 eva_add;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FClassSkill> skills; //可学习的技能
 };
 
 
@@ -423,6 +436,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FDropItem> drops;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 exp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<USoundBase> dead_sound;
@@ -510,4 +525,14 @@ public:
 	TArray<FItem> rewards;	//奖励
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UTask> prefab;
+};
+
+
+USTRUCT(BlueprintType)
+struct CLIENT_API Fconfig_exp : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 exp;
 };

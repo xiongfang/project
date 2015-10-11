@@ -81,7 +81,9 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	FName class_type;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
-	FName race;
+	FName race_type;
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	float attention_range;
 
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadOnly)
 	TArray<FName> equips;
@@ -101,7 +103,7 @@ public:
 	int32 base_mdef() override;
 	int32 base_hit() override;
 	int32 base_eva() override;
-
+	FName race()override{ return race_type; }
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void Equip(FName id);
@@ -181,4 +183,15 @@ public:
 		FString GetAttributeText();
 
 	void SerializeProperty(FArchive& ar);
+
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void AddExp(int32 e);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void LevelUp();
+
+	void UpdateClassSkills();
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		bool AutoSelectTarget(USkill* skill);
 }; 

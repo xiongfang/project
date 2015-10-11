@@ -139,14 +139,14 @@ public:
 
 	virtual void Event_OnHit_Implementation(AGameBattler* User, USkill* skill){}
 	virtual void Event_OnSelect_Implementation(AGameBattler* User){}
-	virtual void Event_OnDead_Implementation();
+	virtual void Event_OnDead_Implementation(AGameBattler* User);
 
 	UFUNCTION(BlueprintNativeEvent)
 		void Event_OnHit(AGameBattler* User,USkill* skill);
 	UFUNCTION(BlueprintNativeEvent)
 		void Event_OnSelect(AGameBattler* User);
 	UFUNCTION(BlueprintNativeEvent)
-		void Event_OnDead();
+		void Event_OnDead(AGameBattler* User);
 
 	//查找指定半径的战斗者，并按距离从近到远排列
 	UFUNCTION(Category = Logic, BlueprintCallable)
