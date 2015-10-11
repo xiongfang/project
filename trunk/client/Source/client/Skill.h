@@ -87,6 +87,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void ReceiveTimeSchedule(AGameBattler* User);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void Receive_OnAdd(AGameBattler* User);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void Receive_OnRemove(AGameBattler* User);
 };
 
 

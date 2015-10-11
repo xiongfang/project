@@ -187,6 +187,10 @@ bool AGameBattler::Attack(FName skillId)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(effect->start_self_anim);
 	}
+	else
+	{
+		Target->SkillEffect(this, skill);
+	}
 
 	return true;
 }
@@ -288,6 +292,7 @@ void AGameBattler::AddState(FName stateId)
 		ps->AttachTo(RootComponent);
 	}
 
+	s->Receive_OnAdd(this);
 	states.Add(stateId, s);
 }
 void AGameBattler::RemoveState(FName stateId)
@@ -295,6 +300,7 @@ void AGameBattler::RemoveState(FName stateId)
 	if (states.Contains(stateId))
 	{
 		UState* s = states[stateId];
+		s->Receive_OnRemove(this);
 		if (s->PS != NULL)
 		{
 			s->PS->UnregisterComponent();

@@ -623,20 +623,29 @@ void AGameCharacter::AnimNofity_Shoot()
 
 bool AGameCharacter::Attack(FName skillId)
 {
-	if (Target == NULL || Target->hp==0)
+	if (!skills.Contains(skillId))
+		return false;
+
+	USkill* skill = skills[skillId];
+
+	//如果当前不是有效目标，选择新目标
+	if (Target==NULL || !skill->valid_target(this, Target))
 	{
-		if (!skills.Contains(skillId))
-			return false;
-
-		USkill* skill = skills[skillId];
-
 		if (!AutoSelectTarget(skill))
 			return false;
 	}
 
 	if (!Super::Attack(skillId))
+	{
+		USkill* skill = skills[skillId];
+		//如果当前新目标在距离范围之外，向目标移动
+		if (Target != NULL && skill->valid_target(this, Target) && !skill->in_distance(FVector::Dist(this->GetActorLocation(), Target->GetActorLocation())))
+		{
+			UNavigationSystem::SimpleMoveToLocation(this->Controller, Target->GetActorLocation());
+			return false;
+		}
 		return false;
-
+	}
 	//播放武器动画
 	Fconfig_effect* effect = UMyGameSingleton::Get().FindEffect(current_skill->id, race());
 	if (effect != NULL && effect->start_weapon_anim!=NULL)
