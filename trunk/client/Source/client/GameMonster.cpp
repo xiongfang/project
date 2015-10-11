@@ -140,6 +140,7 @@ void AGameMonster::Drop()
 		FVector randOffset;
 		randOffset.X = FMath::FRand();
 		randOffset.Y = FMath::FRand();
+		randOffset.Z = 0.0f;
 		randOffset *= 100.0f;
 
 		AItemActor* actor = GetWorld()->SpawnActor<AItemActor>(UMyGameSingleton::Get().item_actor_class, GetActorLocation() + randOffset, FRotator::ZeroRotator);

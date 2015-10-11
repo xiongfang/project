@@ -252,7 +252,9 @@ enum class SkillEffectTargetType :uint8
 {
 	Enemy,
 	Friend,
-	Self
+	Self,
+	EnemyHp0,
+	FriendHp0
 };
 
 UENUM()

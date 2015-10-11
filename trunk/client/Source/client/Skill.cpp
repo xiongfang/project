@@ -139,19 +139,34 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 
 bool USkill::valid_target(AGameBattler* owner, AGameBattler* target)
 {
-	if (GetData()->target_type == SkillEffectTargetType::Self && target != owner)
+	if (target->hp == 0)
 	{
-		return false;
+		if (GetData()->target_type == SkillEffectTargetType::EnemyHp0 && owner->IsEnemy(target))
+		{
+			return true;
+		}
+		if (GetData()->target_type == SkillEffectTargetType::FriendHp0 && !owner->IsEnemy(target))
+		{
+			return true;
+		}
 	}
-	if (GetData()->target_type == SkillEffectTargetType::Enemy && !owner->IsEnemy(target))
+	else
 	{
-		return false;
+		if (GetData()->target_type == SkillEffectTargetType::Self && target == owner)
+		{
+			return true;
+		}
+		if (GetData()->target_type == SkillEffectTargetType::Enemy && owner->IsEnemy(target))
+		{
+			return true;
+		}
+		if (GetData()->target_type == SkillEffectTargetType::Friend && !owner->IsEnemy(target))
+		{
+			return true;
+		}
 	}
-	if (GetData()->target_type == SkillEffectTargetType::Friend && owner->IsEnemy(target))
-	{
-		return false;
-	}
-	return true;
+
+	return false;
 }
 bool USkill::in_distance(float dist)
 {

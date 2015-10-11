@@ -623,7 +623,7 @@ void AGameCharacter::AnimNofity_Shoot()
 
 bool AGameCharacter::Attack(FName skillId)
 {
-	if (Target == NULL)
+	if (Target == NULL || Target->hp==0)
 	{
 		if (!skills.Contains(skillId))
 			return false;
