@@ -57,7 +57,10 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 	{
 		if (IsInputKeyDown(FKey("G")))
 		{
-			AddYawInput(90 * DeltaSeconds);
+			//AddYawInput(90 * DeltaSeconds);
+			FRotator rot = SprintArm->RelativeRotation;
+			rot.Yaw += 90 * DeltaSeconds;
+			SprintArm->SetWorldRotation(rot);
 		}
 		if (IsInputKeyDown(FKey("H")))
 		{
@@ -114,7 +117,10 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 			SprintArm->TargetArmLength += scale;
 			SprintArm->TargetArmLength = FMath::Clamp(SprintArm->TargetArmLength, client_camera_scale_min, client_camera_scale_max);
 
-			AddYawInput(rotate);
+			//AddYawInput(rotate);
+			FRotator rot = SprintArm->RelativeRotation;
+			rot.Yaw += rotate;
+			SprintArm->SetWorldRotation(rot);
 
 			oldTouchPositions[0] = NewLocation[0];
 
