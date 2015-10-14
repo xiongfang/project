@@ -160,6 +160,8 @@ public:
 		void TaskFinish(FName id);
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void TaskReward(FName id);
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		UTask* TaskGet(FName id);
 
 	bool Attack(FName skillId)override;
 	void SkillEffect(AGameBattler* User, USkill* skill) override;

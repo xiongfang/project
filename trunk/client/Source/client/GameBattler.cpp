@@ -3,6 +3,14 @@
 #include "Skill.h"
 #include "config.h"
 
+FName DeadStateName("战斗不能");
+
+
+AGameBattler::AGameBattler()
+{
+	timer_combat_cd = 0.0f;
+}
+
 // Called every frame
 void AGameBattler::Tick(float DeltaTime)
 {
@@ -44,8 +52,56 @@ void AGameBattler::Tick(float DeltaTime)
 	{
 		RemoveState(k);
 	}
+
+	if (combating)
+	{
+		timer_combat_cd -= DeltaTime;
+		if (timer_combat_cd < 0)
+		{
+			combating = false;
+		}
+	}
 }
 
+int32 AGameBattler::damage(AGameBattler* User,DamageFlag dt, int32 hp_damage, int32 mp_damage)
+{
+	combating = true;
+	timer_combat_cd = UMyGameSingleton::Get().combat_cd;
+
+	bool dead = IsDead();
+
+	if (dt != DamageFlag::Miss)
+	{
+		hp -= hp_damage;
+		mp -= mp_damage;
+
+		hp = FMath::Clamp(hp, 0, maxhp());
+		mp = FMath::Clamp(mp, 0, maxmp());
+		if (hp_damage >= 0)
+			ShowDamageUI(FString::Printf(TEXT("%d"), FMath::Abs(hp_damage)), FColor::Red);
+		else
+			ShowDamageUI(FString::Printf(TEXT("+%d"), FMath::Abs(hp_damage)), FColor::Green);
+
+	}
+	else
+	{
+		ShowDamageUI(TEXT("MISS"), FColor::White);
+	}
+
+
+	if (!dead && IsDead())
+	{
+		TMap<FName, UState*> s = states;
+		for (auto state : s)
+		{
+			this->RemoveState(state.Key);
+		}
+		AddState(DeadStateName);
+
+		Event_OnDead(User);
+	}
+	return hp;
+}
 void AGameBattler::Recover()
 {
 	hp = maxhp();
@@ -67,7 +123,6 @@ void AGameBattler::Recover()
 	//}
 }
 
-FName DeadStateName("战斗不能");
 
 void AGameBattler::SkillEffect(AGameBattler* User, USkill* skill)
 {
@@ -166,6 +221,9 @@ bool AGameBattler::can_use_skill_target(USkill* skill, AGameBattler* bt)
 }
 bool AGameBattler::Attack(FName skillId)
 {
+	combating = true;
+	timer_combat_cd = UMyGameSingleton::Get().combat_cd;
+
 	if (Target == NULL)
 		return false;
 	if (!skills.Contains(skillId))

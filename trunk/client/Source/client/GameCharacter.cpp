@@ -752,6 +752,12 @@ void AGameCharacter::TaskReward(FName id)
 	}
 }
 
+UTask* AGameCharacter::TaskGet(FName id)
+{
+	if (tasks.Contains(id))
+		return tasks[id];
+	return NULL;
+}
 
 FString AGameCharacter::GetAttributeText()
 {

@@ -5,18 +5,30 @@
 class USkill;
 class UState;
 
+UENUM()
+enum class DamageFlag :uint8
+{
+	Hit,
+	Miss,
+	Critical
+};
+
 UCLASS(abstract)
 class AGameBattler :public ACharacter
 {
 	GENERATED_BODY()
 
 public:
+	AGameBattler();
+
 	UENUM()
 	enum class CampType :uint8
 	{
 		Party,
 		Enemy
 	};
+
+	
 
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
@@ -32,11 +44,16 @@ public:
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 		bool immortal;
 
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadOnly)
+		bool combating;
+
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		bool IsEnemy(AGameBattler* battler){ check(battler);  return battler->camp != camp; }
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		bool IsDead(){ return hp <= 0 && !immortal; }
+
+		float timer_combat_cd;
 
 		virtual int32 base_maxhp(){ return 0; }
 
@@ -73,6 +90,10 @@ public:
 
 		UFUNCTION(Category = Logic, BlueprintCallable)
 			virtual FName race(){ return NAME_None; }
+
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			int32 damage(AGameBattler* User,DamageFlag dt, int32 hp_damage, int32 mp_damage);
+
 
 	UPROPERTY(Category = Data, VisibleAnywhere)
 		TMap<FName, USkill*> skills;

@@ -77,6 +77,9 @@ public:
 	UParticleSystem* ps_levelup;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundBase* sound_levelup;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float combat_cd;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	UCurveTable* config_curve_hp;
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)

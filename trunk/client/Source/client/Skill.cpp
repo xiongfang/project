@@ -94,11 +94,6 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 		atk = atk*skillData->atk_percent + skillData->atk_plus;
 		int def = skillData->damage_type == SkillDamageType::Physic ? Target->pdef(): Target->mdef();
 		int dmg = skillData->ignoring_defense ? atk:(atk * (1.0f-(def / (5000.0f + def))));
-		Target->hp -= dmg;
-		if (dmg>=0)
-			Target->ShowDamageUI(FString::Printf(TEXT("%d"),FMath::Abs(dmg)),FColor::Red);
-		else
-			Target->ShowDamageUI(FString::Printf(TEXT("+%d"), FMath::Abs(dmg)), FColor::Green);
 
 		//增加buff
 		for (auto buff : skillData->state_plus)
@@ -120,10 +115,11 @@ void USkill::SkillEffect_Implementation(AGameBattler* Target, AGameBattler* User
 			Target->GetMesh()->GetAnimInstance()->Montage_Play(effect->hit_anim);
 		}
 
+		Target->damage(User,DamageFlag::Hit, dmg, 0);
 	}
 	else
 	{
-		Target->ShowDamageUI(TEXT("未命中"));
+		Target->damage(User,DamageFlag::Miss, 0, 0);
 	}
 
 	//播放受击特效,音效
