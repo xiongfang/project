@@ -31,6 +31,8 @@ public:
 
 	Fconfig_monster* GetData();
 
+	FName name()override{ return id; }
+
 	int32 base_maxhp() override;
 	int32 base_maxmp() override;
 	int32 base_patk() override;

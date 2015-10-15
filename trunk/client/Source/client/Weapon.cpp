@@ -2,6 +2,7 @@
 #include "Weapon.h"
 #include "GameCharacter.h"
 #include "MyGameSingleton.h"
+#include "WeaponActor.h"
 
 UWeaponBase* UWeaponBase::Create(AGameCharacter* Parent, WeaponType type)
 {
@@ -48,42 +49,66 @@ void UWeaponSword::OnEquip(FName id)
 	Super::OnEquip(id);
 
 	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race());
-	if (weapon != NULL)
+	if (weapon == NULL)
 	{
+		UE_LOG(client, Warning, TEXT("%s,%s WeaponMap Not Found!"), *id.ToString(), *Owner->race().ToString());
+		return;
+	}
+
+	if (weapon->static_meshes.Num()==0)
+	{
+		UE_LOG(client, Warning, TEXT("%s,%s weapon static_meshes not set"), *id.ToString(), *Owner->race().ToString());
+		return;
+	}
+
+	UStaticMesh* mesh = weapon->static_meshes.Num() > 0 ? weapon->static_meshes[0].LoadSynchronous() : NULL;
+	if (mh_weapon == NULL)
+	{
+		mh_weapon = Cast<AWeaponActor>(GetWorld()->SpawnActor(*weapon->prefab));
 		if (mh_weapon == NULL)
 		{
-			mh_weapon = Cast<AStaticMeshActor>(GetWorld()->SpawnActor(*weapon->prefab));
-			mh_weapon->SetMobility(EComponentMobility::Movable);
+			UE_LOG(client, Warning, TEXT("%s,%s weapon prefab not set"), *id.ToString(), *Owner->race().ToString());
+			return;
 		}
-
-		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
-		if (sc != NULL)
-			sc->AttachActor(mh_weapon, Owner->GetMesh());
-		else
-			TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
-	
-		//附件
-		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
-		if (mh_append == NULL)
-		{
-			mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-			mh_append->SetMobility(EComponentMobility::Movable);
-		}
-		mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
-	
-		sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
-		if (sc != NULL)
-			sc->AttachActor(mh_append, Owner->GetMesh());
-		else
-			TRACE("sc == NULL  %s ", *AppendSlotName.ToString());
-
-		_isOpened = true;
-
-		//禁用碰撞
-		UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
-		if (Box != NULL)
-			Box->bGenerateOverlapEvents = false;
 	}
+	mh_weapon->GetStaticMeshComponent()->SetStaticMesh(mesh);
+
+	//const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
+	//if (sc != NULL)
+	//	sc->AttachActor(mh_weapon, Owner->GetMesh());
+	//else
+	//	TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
+	
+	//附件
+	UStaticMesh* staticMesh = weapon->static_meshes.Num() > 1 ? weapon->static_meshes[1].LoadSynchronous() : NULL;
+	if (mh_append == NULL)
+	{
+		mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+		mh_append->SetMobility(EComponentMobility::Movable);
+	}
+	mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
+	
+	const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
+	if (sc != NULL)
+		sc->AttachActor(mh_append, Owner->GetMesh());
+	else
+		TRACE("sc == NULL  %s ", *AppendSlotName.ToString());
+
+	//禁用碰撞
+	UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
+	if (Box != NULL)
+		Box->bGenerateOverlapEvents = false;
+
+	//更新装备状态
+	if (Owner->is_weapon_open)
+	{
+		Open();
+	}
+	else
+	{
+		Close();
+	}
+	
 
 }
 void UWeaponSword::OnUnEquip()
@@ -162,41 +187,66 @@ void UWeaponBow::OnEquip(FName id)
 	Super::OnEquip(id);
 
 	Fconfig_weapon_map* weapon = UMyGameSingleton::Get().FindWeaponMap(id, Owner->race());
-	if (weapon != NULL)
+	if (weapon == NULL)
 	{
+		UE_LOG(client, Warning, TEXT("%s,%s WeaponMap Not Found!"), *id.ToString(), *Owner->race().ToString());
+		return;
+	}
+
+	if (weapon->skeletal_meshes.Num() < 2)
+	{
+		UE_LOG(client, Warning, TEXT("%s,%s weapon skeletal_meshes is required"), *id.ToString(), *Owner->race().ToString());
+		return;
+	}
+
+	USkeletalMesh* skeletalMesh = weapon->skeletal_meshes[0].LoadSynchronous();
+	if (mh_weapon == NULL)
+	{
+		mh_weapon = Cast<AWeaponActor>(GetWorld()->SpawnActor(*weapon->prefab));
 		if (mh_weapon == NULL)
 		{
-			mh_weapon = Cast<ASkeletalMeshActor>(GetWorld()->SpawnActor(*weapon->prefab));
+			UE_LOG(client, Warning, TEXT("%s,%s weapon prefab not set"), *id.ToString(), *Owner->race().ToString());
+			return;
 		}
-
-		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
-		if (sc != NULL)
-			sc->AttachActor(mh_weapon, Owner->GetMesh());
-		else
-			TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
-
-		//附件
-		UStaticMesh* staticMesh = Cast<UStaticMesh>(weapon->append_1.ToStringReference().TryLoad());
-		if (mh_append == NULL)
-		{
-			mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-			mh_append->SetMobility(EComponentMobility::Movable);
-		}
-		mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
-
-		sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
-		if (sc != NULL)
-			sc->AttachActor(mh_append, Owner->GetMesh());
-		else
-			TRACE("sc == NULL  %s ", *AppendSlotName.ToString());
-
-		_isOpened = true;
-
-		//禁用碰撞
-		UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
-		if (Box != NULL)
-			Box->bGenerateOverlapEvents = false;
 	}
+	mh_weapon->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
+
+	//const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(WeaponSlotName);
+	//if (sc != NULL)
+	//	sc->AttachActor(mh_weapon, Owner->GetMesh());
+	//else
+	//	TRACE("sc == NULL  %s ", *WeaponSlotName.ToString());
+
+	//附件
+	UStaticMesh* staticMesh = weapon->static_meshes.Num() > 0 ? weapon->static_meshes[0].LoadSynchronous() : NULL;
+	if (mh_append == NULL)
+	{
+		mh_append = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+		mh_append->SetMobility(EComponentMobility::Movable);
+	}
+	mh_append->GetStaticMeshComponent()->SetStaticMesh(staticMesh);
+
+	const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName(AppendSlotName);
+	if (sc != NULL)
+		sc->AttachActor(mh_append, Owner->GetMesh());
+	else
+		TRACE("sc == NULL  %s ", *AppendSlotName.ToString());
+
+	//禁用碰撞
+	UPrimitiveComponent* Box = mh_weapon->FindComponentByClass<UPrimitiveComponent>();
+	if (Box != NULL)
+		Box->bGenerateOverlapEvents = false;
+
+	//更新装备状态
+	if (Owner->is_weapon_open)
+	{
+		Open();
+	}
+	else
+	{
+		Close();
+	}
+	
 
 }
 void UWeaponBow::OnUnEquip()
@@ -260,9 +310,9 @@ void UWeaponBow::AttackStart()
 {
 	//特殊处理一下箭
 	Fconfig_weapon_map* wp = UMyGameSingleton::Get().FindWeaponMap(_id, Owner->race());
-	if (wp != NULL && wp->append_3 != NULL)
+	if (wp != NULL && wp->skeletal_meshes.Num()>=2)
 	{
-		USkeletalMesh* skeletalMesh = Cast<USkeletalMesh>(wp->append_3.ToStringReference().TryLoad());
+		USkeletalMesh* skeletalMesh = wp->skeletal_meshes[1].LoadSynchronous();
 		mh_fly_arrow = Owner->GetWorld()->SpawnActor<ASkeletalMeshActor>();
 		mh_fly_arrow->GetSkeletalMeshComponent()->SetSkeletalMesh(skeletalMesh);
 		const USkeletalMeshSocket* sc = Owner->GetMesh()->GetSocketByName("WEAPON");

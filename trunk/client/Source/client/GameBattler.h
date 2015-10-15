@@ -18,6 +18,12 @@ class AGameBattler :public ACharacter
 {
 	GENERATED_BODY()
 
+private:
+	void TriggerEnterCombating();
+	void CheckLeaveCombating(float DeltaTime);
+protected:
+	virtual void NotifyEnterCombating(){}
+	virtual void NotifyLeaveCombating(){}
 public:
 	AGameBattler();
 
@@ -70,6 +76,9 @@ public:
 		virtual int32 base_eva(){ return 0; }
 
 		virtual USoundBase* dead_sound(){ return NULL;}
+
+		UFUNCTION(Category = Logic, BlueprintCallable)
+			virtual FName name(){ return NAME_None; }
 
 		UFUNCTION(Category = Logic, BlueprintCallable)
 			virtual int32 maxhp();
@@ -134,7 +143,7 @@ public:
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
-		void SelectTarget(AGameBattler* t);
+		virtual void SelectTarget(AGameBattler* t);
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
@@ -172,4 +181,6 @@ public:
 	//查找指定半径的战斗者，并按距离从近到远排列
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	TArray<AGameBattler*> FindBattlers(float Radius);
+
+	virtual void SerializeProperty(FArchive& ar);
 };

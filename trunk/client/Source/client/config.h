@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 #include "GameFramework/Character.h"
 #include "GameMonster.h"
 #include "Skill.h"
-
+#include "WeaponActor.h"
 #include "config.generated.h"
 /**
  * 
@@ -45,11 +45,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 max;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 can_sell;
+		bool can_sell;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 price;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 can_use;
+		bool can_use;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString script;
 
@@ -124,8 +124,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 eva_add;
 
+	//å¯å­¦ä¹ çš„æŠ€èƒ½
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<FClassSkill> skills; //¿ÉÑ§Ï°µÄ¼¼ÄÜ
+		TArray<FClassSkill> skills; 
 };
 
 
@@ -209,13 +210,11 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//	FName anim_group;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<AActor> prefab;
+		TSubclassOf<AWeaponActor> prefab;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UStaticMesh> append_1;
+		TArray<TAssetPtr<UStaticMesh>> static_meshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<UStaticMesh> append_2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TAssetPtr<USkeletalMesh> append_3;
+		TArray<TAssetPtr<USkeletalMesh>> skeletal_meshes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName anim_group;
@@ -226,7 +225,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TAssetPtr<UAnimSequence> block;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 block_priorit;//Ô½´óÔ½ÓÅÏÈ
+		int32 block_priorit;//è¶Šå¤§è¶Šä¼˜å…ˆ
 
 };
 
@@ -267,8 +266,8 @@ enum class SkillRangeType :uint8
 UENUM()
 enum class SkillDamageType :uint8
 {
-	Physic, //ÎïÀí
-	Magic	//Ä§·¨
+	Physic, //ç‰©ç†
+	Magic	//é­”æ³•
 };
 
 
@@ -286,9 +285,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float common_cd;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		SkillSelectTargetType select_type; //Ñ¡ÔñÄ¿±êÀàĞÍ
+		SkillSelectTargetType select_type; //é€‰æ‹©ç›®æ ‡ç±»å‹
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		SkillEffectTargetType target_type; //Ä¿±êÀàĞÍ
+		SkillEffectTargetType target_type; //ç›®æ ‡ç±»å‹
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		SkillRangeType range_type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -307,13 +306,13 @@ public:
 		int32 cost_mp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float distance; //ÊÍ·Å¾àÀë
+		float distance; //é‡Šæ”¾è·ç¦»
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<FStateChange> state_plus; //¸½¼Ó¼¼ÄÜ
+		TArray<FStateChange> state_plus; //é™„åŠ æŠ€èƒ½
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<FStateChange> state_minus; //ÒÆ³ı¼¼ÄÜ
+		TArray<FStateChange> state_minus; //ç§»é™¤æŠ€èƒ½
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<USkill> prefab; //ÖØĞ´µÄ¼¼ÄÜ
+		TSubclassOf<USkill> prefab; //é‡å†™çš„æŠ€èƒ½
 };
 
 USTRUCT(BlueprintType)
@@ -498,6 +497,20 @@ public:
 
 
 USTRUCT()
+struct FSentence
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	//ä¼ å…¥å¯¹è¯å¤„ç†éœ€è¦
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString token;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FText text;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FText> selections;
+};
+
+USTRUCT()
 struct FItem
 {
 	GENERATED_USTRUCT_BODY()
@@ -513,20 +526,33 @@ struct CLIENT_API Fconfig_task : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
+	//éœ€è¦ç­‰çº§
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 level; //ĞèÒªµÈ¼¶
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//FString title;
+	int32 level; 
+	//ä»»åŠ¡æè¿°
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString description;	//ÈÎÎñÃèÊö
+	FString description;	
+	//ä»»åŠ¡è¾¾æˆæ¡ä»¶
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FItem> condition; //ÈÎÎñ´ï³ÉÌõ¼ş
+	TArray<FItem> condition; 
+	//æ¥æ”¶ä»»åŠ¡NPC
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName npc_finish;	//Íê³ÉNPC£¬²»Ò»¶¨Íê³É
+	FName npc_start;
+	//äº¤æ¥ä»»åŠ¡NPC
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FItem> rewards;	//½±Àø
+	FName npc_finish;
+	//å¥–åŠ±
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FItem> rewards;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UTask> prefab;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FSentence> dialog_start;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FSentence> dialog_going;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FSentence> dialog_finish;
 };
 
 
@@ -538,3 +564,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 exp;
 };
+

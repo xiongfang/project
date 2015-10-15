@@ -11,6 +11,30 @@ AGameBattler::AGameBattler()
 	timer_combat_cd = 0.0f;
 }
 
+void AGameBattler::TriggerEnterCombating()
+{
+	timer_combat_cd = UMyGameSingleton::Get().combat_cd;
+	if (!combating)
+	{
+		combating = true;
+		NotifyEnterCombating();
+	}
+}
+void AGameBattler::CheckLeaveCombating(float DeltaTime)
+{
+	if (combating)
+	{
+		if (Target == NULL || (Target->IsDead() && Target->IsEnemy(this)))
+		{
+			timer_combat_cd -= DeltaTime;
+			if (timer_combat_cd < 0)
+			{
+				combating = false;
+				NotifyLeaveCombating();
+			}
+		}
+	}
+}
 // Called every frame
 void AGameBattler::Tick(float DeltaTime)
 {
@@ -53,14 +77,7 @@ void AGameBattler::Tick(float DeltaTime)
 		RemoveState(k);
 	}
 
-	if (combating)
-	{
-		timer_combat_cd -= DeltaTime;
-		if (timer_combat_cd < 0)
-		{
-			combating = false;
-		}
-	}
+	CheckLeaveCombating(DeltaTime);
 }
 
 int32 AGameBattler::damage(AGameBattler* User,DamageFlag dt, int32 hp_damage, int32 mp_damage)
@@ -256,6 +273,7 @@ bool AGameBattler::Attack(FName skillId)
 void AGameBattler::SelectTarget(AGameBattler* User)
 {
 	Target = User;
+	TriggerEnterCombating();
 }
 
 
@@ -537,4 +555,9 @@ TArray<AGameBattler*> AGameBattler::FindBattlers(float Radius)
 	results.Sort(sort);
 
 	return results;
+}
+
+void AGameBattler::SerializeProperty(FArchive& ar)
+{
+	ar << hp << mp << (uint8&)(camp) << immortal << combating<< skills << states;
 }

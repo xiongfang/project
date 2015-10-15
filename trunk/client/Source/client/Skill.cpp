@@ -255,7 +255,7 @@ Fconfig_task* UTask::GetData()
 
 bool UTask::can_finish_Implementation(AGameCharacter* owner)
 {
-	if (State != TaskState::GOING)
+	if (State != TaskState::Start)
 		return false;
 
 	Fconfig_task* data = GetData();
@@ -269,7 +269,7 @@ bool UTask::can_finish_Implementation(AGameCharacter* owner)
 	return true;
 }
 
-void UTask::finish_Implementation(AGameCharacter* owner)
+void UTask::reword_Implementation(AGameCharacter* owner)
 {
 	Fconfig_task* data = GetData();
 	for (auto d : data->condition)
@@ -281,5 +281,4 @@ void UTask::finish_Implementation(AGameCharacter* owner)
 	{
 		owner->ItemAdd(d.Name, d.Num);
 	}
-	State = TaskState::FINISHED;
 }

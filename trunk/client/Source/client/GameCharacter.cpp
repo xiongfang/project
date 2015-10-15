@@ -137,9 +137,6 @@ void AGameCharacter::BeginPlay()
 	//绑定碰撞事件
 	OnActorBeginOverlap.AddDynamic(this, &AGameCharacter::OnActorOverlap);
 
-	//完全回复
-	Recover();
-
 	UpdateMesh();
 	UpdateAnimGroup();
 	UpdateClassSkills();
@@ -442,12 +439,15 @@ void AGameCharacter::UpdateMesh()
 
 void AGameCharacter::ChangeWeaponState()
 {
-	if (IsWeaponOpen())
+	is_weapon_open = !is_weapon_open;
+
+	if (is_weapon_open)
 	{
+
 		for (int32 i = 0; i < Weapons.Num(); i++)
 		{
 			if (Weapons[i]!=NULL)
-				Weapons[i]->Close();
+				Weapons[i]->Open();
 		}
 	}
 	else
@@ -455,18 +455,11 @@ void AGameCharacter::ChangeWeaponState()
 		for (int32 i = 0; i < Weapons.Num(); i++)
 		{
 			if (Weapons[i] != NULL)
-				Weapons[i]->Open();
+				Weapons[i]->Close();
 		}
 	}
 
 	UpdateAnimGroup();
-}
-
-bool AGameCharacter::IsWeaponOpen()
-{
-	if(Weapons[0]!=NULL && Weapons[0]->IsOpen())
-		return true;
-	return false;
 }
 
 
@@ -487,10 +480,10 @@ void AGameCharacter::UpdateAnimGroup()
 		anim_block = weaponMap->block.LoadSynchronous();
 		block_priorit = weaponMap->block_priorit;
 
-		anim_openweapon = weaponMap->open_weapon;
-		anim_closeweapon = weaponMap->close_weapon;
+		anim_openweapon = weaponMap->open_weapon.Get();
+		anim_closeweapon = weaponMap->close_weapon.Get();
 			
-		if (Weapons[0]->IsOpen())
+		if (is_weapon_open)
 		{
 			anim_group = weaponMap->anim_group;
 		}
@@ -576,16 +569,6 @@ TArray<FItem> AGameCharacter::GetItems()
 			item.Num = kv.Value;
 			data.Add(item);
 		}
-	}
-	return data;
-}
-
-TArray<UTask*> AGameCharacter::GetTasks()
-{
-	TArray<UTask*> data;
-	for (auto kv : tasks)
-	{
-		data.Add(kv.Value);
 	}
 	return data;
 }
@@ -680,7 +663,7 @@ bool AGameCharacter::can_use_skill(USkill* skill)
 {
 	if (!Super::can_use_skill(skill))
 		return false;
-	if (!IsWeaponOpen())
+	if (!is_weapon_open)
 		return false;
 	return true;
 }
@@ -691,7 +674,7 @@ bool AGameCharacter::can_block()
 	{
 		return false;
 	}
-	if (!IsWeaponOpen())
+	if (!is_weapon_open)
 		return false;
 	return true;
 }
@@ -699,64 +682,85 @@ bool AGameCharacter::can_block()
 
 void AGameCharacter::TaskAdd(FName id)
 {
-	Fconfig_task* data = UMyGameSingleton::Get().FindTask(id);
-	if (data == NULL)
+	UTask* t = TaskGet(id);
+	if (t->State != UTask::TaskState::NoStart)
 	{
-		UE_LOG(client, Warning, TEXT("Task Not Found %s"), *id.ToString());
-		return;
-	}
-	if (tasks.Contains(id))
-	{
-		UE_LOG(client, Warning, TEXT("Task Has Bean Added %s"), *id.ToString());
+		UE_LOG(client, Warning, TEXT("Task %s State Wrong "), *id.ToString());
 		return;
 	}
 
-	UTask* t = NULL;
-	if (data->prefab != NULL)
-	{
-		t = NewObject<UTask>(this, data->prefab);
-	}
-	else
-	{
-		t = NewObject<UTask>();
-	}
-	t->id = id;
-	tasks.Add(id, t);
+	t->State = UTask::TaskState::Start;
 }
 
 void AGameCharacter::TaskFinish(FName id)
 {
-	if (!tasks.Contains(id))
+	UTask* t = TaskGet(id);
+	if (t->State != UTask::TaskState::Start)
 	{
-		UE_LOG(client, Warning, TEXT("Task  %s Not Found"), *id.ToString());
+		UE_LOG(client, Warning, TEXT("Task %s State Wrong "), *id.ToString());
 		return;
 	}
-	UTask* t = tasks[id];
-	if (t->State == UTask::TaskState::GOING)
-		t->State = UTask::TaskState::FINISHED;
+	t->State = UTask::TaskState::Finish;
 }
 
 void AGameCharacter::TaskReward(FName id)
 {
-	if (!tasks.Contains(id))
+	UTask* t = TaskGet(id);
+
+	if (t->State != UTask::TaskState::Finish)
 	{
-		UE_LOG(client, Warning, TEXT("Task  %s Not Found"), *id.ToString());
+		UE_LOG(client, Warning, TEXT("Task %s State Wrong "), *id.ToString());
 		return;
 	}
-	UTask* t = tasks[id];
-	if (t->State != UTask::TaskState::FINISHED)
-		return;
-	for (auto itemData : t->GetData()->rewards)
-	{
-		this->ItemAdd(itemData.Name, itemData.Num);
-	}
+		
+	t->reword(this);
+
+	t->State = UTask::TaskState::Reward;
 }
 
 UTask* AGameCharacter::TaskGet(FName id)
 {
+	UTask* t = NULL;
 	if (tasks.Contains(id))
-		return tasks[id];
-	return NULL;
+	{
+		t = tasks[id];
+	}
+	else
+	{
+		Fconfig_task* data = UMyGameSingleton::Get().FindTask(id);
+		if (data == NULL)
+		{
+			UE_LOG(client, Warning, TEXT("Task Not Found %s"), *id.ToString());
+			return NULL;
+		}
+
+		if (data->prefab != NULL)
+		{
+			t = NewObject<UTask>(this, data->prefab);
+			t->id = id;
+		}
+		else
+		{
+			t = NewObject<UTask>();
+			t->id = id;
+		}
+		tasks.Add(id, t);
+	}
+	return t;
+}
+
+
+TArray<UTask*> AGameCharacter::GetTasks()
+{
+	TArray<FName> taskList = UMyGameSingleton::Get().config_task->GetRowNames();
+	TArray<UTask*> result;
+	for (auto taskId : taskList)
+	{
+		UTask* task = TaskGet(taskId);
+		if (task->State == UTask::TaskState::Start || task->State == UTask::TaskState::Finish)
+			result.Add(task);
+	}
+	return result;
 }
 
 FString AGameCharacter::GetAttributeText()
@@ -770,7 +774,8 @@ FString AGameCharacter::GetAttributeText()
 
 void AGameCharacter::SerializeProperty(FArchive& ar)
 {
-	ar << hp << mp << (uint8&)(camp) << skills << level << exp << class_type << race_type << equips << items << tasks;
+	Super::SerializeProperty(ar);
+	ar<< _name << level << exp << class_type << race_type << equips << items << tasks;
 }
 
 #define MAX_LEVEL 80
@@ -842,4 +847,30 @@ bool AGameCharacter::AutoSelectTarget(USkill* skill)
 	}
 
 	return false;
+}
+
+
+void AGameCharacter::NotifyEnterCombating()
+{
+	if (anim_openweapon != NULL)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(anim_openweapon);
+	}
+	else
+	{
+		if (!is_weapon_open)
+			this->ChangeWeaponState();
+	}
+}
+void AGameCharacter::NotifyLeaveCombating()
+{
+	if (anim_closeweapon != NULL)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(anim_closeweapon);
+	}
+	else
+	{
+		if (is_weapon_open)
+			this->ChangeWeaponState();
+	}
 }

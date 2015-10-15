@@ -88,13 +88,14 @@ void UGame::LoadSlot(int32 slotIndex)
 				character->SerializeProperty(arObject);
 			}
 		}
-		
+
 		//如果地图不同，切换地图
 		FString current_map_name = GetWorld()->GetCurrentLevel()->GetPathName();
 		if (SaveObject->map_name != current_map_name)
 		{
 			TempSavedGame = SaveObject;
-			GetWorld()->ServerTravel(SaveObject->map_name);
+			UGameplayStatics::OpenLevel(this, *SaveObject->map_name);
+			//GetWorld()->ServerTravel(SaveObject->map_name);
 		}
 	}
 }

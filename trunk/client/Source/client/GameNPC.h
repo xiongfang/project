@@ -5,6 +5,7 @@
 #include "GameMonster.h"
 #include "GameNPC.generated.h"
 
+struct FSentence;
 /**
  * 
  */
@@ -24,6 +25,23 @@ public:
 		USkeletalMeshComponent* Hand;
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 		USkeletalMeshComponent* Feet;
-	
-	
+
+		UPROPERTY()
+		float talk_range;
+		UPROPERTY()
+		UTask* task;
+		UPROPERTY()
+		AGameCharacter* character;
+		UPROPERTY()
+		int32 sentence_index;
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	TArray<UTask*> GetTasks(AGameCharacter* c);
+
+
+	virtual void Event_OnSelect_Implementation(AGameBattler* User)override;
+
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+		void OnDialogSelect(const FString& token, int32 index);
 };

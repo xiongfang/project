@@ -31,7 +31,9 @@ UCLASS()
 class CLIENT_API AGameCharacter : public AGameBattler
 {
 	GENERATED_BODY()
-
+protected:
+	virtual void NotifyEnterCombating()override;
+	virtual void NotifyLeaveCombating()override;
 public:
 	// Sets default values for this character's properties
 	AGameCharacter();
@@ -75,6 +77,8 @@ public:
 	//UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	//int32 mp;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
+	FName _name;
+	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 level;
 	UPROPERTY(Category = Data, EditAnywhere, BlueprintReadWrite)
 	int32 exp;
@@ -94,7 +98,7 @@ public:
 	UPROPERTY()
 	TMap<FName, UTask*> tasks;
 
-
+	FName name() override{ return _name; }
 	int32 base_maxhp() override;
 	int32 base_maxmp() override;
 	int32 base_patk() override;
@@ -117,15 +121,15 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		FName anim_group;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		TAssetPtr<UAnimMontage> anim_openweapon;
+		UAnimMontage* anim_openweapon;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		TAssetPtr<UAnimMontage> anim_closeweapon;
+		UAnimMontage* anim_closeweapon;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		TAssetPtr<UAnimSequence> anim_block;
+		UAnimSequence* anim_block;
 
+	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
+		bool is_weapon_open;
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
-		bool IsWeaponOpen();
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void ChangeWeaponState();
 
@@ -184,7 +188,7 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		FString GetAttributeText();
 
-	void SerializeProperty(FArchive& ar);
+	void SerializeProperty(FArchive& ar)override;
 
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
@@ -196,4 +200,12 @@ public:
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		bool AutoSelectTarget(USkill* skill);
+
+	UFUNCTION(Category = Logic, BlueprintImplementableEvent, BlueprintCallable)
+		void OpenDialog();
+	UFUNCTION(Category = Logic, BlueprintImplementableEvent, BlueprintCallable)
+		void CloseDialog();
+	UFUNCTION(Category = Logic, BlueprintImplementableEvent, BlueprintCallable)
+		void ShowText(const FString& token, const FText& text, const TArray<FText>& selections);
+
 }; 

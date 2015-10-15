@@ -2,6 +2,9 @@
 
 #include "client.h"
 #include "GameNPC.h"
+#include "MyGameSingleton.h"
+#include "config.h"
+#include "GameCharacter.h"
 
 // Sets default values
 AGameNPC::AGameNPC()
@@ -81,5 +84,136 @@ AGameNPC::AGameNPC()
 		// Mesh acts as the head, as well as the parent for both animation and attachment.
 		Feet->AttachParent = GetMesh();
 		Feet->SetMasterPoseComponent(GetMesh());
+	}
+
+	talk_range = 300.0f;
+}
+
+
+TArray<UTask*> AGameNPC::GetTasks(AGameCharacter* c)
+{
+	TArray<FName> taskList = UMyGameSingleton::Get().config_task->GetRowNames();
+	TArray<UTask*> result;
+	for (auto taskId : taskList)
+	{
+		UTask* task = c->TaskGet(taskId);
+		if (task != NULL)
+		{
+			Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(taskId);
+
+			if (taskData->npc_start == name())
+			{
+				if (task->State == UTask::TaskState::NoStart || task->State == UTask::TaskState::Start)
+				{
+					result.Add(task);
+				}
+			}
+			else if (taskData->npc_finish == name())
+			{
+				if (task->State == UTask::TaskState::Finish)
+				{
+					result.Add(task);
+				}
+			}
+		}
+	}
+	return result;
+}
+
+void AGameNPC::Event_OnSelect_Implementation(AGameBattler* User)
+{
+	character = Cast<AGameCharacter>(User);
+	if (character == NULL)
+		return;
+
+	if (FVector::Dist(User->GetActorLocation(), GetActorLocation()) < talk_range)
+	{
+		character->OpenDialog();
+		TArray<FText> selections;
+		TArray<UTask*> npcTasks = GetTasks(character);
+		for (auto task : npcTasks)
+		{
+			selections.Add(FText::FromName(task->id));
+		}
+		character->ShowText(TEXT("start"), FText::FromString(TEXT("ÐèÒª°ïÖúÂð£¿")), selections);
+	}
+}
+
+void AGameNPC::OnDialogSelect(const FString& token, int32 index)
+{
+	if (task != NULL)
+	{
+		sentence_index++;
+		task->Event_OnDialogSelect(this, character, token, index);
+	}
+	else
+	{
+		TArray<UTask*> npcTasks = GetTasks(character);
+
+		if (npcTasks.IsValidIndex(index))
+		{
+			task = npcTasks[index];
+			sentence_index = 0;
+		}
+	}
+
+	if (task != NULL)
+	{
+		Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(task->id);
+
+		switch (task->State)
+		{
+		case UTask::TaskState::NoStart :
+		{
+			if (taskData->dialog_start.IsValidIndex(sentence_index))
+			{
+				character->ShowText(taskData->dialog_start[sentence_index].token, taskData->dialog_start[sentence_index].text, taskData->dialog_start[sentence_index].selections);
+			}
+			else
+			{
+				character->CloseDialog();
+				task = NULL;
+				character = NULL;
+				sentence_index = 0;
+			}
+			break;
+		}
+		case UTask::TaskState::Start :
+		{
+			if (taskData->dialog_going.IsValidIndex(sentence_index))
+			{
+				character->ShowText(taskData->dialog_going[sentence_index].token, taskData->dialog_going[sentence_index].text, taskData->dialog_going[sentence_index].selections);
+			}
+			else
+			{
+				character->CloseDialog();
+				task = NULL;
+				character = NULL;
+				sentence_index = 0;
+			}
+			break;
+		}
+		case UTask::TaskState::Finish :
+		{
+			if (taskData->dialog_finish.IsValidIndex(sentence_index))
+			{
+				character->ShowText(taskData->dialog_finish[sentence_index].token, taskData->dialog_finish[sentence_index].text, taskData->dialog_finish[sentence_index].selections);
+			}
+			else
+			{
+				character->CloseDialog();
+				task = NULL;
+				character = NULL;
+				sentence_index = 0;
+			}
+			break;
+		}
+		default:
+			character->CloseDialog();
+			task = NULL;
+			character = NULL;
+			sentence_index = 0;
+			break;
+		}
 	}
 }

@@ -4,7 +4,7 @@
 
 
 class AGameCharacter;
-class ASkeletalMeshActor;
+class AWeaponActor;
 
 UCLASS()
 class CLIENT_API UWeaponBase : public UActorComponent
@@ -14,17 +14,14 @@ class CLIENT_API UWeaponBase : public UActorComponent
 protected:
 	AGameCharacter* Owner;
 	FName _id;
-	bool _isOpened;
 public:
 	virtual void OnEquip(FName id){ _id = id; }
 	virtual void OnUnEquip(){ _id = NAME_None; }
 
-	//是否拿出状态
-	virtual bool IsOpen(){ return _isOpened; }
 	//拿出
-	virtual void Open(){ _isOpened = true; }
+	virtual void Open(){}
 	//收起
-	virtual void Close(){ _isOpened = false; }
+	virtual void Close(){}
 
 	FName GetID(){ return _id; }
 
@@ -48,7 +45,7 @@ public:
 	UWeaponSword();
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-	AStaticMeshActor* mh_weapon;  //网格模型
+	AWeaponActor* mh_weapon;  //网格模型
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	AStaticMeshActor* mh_append; //剑鞘
 
@@ -79,8 +76,9 @@ class CLIENT_API UWeaponBow : public UWeaponBase
 public:
 	UWeaponBow();
 
+	//弓 索引
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
-		ASkeletalMeshActor* mh_weapon;  //弓
+		AWeaponActor* mh_weapon;
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 		AStaticMeshActor* mh_append; //箭袋
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)

@@ -106,8 +106,10 @@ public:
 	UENUM()
 	enum class TaskState :uint8
 	{
-		GOING,
-		FINISHED
+		NoStart,
+		Start,
+		Finish,
+		Reward
 	};
 
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
@@ -116,17 +118,20 @@ public:
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
 	TaskState State;
 
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
-	FName npc_finish;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
+	//FName npc_finish;
 
 	Fconfig_task* GetData();
 
 	virtual bool can_finish_Implementation(AGameCharacter* owner);
-	virtual void finish_Implementation(AGameCharacter* owner);
+	virtual void reword_Implementation(AGameCharacter* owner);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(Category = Logic, BlueprintNativeEvent, BlueprintCallable)
 		bool can_finish(AGameCharacter* owner);
 
-	UFUNCTION(BlueprintNativeEvent)
-		void finish(AGameCharacter* owner);
+	UFUNCTION(Category = Logic, BlueprintNativeEvent, BlueprintCallable)
+		void reword(AGameCharacter* owner);
+
+	UFUNCTION(Category = Logic, BlueprintImplementableEvent, BlueprintCallable)
+		void Event_OnDialogSelect(AGameBattler* NPC, AGameCharacter* User, const FString& token, int32 selectIndex);
 };
