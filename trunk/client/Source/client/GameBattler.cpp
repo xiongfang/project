@@ -559,5 +559,5 @@ TArray<AGameBattler*> AGameBattler::FindBattlers(float Radius)
 
 void AGameBattler::SerializeProperty(FArchive& ar)
 {
-	ar << hp << mp << (uint8&)(camp) << immortal << combating<< skills << states;
+	ar << RootComponent->RelativeLocation<< hp << mp << (uint8&)(camp) << immortal << combating << skills << states;
 }

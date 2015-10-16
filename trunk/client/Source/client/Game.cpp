@@ -5,7 +5,6 @@
 #include "GameCharacter.h"
 #include "MySaveGame.h"
 
-
 UGame::UGame()
 {
 }
@@ -14,7 +13,7 @@ UGame::UGame()
 void UGame::Init()
 {
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UGame::OnPreLoadMap);
-	FCoreUObjectDelegates::PostLoadMap.AddUObject(this, &UGame::OnPostLoadMap);
+	//FCoreUObjectDelegates::PostLoadMap.AddUObject(this, &UGame::OnPostLoadMap);
 }
 void UGame::Shutdown()
 {
@@ -27,13 +26,7 @@ void UGame::OnPreLoadMap()
 }
 void UGame::OnPostLoadMap()
 {
-	AGameCharacter* character = Cast<AGameCharacter>(LocalPlayers[0]->PlayerController->GetPawn());
-	if (character != NULL && TempSavedGame!=NULL)
-	{
-		FMemoryReader ar(TempSavedGame->character);
-		FGameObjectProxyArchive arObject(ar);
-		character->SerializeProperty(arObject);
-	}
+	
 }
 
 void UGame::AutoSaveGameCharacter()
@@ -118,4 +111,31 @@ TArray<UMySaveGame*> UGame::LoadAllSaved()
 		slots.Add(Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(FString::Printf(TEXT("SLOT_%d"), i), 0)));
 	}
 	return slots;
+}
+
+
+APawn* UGame::LoadOrCreateCharacter(TSubclassOf<class APawn> pwanClass,AController* NewPlayer, class AActor* StartSpot)
+{
+	AGameCharacter* character = GetWorld()->SpawnActor<AGameCharacter>(pwanClass, StartSpot->GetTransform());
+	if (character == NULL)
+	{
+		return character;
+	}
+
+	if (TempSavedGame != NULL)
+	{
+		FVector TempLocation = character->GetActorLocation();
+
+		FMemoryReader ar(TempSavedGame->character);
+		FGameObjectProxyArchive arObject(ar);
+		character->SerializeProperty(arObject);
+
+		character->SetActorLocation(TempLocation);
+	}
+	else
+	{
+		character->Recover();
+	}
+
+	return character;
 }

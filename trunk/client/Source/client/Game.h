@@ -24,8 +24,13 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	UMySaveGame* TempSavedGame;
 
-	UFUNCTION(Category = Logic, BlueprintCallable)
+	
 	void AutoSaveGameCharacter();
+
+
+	UFUNCTION(Category = Logic, BlueprintCallable)
+	APawn* LoadOrCreateCharacter(TSubclassOf<class APawn> pwanClass,AController* NewPlayer, class AActor* StartSpot);
+
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 		void SaveSlot(int32 slot);
