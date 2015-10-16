@@ -713,7 +713,7 @@ void AGameCharacter::TaskReward(FName id)
 		return;
 	}
 		
-	t->reword(this);
+	t->reward(this);
 
 	t->State = UTask::TaskState::Reward;
 }

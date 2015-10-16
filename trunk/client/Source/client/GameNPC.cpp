@@ -101,6 +101,9 @@ TArray<UTask*> AGameNPC::GetTasks(AGameCharacter* c)
 		{
 			Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(taskId);
 
+			if (c->level < taskData->level)
+				continue;
+
 			if (taskData->npc_start == name())
 			{
 				if (task->State == UTask::TaskState::NoStart || task->State == UTask::TaskState::Start)
@@ -133,6 +136,9 @@ void AGameNPC::Event_OnSelect_Implementation(AGameBattler* User)
 		TArray<UTask*> npcTasks = GetTasks(character);
 		for (auto task : npcTasks)
 		{
+			if (task->can_finish(character))
+				character->TaskFinish(task->id);
+
 			selections.Add(FText::FromName(task->id));
 		}
 		character->ShowText(TEXT("start"), FText::FromString(TEXT("ĞèÒª°ïÖúÂğ£¿")), selections);

@@ -124,13 +124,13 @@ public:
 	Fconfig_task* GetData();
 
 	virtual bool can_finish_Implementation(AGameCharacter* owner);
-	virtual void reword_Implementation(AGameCharacter* owner);
+	virtual void reward_Implementation(AGameCharacter* owner);
 
 	UFUNCTION(Category = Logic, BlueprintNativeEvent, BlueprintCallable)
 		bool can_finish(AGameCharacter* owner);
 
 	UFUNCTION(Category = Logic, BlueprintNativeEvent, BlueprintCallable)
-		void reword(AGameCharacter* owner);
+		void reward(AGameCharacter* owner);
 
 	UFUNCTION(Category = Logic, BlueprintImplementableEvent, BlueprintCallable)
 		void Event_OnDialogSelect(AGameBattler* NPC, AGameCharacter* User, const FString& token, int32 selectIndex);

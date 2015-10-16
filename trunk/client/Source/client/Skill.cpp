@@ -269,7 +269,7 @@ bool UTask::can_finish_Implementation(AGameCharacter* owner)
 	return true;
 }
 
-void UTask::reword_Implementation(AGameCharacter* owner)
+void UTask::reward_Implementation(AGameCharacter* owner)
 {
 	Fconfig_task* data = GetData();
 	for (auto d : data->condition)
