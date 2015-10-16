@@ -26,7 +26,7 @@ public:
 
 	
 	void AutoSaveGameCharacter();
-
+	bool LoadFromSlot;
 
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	APawn* LoadOrCreateCharacter(TSubclassOf<class APawn> pwanClass,AController* NewPlayer, class AActor* StartSpot);

@@ -7,6 +7,7 @@
 
 UGame::UGame()
 {
+	LoadFromSlot = false;
 }
 
 
@@ -58,7 +59,7 @@ void UGame::SaveSlot(int32 slotIndex)
 			FMemoryWriter ar(SaveObject->character);
 			FGameObjectProxyArchive arObject(ar);
 			character->SerializeProperty(arObject);
-			SaveObject->map_name = character->GetWorld()->GetCurrentLevel()->GetPathName();
+			SaveObject->map_name = character->GetWorld()->GetMapName();
 			SaveObject->time = FDateTime::Now().ToString();
 			UGameplayStatics::SaveGameToSlot(SaveObject, FString::Printf(TEXT("SLOT_%d"), slotIndex), 0);
 		}
@@ -76,16 +77,21 @@ void UGame::LoadSlot(int32 slotIndex)
 			AGameCharacter* character = Cast<AGameCharacter>(LocalPlayers[0]->PlayerController->GetPawn());
 			if (character != NULL)
 			{
+				//FVector TempLocation = character->GetActorLocation();
 				FMemoryReader ar(SaveObject->character);
 				FGameObjectProxyArchive arObject(ar);
 				character->SerializeProperty(arObject);
+				//FVector NowLocation = character->GetActorLocation();
+				//character->SetActorLocation(TempLocation);
+				//character->SetActorLocation(NowLocation);
 			}
 		}
 
 		//如果地图不同，切换地图
-		FString current_map_name = GetWorld()->GetCurrentLevel()->GetPathName();
+		FString current_map_name = GetWorld()->GetMapName();
 		if (SaveObject->map_name != current_map_name)
 		{
+			LoadFromSlot = true;
 			TempSavedGame = SaveObject;
 			UGameplayStatics::OpenLevel(this, *SaveObject->map_name);
 			//GetWorld()->ServerTravel(SaveObject->map_name);
@@ -130,7 +136,12 @@ APawn* UGame::LoadOrCreateCharacter(TSubclassOf<class APawn> pwanClass,AControll
 		FGameObjectProxyArchive arObject(ar);
 		character->SerializeProperty(arObject);
 
-		character->SetActorLocation(TempLocation);
+		//如果不是加载存档，而是传送地图，不需要序列化位置
+		if (!LoadFromSlot)
+		{
+			LoadFromSlot = false;
+			character->SetActorLocation(TempLocation);
+		}
 	}
 	else
 	{

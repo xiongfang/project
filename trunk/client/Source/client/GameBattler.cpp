@@ -559,5 +559,16 @@ TArray<AGameBattler*> AGameBattler::FindBattlers(float Radius)
 
 void AGameBattler::SerializeProperty(FArchive& ar)
 {
-	ar << RootComponent->RelativeLocation<< hp << mp << (uint8&)(camp) << immortal << combating << skills << states;
+	if (ar.IsLoading())
+	{
+		FVector NewPos;
+		ar << NewPos;
+		SetActorLocation(NewPos);
+	}
+	else if (ar.IsSaving())
+	{
+		FVector NewPos = GetActorLocation();
+		ar << NewPos;
+	}
+	ar<< hp << mp << (uint8&)(camp) << immortal << combating << skills << states;
 }
