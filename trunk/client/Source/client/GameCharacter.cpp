@@ -525,7 +525,7 @@ void AGameCharacter::UpdateAnimGroup()
 int32 AGameCharacter::ItemAdd(FName id, int32 count)
 {
 	if (!items.Contains(id))
-		items.Add(id);
+		items.Add(id,0);
 
 	items[id] += count;
 	items[id] = FMath::Clamp(items[id], 0, ItemMax(id));
@@ -535,7 +535,7 @@ int32 AGameCharacter::ItemAdd(FName id, int32 count)
 int32 AGameCharacter::ItemLose(FName id, int32 count)
 {
 	if (!items.Contains(id))
-		items.Add(id);
+		items.Add(id, 0);
 	items[id] -= count;
 	items[id] = FMath::Clamp(items[id], 0, ItemMax(id));
 	return items[id];
@@ -553,7 +553,7 @@ int32 AGameCharacter::ItemMax(FName id)
 bool AGameCharacter::ItemEnough(FName id, int32 count)
 {
 	if (!items.Contains(id))
-		items.Add(id);
+		items.Add(id, 0);
 	return items[id] >= count;
 }
 
@@ -802,6 +802,8 @@ void AGameCharacter::LevelUp()
 	if (level < MAX_LEVEL)
 	{
 		level++;
+		hp = maxhp();
+		mp = maxmp();
 
 		UpdateClassSkills();
 
