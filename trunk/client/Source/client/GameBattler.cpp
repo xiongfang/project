@@ -8,7 +8,7 @@ FName DeadStateName("战斗不能");
 
 AGameBattler::AGameBattler()
 {
-	timer_combat_cd = 0.0f;
+	timer_combat_cd = 10.0f;
 }
 
 void AGameBattler::TriggerEnterCombating()
@@ -24,7 +24,7 @@ void AGameBattler::CheckLeaveCombating(float DeltaTime)
 {
 	if (combating)
 	{
-		if (Target == NULL || (Target->IsDead() && Target->IsEnemy(this)))
+		if (Target == NULL || !Target->IsEnemy(this) || (Target->IsDead() && Target->IsEnemy(this)))
 		{
 			timer_combat_cd -= DeltaTime;
 			if (timer_combat_cd < 0)

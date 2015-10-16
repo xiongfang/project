@@ -108,14 +108,15 @@ TArray<UTask*> AGameNPC::GetTasks(AGameCharacter* c)
 			{
 				if (task->State == UTask::TaskState::NoStart || task->State == UTask::TaskState::Start)
 				{
-					result.Add(task);
+					result.AddUnique(task);
 				}
 			}
-			else if (taskData->npc_finish == name())
+
+			if (taskData->npc_finish == name())
 			{
 				if (task->State == UTask::TaskState::Finish)
 				{
-					result.Add(task);
+					result.AddUnique(task);
 				}
 			}
 		}
@@ -141,6 +142,7 @@ void AGameNPC::Event_OnSelect_Implementation(AGameBattler* User)
 
 			selections.Add(FText::FromName(task->id));
 		}
+		selections.Add(FText::FromString(FString(TEXT("再见"))));
 		character->ShowText(TEXT("start"), FText::FromString(TEXT("需要帮助吗？")), selections);
 	}
 }
@@ -163,63 +165,70 @@ void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 		}
 	}
 
-	if (task != NULL)
+	if (task == NULL)
 	{
-		Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(task->id);
+		character->CloseDialog();
+		task = NULL;
+		character = NULL;
+		sentence_index = 0;
+		return;
+	}
 
-		switch (task->State)
+	Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(task->id);
+
+	switch (task->State)
+	{
+	case UTask::TaskState::NoStart :
+	{
+		if (taskData->dialog_start.IsValidIndex(sentence_index))
 		{
-		case UTask::TaskState::NoStart :
-		{
-			if (taskData->dialog_start.IsValidIndex(sentence_index))
-			{
-				character->ShowText(taskData->dialog_start[sentence_index].token, taskData->dialog_start[sentence_index].text, taskData->dialog_start[sentence_index].selections);
-			}
-			else
-			{
-				character->CloseDialog();
-				task = NULL;
-				character = NULL;
-				sentence_index = 0;
-			}
-			break;
+			character->ShowText(taskData->dialog_start[sentence_index].token, taskData->dialog_start[sentence_index].text, taskData->dialog_start[sentence_index].selections);
 		}
-		case UTask::TaskState::Start :
+		else
 		{
-			if (taskData->dialog_going.IsValidIndex(sentence_index))
-			{
-				character->ShowText(taskData->dialog_going[sentence_index].token, taskData->dialog_going[sentence_index].text, taskData->dialog_going[sentence_index].selections);
-			}
-			else
-			{
-				character->CloseDialog();
-				task = NULL;
-				character = NULL;
-				sentence_index = 0;
-			}
-			break;
-		}
-		case UTask::TaskState::Finish :
-		{
-			if (taskData->dialog_finish.IsValidIndex(sentence_index))
-			{
-				character->ShowText(taskData->dialog_finish[sentence_index].token, taskData->dialog_finish[sentence_index].text, taskData->dialog_finish[sentence_index].selections);
-			}
-			else
-			{
-				character->CloseDialog();
-				task = NULL;
-				character = NULL;
-				sentence_index = 0;
-			}
-			break;
-		}
-		default:
 			character->CloseDialog();
 			task = NULL;
 			character = NULL;
 			sentence_index = 0;
-			break;
 		}
+		break;
 	}
+	case UTask::TaskState::Start :
+	{
+		if (taskData->dialog_going.IsValidIndex(sentence_index))
+		{
+			character->ShowText(taskData->dialog_going[sentence_index].token, taskData->dialog_going[sentence_index].text, taskData->dialog_going[sentence_index].selections);
+		}
+		else
+		{
+			character->CloseDialog();
+			task = NULL;
+			character = NULL;
+			sentence_index = 0;
+		}
+		break;
+	}
+	case UTask::TaskState::Finish :
+	{
+		if (taskData->dialog_finish.IsValidIndex(sentence_index))
+		{
+			character->ShowText(taskData->dialog_finish[sentence_index].token, taskData->dialog_finish[sentence_index].text, taskData->dialog_finish[sentence_index].selections);
+		}
+		else
+		{
+			character->CloseDialog();
+			task = NULL;
+			character = NULL;
+			sentence_index = 0;
+		}
+		break;
+	}
+	default:
+		character->CloseDialog();
+		task = NULL;
+		character = NULL;
+		sentence_index = 0;
+		break;
+	}
+	
 }
