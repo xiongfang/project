@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -40,7 +40,7 @@ public:
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 		float face_rotate_speed;
 
-	//Ïà»ú¿ØÖÆ
+	//ç›¸æœºæŽ§åˆ¶
 	USpringArmComponent* SprintArm;
 	FVector2D oldTouchPositions[2];
 	FVector2D oldTouchVector;

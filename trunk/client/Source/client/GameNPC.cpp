@@ -149,10 +149,10 @@ void AGameNPC::Event_OnSelect_Implementation(AGameBattler* User)
 
 void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 {
-	if (task != NULL)
+	if (current_task != NULL)
 	{
 		sentence_index++;
-		task->Event_OnDialogSelect(this, character, token, index);
+		current_task->Event_OnDialogSelect(this, character, token, index);
 	}
 	else
 	{
@@ -160,23 +160,23 @@ void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 
 		if (npcTasks.IsValidIndex(index))
 		{
-			task = npcTasks[index];
+			current_task = npcTasks[index];
 			sentence_index = 0;
 		}
 	}
 
-	if (task == NULL)
+	if (current_task == NULL)
 	{
 		character->CloseDialog();
-		task = NULL;
+		current_task = NULL;
 		character = NULL;
 		sentence_index = 0;
 		return;
 	}
 
-	Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(task->id);
+	Fconfig_task* taskData = UMyGameSingleton::Get().FindTask(current_task->id);
 
-	switch (task->State)
+	switch (current_task->State)
 	{
 	case UTask::TaskState::NoStart :
 	{
@@ -187,7 +187,7 @@ void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 		else
 		{
 			character->CloseDialog();
-			task = NULL;
+			current_task = NULL;
 			character = NULL;
 			sentence_index = 0;
 		}
@@ -202,7 +202,7 @@ void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 		else
 		{
 			character->CloseDialog();
-			task = NULL;
+			current_task = NULL;
 			character = NULL;
 			sentence_index = 0;
 		}
@@ -217,7 +217,7 @@ void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 		else
 		{
 			character->CloseDialog();
-			task = NULL;
+			current_task = NULL;
 			character = NULL;
 			sentence_index = 0;
 		}
@@ -225,7 +225,7 @@ void AGameNPC::OnDialogSelect(const FString& token, int32 index)
 	}
 	default:
 		character->CloseDialog();
-		task = NULL;
+		current_task = NULL;
 		character = NULL;
 		sentence_index = 0;
 		break;

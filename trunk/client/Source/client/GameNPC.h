@@ -29,7 +29,7 @@ public:
 		UPROPERTY()
 		float talk_range;
 		UPROPERTY()
-		UTask* task;
+		UTask* current_task;
 		UPROPERTY()
 		AGameCharacter* character;
 		UPROPERTY()

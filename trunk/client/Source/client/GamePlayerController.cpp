@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "client.h"
 #include "GamePlayerController.h"
@@ -43,7 +43,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		return;
 	}
 
-	//»ñµÃ´¥ÆÁ×´Ì¬
+	//èŽ·å¾—è§¦å±çŠ¶æ€
 	bool FingerPressed[2];
 
 	FVector2D NewLocation[2];
@@ -53,7 +53,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 
 
 
-	//×ÀÃæÆ½Ì¨Êó±ê¿ØÖÆ
+	//æ¡Œé¢å¹³å°é¼ æ ‡æŽ§åˆ¶
 	{
 		if (IsInputKeyDown(FKey("G")))
 		{
@@ -76,7 +76,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		}
 	}
 
-	//Ðý×ªÒÔ¼°ÒÆ¶¯
+	//æ—‹è½¬ä»¥åŠç§»åŠ¨
 	if (FingerPressed[0] && FingerPressed[1])
 	{
 		if (!fingerState[1]) {
@@ -136,7 +136,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		fingerState[0] = fingerState[1] = false;
 	}
 
-	//Ñ¡ÔñÄ¿±ê»òÕß¶ÔÏó
+	//é€‰æ‹©ç›®æ ‡æˆ–è€…å¯¹è±¡
 	if (FingerPressed[0] && !FingerPressed[1] && fingerState[0] == false && fingerState[1] == false)
 	{
 		FVector Pos, Dir;
@@ -144,7 +144,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		{
 			FHitResult HitInfo;
 			FCollisionQueryParams QParams;
-			QParams.AddIgnoredActor(Battler);//ºöÂÔ×Ô¼º
+			QParams.AddIgnoredActor(Battler);//å¿½ç•¥è‡ªå·±
 			FCollisionObjectQueryParams OParams;
 			if (GetWorld()->LineTraceSingleByObjectType(HitInfo, Pos, Pos + Dir * 10240.f, OParams, QParams))
 			{
@@ -156,7 +156,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 					Battler->Target = battler;
 					battler->Event_OnSelect(this->Battler);
 				}
-				else //ÒÆ¶¯µ½Ö¸¶¨µã
+				else //ç§»åŠ¨åˆ°æŒ‡å®šç‚¹
 				{
 					UNavigationSystem::SimpleMoveToLocation(this, HitInfo.ImpactPoint);
 				}
@@ -168,7 +168,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		}
 	}
 
-	//Ê¹Íæ¼Ò³¯ÏòÄ¿±ê
+	//ä½¿çŽ©å®¶æœå‘ç›®æ ‡
 	if (auto_face_target && Battler->Target != NULL && Battler->Target != Battler)
 	{
 		FRotator TargetRot = FRotationMatrix::MakeFromX(Battler->Target->GetActorLocation() - Battler->GetActorLocation()).Rotator();
@@ -182,7 +182,7 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 		}
 		else
 		{
-			float length = (TargetRot.Yaw - CurrentRotation.Yaw) > 0 ? 1 : -1.0f;
+			length = (TargetRot.Yaw - CurrentRotation.Yaw) > 0 ? 1 : -1.0f;
 			CurrentRotation.Yaw += length*dist;
 		}
 
