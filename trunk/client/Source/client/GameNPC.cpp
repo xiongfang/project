@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "client.h"
 #include "GameNPC.h"
@@ -142,8 +142,8 @@ void AGameNPC::Event_OnSelect_Implementation(AGameBattler* User)
 
 			selections.Add(FText::FromName(task->id));
 		}
-		selections.Add(FText::FromString(FString(TEXT("ÔÙ¼û"))));
-		character->ShowText(TEXT("start"), FText::FromString(TEXT("ĞèÒª°ïÖúÂğ£¿")), selections);
+		selections.Add(FText::FromString(FString(TEXT("å†è§"))));
+		character->ShowText(TEXT("start"), FText::FromString(TEXT("éœ€è¦å¸®åŠ©å—ï¼Ÿ")), selections);
 	}
 }
 
