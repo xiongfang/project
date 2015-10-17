@@ -626,7 +626,6 @@ bool AGameCharacter::Attack(FName skillId)
 
 	if (!Super::Attack(skillId))
 	{
-		USkill* skill = skills[skillId];
 		//如果当前新目标在距离范围之外，向目标移动
 		if (Target != NULL && skill->valid_target(this, Target) && !skill->in_distance(FVector::Dist(this->GetActorLocation(), Target->GetActorLocation())))
 		{
