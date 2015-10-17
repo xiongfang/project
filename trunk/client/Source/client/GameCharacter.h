@@ -114,8 +114,8 @@ public:
 	UFUNCTION(Category = Logic, BlueprintCallable)
 	void UnEquip(int32 slot);
 
-	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
-		ActionState State;
+	//UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadWrite)
+	//	ActionState State;
 
 	//当前的动画状态
 	UPROPERTY(Category = Data, VisibleAnywhere, BlueprintReadOnly)
@@ -139,7 +139,6 @@ public:
 
 	void UpdateMesh();
 	void UpdateAnimGroup();
-
 
 	//道具
 	UFUNCTION(Category = Logic, BlueprintCallable)

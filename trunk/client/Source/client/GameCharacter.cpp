@@ -112,7 +112,6 @@ AGameCharacter::AGameCharacter()
 	equips.Init(NAME_None, 10);
 	Weapons.AddDefaulted(2);
 
-	State = ActionState::Idle;
 	Target = NULL;
 
 	race_type = TEXT("女人");
@@ -526,6 +525,10 @@ int32 AGameCharacter::ItemAdd(FName id, int32 count)
 {
 	if (!items.Contains(id))
 		items.Add(id,0);
+	if (count>0)
+		GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Blue, FString::Printf(TEXT("获得物品:%sx%d"), *id.ToString(), FMath::Abs(count)));
+	else
+		GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Blue, FString::Printf(TEXT("失去物品:%sx%d"), *id.ToString(), FMath::Abs(count)));
 
 	items[id] += count;
 	items[id] = FMath::Clamp(items[id], 0, ItemMax(id));
@@ -615,7 +618,10 @@ bool AGameCharacter::Attack(FName skillId)
 	if (Target==NULL || !skill->valid_target(this, Target))
 	{
 		if (!AutoSelectTarget(skill))
-			return false;
+		{
+			GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Blue, TEXT("没有目标"));
+		}
+		return false;
 	}
 
 	if (!Super::Attack(skillId))
@@ -624,7 +630,7 @@ bool AGameCharacter::Attack(FName skillId)
 		//如果当前新目标在距离范围之外，向目标移动
 		if (Target != NULL && skill->valid_target(this, Target) && !skill->in_distance(FVector::Dist(this->GetActorLocation(), Target->GetActorLocation())))
 		{
-			UNavigationSystem::SimpleMoveToLocation(this->Controller, Target->GetActorLocation());
+			UNavigationSystem::SimpleMoveToActor(this->Controller, Target);
 			return false;
 		}
 		return false;
@@ -644,11 +650,6 @@ bool AGameCharacter::Attack(FName skillId)
 void AGameCharacter::SkillEffect(AGameBattler* User, USkill* skill)
 {
 	Super::SkillEffect(User, skill);
-
-	if (hp == 0)
-	{
-		this->State = ActionState::Dead;
-	}
 }
 
 
@@ -656,7 +657,10 @@ bool AGameCharacter::can_move()
 {
 	if (!Super::can_move())
 		return false;
-	return State == ActionState::Idle || State == ActionState::Move;
+	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(anim_openweapon) || GetMesh()->GetAnimInstance()->Montage_IsPlaying(anim_closeweapon))
+		return false;
+
+	return true;
 }
 
 bool AGameCharacter::can_use_skill(USkill* skill)
@@ -670,10 +674,6 @@ bool AGameCharacter::can_use_skill(USkill* skill)
 
 bool AGameCharacter::can_block()
 {
-	if (!(State == ActionState::Idle || State == ActionState::Move))
-	{
-		return false;
-	}
 	if (!is_weapon_open)
 		return false;
 	return true;

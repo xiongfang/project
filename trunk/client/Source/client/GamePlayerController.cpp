@@ -167,5 +167,26 @@ void AGamePlayerController::PostProcessInput(const float DeltaSeconds, const boo
 
 		}
 	}
+
+	//使玩家朝向目标
+	if (auto_face_target && Battler->Target != NULL && Battler->Target != Battler)
+	{
+		FRotator TargetRot = FRotationMatrix::MakeFromX(Battler->Target->GetActorLocation() - Battler->GetActorLocation()).Rotator();
+		FRotator CurrentRotation = Battler->GetActorRotation();
+		float length = TargetRot.Yaw - CurrentRotation.Yaw;
+		float dist = DeltaSeconds*face_rotate_speed;
+
+		if (FMath::Abs(length) <= dist)
+		{
+			CurrentRotation.Yaw = TargetRot.Yaw;
+		}
+		else
+		{
+			float length = (TargetRot.Yaw - CurrentRotation.Yaw) > 0 ? 1 : -1.0f;
+			CurrentRotation.Yaw += length*dist;
+		}
+
+		Battler->SetActorRotation(CurrentRotation);
+	}
 }
 
