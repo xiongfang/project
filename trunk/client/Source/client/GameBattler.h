@@ -21,6 +21,11 @@ class AGameBattler :public ACharacter
 private:
 	void TriggerEnterCombating();
 	void CheckLeaveCombating(float DeltaTime);
+
+
+	bool NeedFaceToTarget = false;
+	void UpdateFaceToTarget(float DeltaTime);
+
 protected:
 	virtual void NotifyEnterCombating(){}
 	virtual void NotifyLeaveCombating(){}
@@ -34,7 +39,8 @@ public:
 		Enemy
 	};
 
-	
+	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	float face_rotate_speed = 360.0f;
 
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;

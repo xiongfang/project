@@ -35,10 +35,10 @@ public:
 	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
 		float client_camera_scale_speed;
 
-	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-		bool auto_face_target;
-	UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
-		float face_rotate_speed;
+	//UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	//	bool auto_face_target;
+	//UPROPERTY(Category = Mesh, EditAnywhere, BlueprintReadWrite)
+	//	float face_rotate_speed;
 
 	//相机控制
 	USpringArmComponent* SprintArm;

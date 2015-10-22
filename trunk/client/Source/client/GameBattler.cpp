@@ -11,6 +11,35 @@ AGameBattler::AGameBattler()
 	timer_combat_cd = 10.0f;
 }
 
+
+void AGameBattler::UpdateFaceToTarget(float DeltaTime)
+{
+	if (!NeedFaceToTarget)
+		return;
+	if (Target == NULL)
+	{
+		NeedFaceToTarget = false;
+		return;
+	}
+
+	FRotator TargetRot = FRotationMatrix::MakeFromX(Target->GetActorLocation() - GetActorLocation()).Rotator();
+	FRotator CurrentRotation = GetActorRotation();
+	float length = TargetRot.Yaw - CurrentRotation.Yaw;
+	float dist = DeltaTime*face_rotate_speed;
+
+	if (FMath::Abs(length) <= dist)
+	{
+		CurrentRotation.Yaw = TargetRot.Yaw;
+		NeedFaceToTarget = false;
+	}
+	else
+	{
+		length = (TargetRot.Yaw - CurrentRotation.Yaw) > 0 ? 1 : -1.0f;
+		CurrentRotation.Yaw += length*dist;
+	}
+
+	SetActorRotation(CurrentRotation);
+}
 void AGameBattler::TriggerEnterCombating()
 {
 	timer_combat_cd = UMyGameSingleton::Get().combat_cd;
@@ -78,6 +107,8 @@ void AGameBattler::Tick(float DeltaTime)
 	}
 
 	CheckLeaveCombating(DeltaTime);
+
+	UpdateFaceToTarget(DeltaTime);
 }
 
 int32 AGameBattler::damage(AGameBattler* User,DamageFlag dt, int32 hp_damage, int32 mp_damage)
@@ -243,6 +274,10 @@ bool AGameBattler::Attack(FName skillId)
 
 	if (Target == NULL)
 		return false;
+
+	//开始朝向目标
+	NeedFaceToTarget = true;
+
 	if (!skills.Contains(skillId))
 		return false;
 
