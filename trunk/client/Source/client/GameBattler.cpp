@@ -16,7 +16,7 @@ void AGameBattler::UpdateFaceToTarget(float DeltaTime)
 {
 	if (!NeedFaceToTarget)
 		return;
-	if (Target == NULL)
+	if (Target == NULL || Target==this)
 	{
 		NeedFaceToTarget = false;
 		return;
